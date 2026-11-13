@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#12224a">
+<title>Quiz do livro de Daniel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noite:#12224a;      /* fundo */
+  --lapis:#1d3f86;      /* azul dos azulejos */
+  --lapis-claro:#3b5db0;
+  --ouro:#e4b94f;       /* destaque */
+  --texto:#f4efe0;
+  --suave:#b9c4e3;
+  --ok:#2fae86;
+  --erro:#d4613f;
+  --serif:'Alegreya',Georgia,'Times New Roman',serif;
+  --sans:'Alegreya Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{
+  background-color:var(--noite);
+  background-image:radial-gradient(circle,#e4b94f26 0 2px,transparent 2.5px),radial-gradient(circle,#e4b94f14 0 2px,transparent 2.5px);
+  background-size:36px 36px;background-position:0 0,18px 18px;
+  color:var(--texto);font-family:var(--sans);font-size:18px;line-height:1.4;
+}
+/* friso de azulejos, como o da Porta de Ishtar na Babilônia */
+.friso{height:14px;background:repeating-linear-gradient(90deg,var(--ouro) 0 12px,var(--lapis) 12px 24px)}
+main{
+  max-width:560px;margin:0 auto;min-height:100dvh;
+  padding:20px 16px calc(28px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+[hidden]{display:none!important}
+h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
+
+/* botões */
+.btn{
+  display:block;width:100%;min-height:56px;padding:12px 18px;margin-top:14px;
+  border:0;border-radius:14px;background:var(--ouro);color:#2a1f05;
+  font:700 19px var(--sans);cursor:pointer;
+}
+.btn:active{transform:scale(.985)}
+.btn.sec{background:transparent;color:var(--texto);border:2px solid var(--lapis-claro)}
+:focus-visible{outline:3px solid var(--ouro);outline-offset:3px}
+
+/* início */
+#tela-inicio h1{font-size:clamp(64px,22vw,104px);line-height:.95;letter-spacing:.02em;margin-top:34px;color:var(--ouro)}
+#tela-inicio .sub{font-family:var(--serif);font-size:23px;line-height:1.3;margin:14px 0 22px;max-width:30ch}
+.info{background:#0d1a3b;border-radius:16px;padding:14px 16px;color:var(--suave)}
+.info p{margin:0}.info p+p{margin-top:6px}
+.info b{color:var(--texto)}
+.aviso{margin-top:14px;padding:12px 14px;border-radius:12px;background:#4a2418;border:2px solid var(--erro);font-size:16px}
+.aviso ul{margin:6px 0 0;padding-left:20px}
+
+/* jogo */
+.topo{display:flex;justify-content:space-between;align-items:baseline;color:var(--suave);font-weight:500}
+.barra{height:8px;border-radius:4px;background:#0d1a3b;margin:8px 0 22px;overflow:hidden}
+.barra i{display:block;height:100%;width:0;background:var(--ouro);transition:width .3s}
+#pergunta{font-size:25px;line-height:1.25;margin-bottom:18px}
+#opcoes{list-style:none;margin:0;padding:0}
+.op{
+  display:flex;gap:14px;align-items:center;width:100%;min-height:60px;padding:10px 14px;margin:0 0 10px;
+  text-align:left;border:2px solid var(--lapis-claro);background:#1a3573;color:var(--texto);
+  font:500 18px/1.3 var(--sans);border-radius:14px;cursor:pointer;
+}
+.op:active:not(:disabled){transform:scale(.99)}
+.op .letra{
+  flex:0 0 38px;height:38px;border-radius:9px;display:grid;place-items:center;
+  background:var(--ouro);color:#2a1f05;font:800 21px var(--serif);
+}
+.op:disabled{cursor:default;color:var(--texto)}
+.op.certa{border-color:var(--ok);background:#14604e}
+.op.errada{border-color:var(--erro);background:#6b2a1f}
+.op.apagada{opacity:.55}
+.retorno{margin-top:6px;padding:14px 16px;border-radius:14px;background:#0d1a3b;border-left:6px solid var(--ok)}
+.retorno.erro{border-left-color:var(--erro)}
+.retorno strong{display:block;font:800 23px var(--serif);margin-bottom:4px}
+.retorno p{margin:0}
+.retorno .ref{margin-top:8px;color:var(--ouro);font-weight:700}
+
+/* fim */
+#tela-fim h2{font-size:28px;margin-top:14px}
+.placar{font:800 clamp(64px,24vw,110px)/1 var(--serif);color:var(--ouro);margin:10px 0 4px}
+.placar small{font-size:.38em;color:var(--suave);font-weight:700}
+.revisao{margin-top:22px}
+.revisao h3{font-size:22px;margin-bottom:10px}
+.erro-item{background:#0d1a3b;border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.erro-item p{margin:0}
+.erro-item .q{font-weight:700;margin-bottom:6px}
+.erro-item .r{color:var(--ok)}
+.erro-item .ref{color:var(--ouro);margin-top:4px;font-size:16px}
+
+@media (prefers-reduced-motion:reduce){.barra i{transition:none}.btn:active,.op:active{transform:none}}
+</style>
+</head>
+<body>
+<div class="friso" aria-hidden="true"></div>
+<main>
+
+  <!-- INÍCIO -->
+  <section id="tela-inicio">
+    <h1>Daniel</h1>
+    <p class="sub">Teste o que você sabe sobre o livro inteiro, do cativeiro na Babilônia às visões do fim.</p>
+    <div class="info">
+      <p><b id="info-total">0</b> perguntas nesta rodada.</p>
+      <p>Cada pergunta tem 5 alternativas (A a E) e só uma está certa.</p>
+      <p id="info-melhor" hidden></p>
+    </div>
+    <div id="avisos" class="aviso" hidden></div>
+    <button class="btn" id="btn-comecar">Começar</button>
+  </section>
+
+  <!-- JOGO -->
+  <section id="tela-jogo" hidden>
+    <div class="topo"><span id="progresso"></span><span id="acertos"></span></div>
+    <div class="barra" aria-hidden="true"><i id="barra-i"></i></div>
+    <h2 id="pergunta"></h2>
+    <ul id="opcoes"></ul>
+    <div id="retorno" class="retorno" hidden aria-live="polite">
+      <strong id="retorno-titulo"></strong>
+      <p id="retorno-texto"></p>
+      <p class="ref" id="retorno-ref"></p>
+    </div>
+    <button class="btn" id="btn-proxima" hidden>Próxima pergunta</button>
+  </section>
+
+  <!-- FIM -->
+  <section id="tela-fim" hidden>
+    <h2 id="fim-msg"></h2>
+    <div class="placar"><span id="fim-pts">0</span> <small id="fim-total">de 0</small></div>
+    <div id="fim-revisao" class="revisao" hidden>
+      <h3>Para rever</h3>
+      <div id="fim-lista"></div>
+    </div>
+    <button class="btn" id="btn-de-novo">Jogar de novo</button>
+    <button class="btn sec" id="btn-erradas" hidden>Refazer só as que errei</button>
+  </section>
+
+</main>
+
+<!-- =====================================================================
+     PERGUNTAS: é aqui que você escreve mais perguntas.
+     Copie um bloco { ... } inteiro, cole no fim da lista (antes do ] ) e
+     troque os textos. Não esqueça a vírgula depois de cada bloco.
+
+       {
+         pergunta: "Texto da pergunta?",
+         opcoes: ["Alternativa A", "Alternativa B", "Alternativa C", "Alternativa D", "Alternativa E"],
+         certa: "C",                      // letra da alternativa certa: A, B, C, D ou E
+         ref: "Daniel 1:7",               // onde está na Bíblia (aparece depois de responder)
+         explicacao: "Texto curto."       // opcional (aparece depois de responder)
+       },
+
+     Dicas: use sempre 5 alternativas. Dentro dos textos, use aspas simples ('assim'),
+     não aspas duplas. Se algo estiver errado, um aviso vermelho aparece na tela inicial.
+     ===================================================================== -->
+<script id="perguntas">
+const CONFIG = {
+  embaralhar: true,   // true = ordem das perguntas muda a cada rodada; false = ordem fixa
+  porRodada: 0        // 0 = usa todas as perguntas; ou ex.: 10 = sorteia 10 por rodada
+};
+
+const PERGUNTAS = [
+  {
+    pergunta: "Qual foi o nome babilônico dado a Daniel?",
+    opcoes: ["Sadraque", "Mesaque", "Abede-Nego", "Beltessazar", "Nabucodonosor"],
+    certa: "D",
+    ref: "Daniel 1:6-7",
+    explicacao: "Beltessazar foi o nome dado a Daniel. Sadraque, Mesaque e Abede-Nego eram os nomes babilônicos dos três amigos dele."
+  },
+  {
+    pergunta: "No sonho da grande estátua, de que material era a cabeça?",
+    opcoes: ["Prata", "Ouro", "Bronze", "Ferro", "Barro"],
+    certa: "B",
+    ref: "Daniel 2:31-38",
+    explicacao: "A cabeça de ouro representava Nabucodonosor e o reino da Babilônia."
+  },
+  {
+    pergunta: "Quantos homens o rei Nabucodonosor viu andando soltos no meio da fornalha ardente?",
+    opcoes: ["Dois", "Três", "Quatro", "Cinco", "Sete"],
+    certa: "C",
+    ref: "Daniel 3:24-25",
+    explicacao: "Três foram lançados amarrados, mas o rei viu quatro, soltos e sem dano. O quarto parecia um filho dos deuses."
+  },
+  {
+    pergunta: "Por quanto tempo Nabucodonosor ficou sem juízo, vivendo como os animais e comendo erva como os bois?",
+    opcoes: ["Sete dias", "Sete tempos", "Quarenta dias", "Setenta anos", "Três dias"],
+    certa: "B",
+    ref: "Daniel 4:25-34",
+    explicacao: "Depois de sete tempos o rei voltou a si, reconheceu o Altíssimo e recuperou o reino."
+  },
+  {
+    pergunta: "Qual rei fez o banquete em que uma mão apareceu escrevendo na parede?",
+    opcoes: ["Nabucodonosor", "Dario", "Belsazar", "Ciro", "Artaxerxes"],
+    certa: "C",
+    ref: "Daniel 5:1-30",
+    explicacao: "Belsazar bebeu com os utensílios do templo de Jerusalém. Daniel leu a escrita, e naquela mesma noite o rei foi morto."
+  },
+  {
+    pergunta: "Por que Daniel foi lançado na cova dos leões?",
+    opcoes: [
+      "Recusou adorar a estátua de ouro",
+      "Continuou orando ao seu Deus, apesar do decreto do rei",
+      "Interpretou mal um sonho do rei",
+      "Recusou comer a comida do rei",
+      "Roubou objetos do templo"
+    ],
+    certa: "B",
+    ref: "Daniel 6:7-22",
+    explicacao: "Daniel orava três vezes ao dia, mesmo depois do decreto de Dario que proibia orar a qualquer outro. Deus fechou a boca dos leões."
+  },
+  {
+    pergunta: "Na visão do capítulo 7, quem recebeu domínio, glória e um reino eterno, vindo com as nuvens do céu?",
+    opcoes: [
+      "Um anjo com uma espada",
+      "O rei Dario",
+      "Alguém semelhante a um filho de homem",
+      "Um carneiro de dois chifres",
+      "Um bode peludo"
+    ],
+    certa: "C",
+    ref: "Daniel 7:13-14",
+    explicacao: "Ele foi apresentado ao Ancião de Dias, e o seu reino nunca passará."
+  },
+  {
+    pergunta: "Na visão do capítulo 8, o carneiro de dois chifres representa quais reinos?",
+    opcoes: ["Babilônia", "Média e Pérsia", "Grécia", "Roma", "Egito"],
+    certa: "B",
+    ref: "Daniel 8:20-21",
+    explicacao: "O anjo Gabriel explicou que o carneiro representa os reis da Média e da Pérsia, e o bode peludo, a Grécia."
+  },
+  {
+    pergunta: "Ao ler o profeta Jeremias, Daniel entendeu que a desolação de Jerusalém duraria quantos anos?",
+    opcoes: ["Quarenta", "Cinquenta", "Setenta", "Cento e vinte", "Quatrocentos e trinta"],
+    certa: "C",
+    ref: "Daniel 9:2-3",
+    explicacao: "Daniel percebeu que os setenta anos estavam se cumprindo e orou, confessando os pecados do povo."
+  },
+  {
+    pergunta: "Qual anjo é chamado de o grande príncipe, que protege o povo de Daniel no tempo de angústia?",
+    opcoes: ["Gabriel", "Rafael", "Miguel", "Uriel", "Elias"],
+    certa: "C",
+    ref: "Daniel 12:1",
+    explicacao: "Miguel é o grande príncipe que se levanta pelo povo de Daniel."
+  }
+];
+</script>
+
+<!-- =====================================================================
+     JOGO: não precisa mexer daqui para baixo.
+     ===================================================================== -->
+<script>
+(function(){
+  const LETRAS = ['A','B','C','D','E'];
+  const $ = s => document.querySelector(s);
+  const telas = {inicio:$('#tela-inicio'), jogo:$('#tela-jogo'), fim:$('#tela-fim')};
+  const CHAVE = 'quiz-daniel-melhor';
+
+  let validas = [], deck = [], pos = 0, pts = 0, erradas = [], travado = false, atual = null;
+
+  function mostrar(nome){
+    for(const k in telas) telas[k].hidden = (k !== nome);
+    window.scrollTo(0,0);
+  }
+
+  // confere as perguntas e separa as que têm problema
+  function validar(){
+    const problemas = [];
+    validas = [];
+    PERGUNTAS.forEach((q,i)=>{
+      const n = i+1, erros = [];
+      if(!q || typeof q.pergunta !== 'string' || !q.pergunta.trim()) erros.push('falta o texto da pergunta');
+      if(!q || !Array.isArray(q.opcoes) || q.opcoes.length !== 5) erros.push('precisa ter exatamente 5 alternativas');
+      else if(q.opcoes.some(o => typeof o !== 'string' || !o.trim())) erros.push('há alternativa vazia');
+      if(!q || LETRAS.indexOf(String(q.certa).toUpperCase()) < 0) erros.push('o campo certa precisa ser A, B, C, D ou E');
+      if(erros.length) problemas.push('Pergunta ' + n + ': ' + erros.join('; ') + '.');
+      else validas.push(q);
+    });
+    return problemas;
+  }
+
+  function embaralhar(a){
+    for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+    return a;
+  }
+
+  function melhor(){
+    try{return JSON.parse(localStorage.getItem(CHAVE))}catch(e){return null}
+  }
+  function guardarMelhor(p,t){
+    try{
+      const m = melhor();
+      if(!m || p/t > m.p/m.t) localStorage.setItem(CHAVE, JSON.stringify({p:p,t:t}));
+    }catch(e){}
+  }
+
+  function preencherInicio(){
+    const problemas = validar();
+    const total = (CONFIG.porRodada > 0) ? Math.min(CONFIG.porRodada, validas.length) : validas.length;
+    $('#info-total').textContent = total;
+    const m = melhor(), el = $('#info-melhor');
+    if(m){el.hidden = false; el.textContent = 'Seu melhor resultado: ' + m.p + ' de ' + m.t + '.'}
+    const av = $('#avisos');
+    if(problemas.length){
+      av.hidden = false;
+      av.innerHTML = '';
+      const t = document.createElement('b'); t.textContent = 'Há perguntas com problema (elas ficaram de fora):'; av.append(t);
+      const ul = document.createElement('ul');
+      problemas.forEach(p=>{const li=document.createElement('li');li.textContent=p;ul.append(li)});
+      av.append(ul);
+    }else av.hidden = true;
+    $('#btn-comecar').disabled = validas.length === 0;
+  }
+
+  function iniciar(lista, ehRefazer){
+    deck = lista.slice();
+    if(CONFIG.embaralhar) embaralhar(deck);
+    if(!ehRefazer && CONFIG.porRodada > 0) deck = deck.slice(0, CONFIG.porRodada);
+    pos = 0; pts = 0; erradas = [];
+    mostrar('jogo');
+    render();
+  }
+
+  function render(){
+    atual = deck[pos]; travado = false;
+    $('#progresso').textContent = 'Pergunta ' + (pos+1) + ' de ' + deck.length;
+    $('#acertos').textContent = 'Acertos: ' + pts;
+    $('#barra-i').style.width = (pos/deck.length*100) + '%';
+    $('#pergunta').textContent = atual.pergunta;
+    const ul = $('#opcoes'); ul.innerHTML = '';
+    atual.opcoes.forEach((txt,i)=>{
+      const li = document.createElement('li');
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'op'; b.dataset.i = i;
+      const l = document.createElement('span'); l.className = 'letra'; l.textContent = LETRAS[i];
+      const t = document.createElement('span'); t.textContent = txt;
+      b.append(l,t);
+      b.addEventListener('click',()=>responder(i));
+      li.append(b); ul.append(li);
+    });
+    $('#retorno').hidden = true;
+    $('#btn-proxima').hidden = true;
+  }
+
+  function responder(i){
+    if(travado) return;
+    travado = true;
+    const certa = LETRAS.indexOf(String(atual.certa).toUpperCase());
+    const acertou = (i === certa);
+    if(acertou) pts++; else erradas.push(atual);
+    document.querySelectorAll('.op').forEach((b,k)=>{
+      b.disabled = true;
+      if(k === certa) b.classList.add('certa');
+      else if(k === i) b.classList.add('errada');
+      else b.classList.add('apagada');
+    });
+    $('#acertos').textContent = 'Acertos: ' + pts;
+    const r = $('#retorno');
+    r.classList.toggle('erro', !acertou);
+    $('#retorno-titulo').textContent = acertou ? 'Certo!' : 'Não foi dessa vez. A resposta é a letra ' + LETRAS[certa] + '.';
+    $('#retorno-texto').textContent = atual.explicacao || '';
+    $('#retorno-texto').hidden = !atual.explicacao;
+    $('#retorno-ref').textContent = atual.ref || '';
+    $('#retorno-ref').hidden = !atual.ref;
+    r.hidden = false;
+    const bp = $('#btn-proxima');
+    bp.textContent = (pos+1 < deck.length) ? 'Próxima pergunta' : 'Ver resultado';
+    bp.hidden = false;
+    const reduzir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    bp.scrollIntoView({block:'end', behavior: reduzir ? 'auto' : 'smooth'});
+  }
+
+  function proxima(){
+    if(!travado) return;
+    pos++;
+    if(pos < deck.length){render();window.scrollTo(0,0)} else fim();
+  }
+
+  function fim(){
+    mostrar('fim');
+    const total = deck.length, pct = pts/total;
+    $('#fim-pts').textContent = pts;
+    $('#fim-total').textContent = 'de ' + total;
+    $('#fim-msg').textContent =
+      pct === 1 ? 'Perfeito! Você conhece bem o livro de Daniel.' :
+      pct >= .8 ? 'Muito bem! Quase tudo certo.' :
+      pct >= .5 ? 'Bom resultado. Reveja as que errou e tente de novo.' :
+                  'Vale reler o livro de Daniel e tentar outra vez.';
+    guardarMelhor(pts,total);
+
+    const rev = $('#fim-revisao'), lista = $('#fim-lista');
+    lista.innerHTML = '';
+    rev.hidden = erradas.length === 0;
+    erradas.forEach(q=>{
+      const c = LETRAS.indexOf(String(q.certa).toUpperCase());
+      const d = document.createElement('div'); d.className = 'erro-item';
+      const a = document.createElement('p'); a.className = 'q'; a.textContent = q.pergunta;
+      const b = document.createElement('p'); b.className = 'r'; b.textContent = 'Certa: ' + LETRAS[c] + ') ' + q.opcoes[c];
+      d.append(a,b);
+      if(q.ref){const r = document.createElement('p'); r.className = 'ref'; r.textContent = q.ref; d.append(r)}
+      lista.append(d);
+    });
+    $('#btn-erradas').hidden = erradas.length === 0;
+  }
+
+  $('#btn-comecar').addEventListener('click',()=>iniciar(validas,false));
+  $('#btn-proxima').addEventListener('click',proxima);
+  $('#btn-de-novo').addEventListener('click',()=>{preencherInicio();iniciar(validas,false)});
+  $('#btn-erradas').addEventListener('click',()=>iniciar(erradas.slice(),true));
+
+  // teclado (útil no computador): A–E responde, Enter avança
+  document.addEventListener('keydown',e=>{
+    if(telas.jogo.hidden) return;
+    const k = e.key.toUpperCase(), i = LETRAS.indexOf(k);
+    if(i >= 0 && !e.ctrlKey && !e.metaKey && !e.altKey){responder(i)}
+    else if(e.key === 'Enter' && travado){e.preventDefault();proxima()}
+  });
+
+  preencherInicio();
+})();
+</script>
+</body>
+</html>
