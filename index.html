@@ -166,90 +166,873 @@ const CONFIG = {
   porRodada: 0        // 0 = usa todas as perguntas; ou ex.: 10 = sorteia 10 por rodada
 };
 
-const PERGUNTAS = [
+
+const PERGUNTAS_ADICIONAIS = [
+  // DANIEL 1
   {
-    pergunta: "Qual foi o nome babilônico dado a Daniel?",
-    opcoes: ["Sadraque", "Mesaque", "Abede-Nego", "Beltessazar", "Nabucodonosor"],
+    pergunta: "De qual cidade Nabucodonosor levou os utensílios da casa de Deus?",
+    opcoes: ["Samaria", "Jerusalém", "Belém", "Nínive", "Damasco"],
+    certa: "B",
+    ref: "Daniel 1:1-2",
+    explicacao: "Nabucodonosor cercou Jerusalém e levou parte dos utensílios da casa de Deus para a terra de Sinar."
+  },
+  {
+    pergunta: "Quem era o rei de Judá quando Nabucodonosor cercou Jerusalém?",
+    opcoes: ["Ezequias", "Josias", "Jeoaquim", "Zedequias", "Manassés"],
+    certa: "C",
+    ref: "Daniel 1:1",
+    explicacao: "Jeoaquim era o rei de Judá quando Nabucodonosor veio contra Jerusalém."
+  },
+  {
+    pergunta: "Qual era o nome do chefe dos eunucos responsável pelos jovens levados à Babilônia?",
+    opcoes: ["Aspenaz", "Arioque", "Arioc", "Belsazar", "Abednego"],
+    certa: "A",
+    ref: "Daniel 1:3",
+    explicacao: "Aspenaz era o chefe dos eunucos a quem o rei confiou a seleção e preparação dos jovens."
+  },
+  {
+    pergunta: "De qual linhagem deveriam ser os jovens escolhidos para servir no palácio do rei?",
+    opcoes: ["Dos sacerdotes", "Dos levitas", "Da família real e dos nobres", "Dos soldados", "Dos comerciantes"],
+    certa: "C",
+    ref: "Daniel 1:3-4",
+    explicacao: "O rei ordenou que fossem escolhidos jovens dos filhos de Israel, da linhagem real e dos nobres."
+  },
+  {
+    pergunta: "Por quantos anos os jovens deveriam receber instrução antes de se apresentarem ao rei?",
+    opcoes: ["Um ano", "Dois anos", "Três anos", "Quatro anos", "Sete anos"],
+    certa: "C",
+    ref: "Daniel 1:5",
+    explicacao: "Eles deveriam ser educados durante três anos antes de se apresentarem diante do rei."
+  },
+  {
+    pergunta: "Qual era o nome hebraico de Sadraque?",
+    opcoes: ["Daniel", "Hananias", "Misael", "Azarias", "Jeoaquim"],
+    certa: "B",
+    ref: "Daniel 1:6-7",
+    explicacao: "Hananias recebeu o nome babilônico de Sadraque."
+  },
+  {
+    pergunta: "Qual era o nome hebraico de Mesaque?",
+    opcoes: ["Hananias", "Azarias", "Misael", "Daniel", "Ezequiel"],
+    certa: "C",
+    ref: "Daniel 1:6-7",
+    explicacao: "Misael recebeu o nome babilônico de Mesaque."
+  },
+  {
+    pergunta: "Qual era o nome hebraico de Abede-Nego?",
+    opcoes: ["Misael", "Daniel", "Hananias", "Azarias", "Jeremias"],
     certa: "D",
     ref: "Daniel 1:6-7",
-    explicacao: "Beltessazar foi o nome dado a Daniel. Sadraque, Mesaque e Abede-Nego eram os nomes babilônicos dos três amigos dele."
+    explicacao: "Azarias recebeu o nome babilônico de Abede-Nego."
   },
   {
-    pergunta: "No sonho da grande estátua, de que material era a cabeça?",
-    opcoes: ["Prata", "Ouro", "Bronze", "Ferro", "Barro"],
+    pergunta: "O que Daniel decidiu não fazer para não se contaminar?",
+    opcoes: ["Não falar com o rei", "Não entrar no palácio", "Não se contaminar com a comida e o vinho do rei", "Não estudar a língua dos caldeus", "Não trabalhar"],
+    certa: "C",
+    ref: "Daniel 1:8",
+    explicacao: "Daniel decidiu não se contaminar com a comida e o vinho oferecidos pelo rei."
+  },
+  {
+    pergunta: "Por quantos dias Daniel pediu que ele e seus amigos fossem provados com legumes e água?",
+    opcoes: ["Três dias", "Sete dias", "Dez dias", "Quarenta dias", "Vinte dias"],
+    certa: "C",
+    ref: "Daniel 1:11-14",
+    explicacao: "Daniel propôs um teste de dez dias com legumes para comer e água para beber."
+  },
+  {
+    pergunta: "Como estavam Daniel e seus amigos ao final dos dez dias de alimentação?",
+    opcoes: ["Mais fracos que os outros", "Mais robustos que os outros jovens", "Doentes", "Sem nenhuma diferença", "Foram dispensados"],
     certa: "B",
-    ref: "Daniel 2:31-38",
-    explicacao: "A cabeça de ouro representava Nabucodonosor e o reino da Babilônia."
+    ref: "Daniel 1:15",
+    explicacao: "Eles estavam com melhor aparência e mais robustos do que os jovens que comiam das iguarias do rei."
   },
   {
-    pergunta: "Quantos homens o rei Nabucodonosor viu andando soltos no meio da fornalha ardente?",
+    pergunta: "Em quais conhecimentos Deus deu sabedoria aos quatro jovens?",
+    opcoes: ["Somente na guerra", "Na escrita e na matemática", "Em toda a cultura e sabedoria", "Somente na música", "Na agricultura"],
+    certa: "C",
+    ref: "Daniel 1:17",
+    explicacao: "Deus concedeu aos quatro jovens conhecimento e inteligência em toda a cultura e sabedoria."
+  },
+  {
+    pergunta: "Em que área Daniel recebeu entendimento especial de Deus?",
+    opcoes: ["Na construção de templos", "Em visões e sonhos", "Na medicina", "Na arte da guerra", "Na agricultura"],
+    certa: "B",
+    ref: "Daniel 1:17",
+    explicacao: "Daniel recebeu entendimento em todas as visões e sonhos."
+  },
+  {
+    pergunta: "Quem foi considerado dez vezes mais sábio que todos os magos e encantadores do reino?",
+    opcoes: ["Somente Daniel", "Os quatro jovens", "Somente Hananias", "Somente Misael", "Nabucodonosor"],
+    certa: "B",
+    ref: "Daniel 1:19-20",
+    explicacao: "O rei encontrou os quatro jovens dez vezes mais sábios que todos os magos e encantadores."
+  },
+
+  // DANIEL 2
+  {
+    pergunta: "Em qual ano do reinado de Nabucodonosor ele teve sonhos que perturbaram seu espírito?",
+    opcoes: ["Primeiro ano", "Segundo ano", "Terceiro ano", "Quarto ano", "Sétimo ano"],
+    certa: "B",
+    ref: "Daniel 2:1",
+    explicacao: "O capítulo informa que os sonhos aconteceram no segundo ano do reinado de Nabucodonosor."
+  },
+  {
+    pergunta: "O que Nabucodonosor exigiu dos sábios da Babilônia?",
+    opcoes: ["Que construíssem um templo", "Que descobrissem e interpretassem seu sonho", "Que encontrassem Daniel", "Que preparassem um exército", "Que explicassem a lei de Moisés"],
+    certa: "B",
+    ref: "Daniel 2:2-6",
+    explicacao: "O rei exigiu que os sábios revelassem tanto o sonho quanto sua interpretação."
+  },
+  {
+    pergunta: "O que aconteceria aos sábios caso não revelassem o sonho do rei?",
+    opcoes: ["Seriam enviados para Jerusalém", "Seriam presos por dez anos", "Seriam despedaçados e suas casas destruídas", "Perderiam seus cargos", "Seriam expulsos da Babilônia"],
+    certa: "C",
+    ref: "Daniel 2:5",
+    explicacao: "Nabucodonosor decretou uma punição severa: os sábios seriam despedaçados e suas casas destruídas."
+  },
+  {
+    pergunta: "Quem procurou Daniel para comunicar o decreto de morte contra os sábios?",
+    opcoes: ["Aspenaz", "Arioque", "Belsazar", "Gabriel", "Dario"],
+    certa: "B",
+    ref: "Daniel 2:14-15",
+    explicacao: "Arioque, chefe da guarda do rei, procurou Daniel para cumprir o decreto."
+  },
+  {
+    pergunta: "O que Daniel pediu ao rei quando soube do decreto?",
+    opcoes: ["Que o libertasse do serviço", "Que lhe desse tempo para revelar a interpretação", "Que libertasse todos os sábios", "Que cancelasse o sonho", "Que chamasse os sacerdotes"],
+    certa: "B",
+    ref: "Daniel 2:16",
+    explicacao: "Daniel pediu tempo para apresentar ao rei a interpretação do sonho."
+  },
+  {
+    pergunta: "Com quem Daniel compartilhou o pedido de oração para conhecer o mistério do sonho?",
+    opcoes: ["Com os soldados", "Com os sacerdotes", "Com Hananias, Misael e Azarias", "Com os magos", "Com os oficiais do rei"],
+    certa: "C",
+    ref: "Daniel 2:17-18",
+    explicacao: "Daniel pediu que seus três amigos buscassem misericórdia de Deus sobre aquele mistério."
+  },
+  {
+    pergunta: "Durante qual período Daniel recebeu a revelação do mistério?",
+    opcoes: ["Durante a madrugada", "Durante a noite", "Ao meio-dia", "Durante uma viagem", "No templo"],
+    certa: "B",
+    ref: "Daniel 2:19",
+    explicacao: "O mistério foi revelado a Daniel numa visão durante a noite."
+  },
+  {
+    pergunta: "Segundo Daniel, quem muda os tempos e as estações?",
+    opcoes: ["Os reis", "Os sacerdotes", "O Altíssimo", "Os anjos", "Os sábios"],
+    certa: "C",
+    ref: "Daniel 2:20-21",
+    explicacao: "Daniel louvou a Deus porque Ele muda os tempos e as estações, remove reis e estabelece reis."
+  },
+  {
+    pergunta: "Qual era o nome do Deus a quem Daniel atribuiu a revelação do sonho?",
+    opcoes: ["Bel", "O Deus dos céus", "Marduque", "Dagom", "Baal"],
+    certa: "B",
+    ref: "Daniel 2:27-28",
+    explicacao: "Daniel declarou que existe um Deus nos céus que revela os mistérios."
+  },
+  {
+    pergunta: "Qual parte da estátua era feita de prata?",
+    opcoes: ["A cabeça", "O peito e os braços", "O ventre e as coxas", "As pernas", "Os pés"],
+    certa: "B",
+    ref: "Daniel 2:32",
+    explicacao: "O peito e os braços da estátua eram de prata."
+  },
+  {
+    pergunta: "De que material eram o ventre e as coxas da estátua?",
+    opcoes: ["Ouro", "Prata", "Bronze", "Ferro", "Barro"],
+    certa: "C",
+    ref: "Daniel 2:32",
+    explicacao: "O ventre e as coxas eram feitos de bronze."
+  },
+  {
+    pergunta: "De que material eram as pernas da grande estátua?",
+    opcoes: ["Ouro", "Prata", "Bronze", "Ferro", "Barro"],
+    certa: "D",
+    ref: "Daniel 2:33",
+    explicacao: "As pernas da estátua eram de ferro."
+  },
+  {
+    pergunta: "O que os pés da estátua representavam em sua composição?",
+    opcoes: ["Somente ouro", "Somente ferro", "Ferro misturado com barro", "Prata misturada com bronze", "Bronze misturado com ouro"],
+    certa: "C",
+    ref: "Daniel 2:33,41-43",
+    explicacao: "Os pés eram parcialmente de ferro e parcialmente de barro."
+  },
+  {
+    pergunta: "O que aconteceu com a pedra que atingiu a estátua?",
+    opcoes: ["Transformou-se em ouro", "Destruiu toda a estátua", "Virou um grande rio", "Foi lançada ao mar", "Desapareceu"],
+    certa: "B",
+    ref: "Daniel 2:34-35",
+    explicacao: "A pedra atingiu os pés da estátua e todos os materiais foram despedaçados."
+  },
+  {
+    pergunta: "Como foi cortada a pedra que destruiu a estátua?",
+    opcoes: ["Por mãos humanas", "Por ferramentas de ferro", "Sem auxílio de mãos humanas", "Por um exército", "Por uma espada"],
+    certa: "C",
+    ref: "Daniel 2:34-35",
+    explicacao: "A pedra foi cortada sem auxílio de mãos e atingiu a estátua."
+  },
+  {
+    pergunta: "No sonho, a pedra que destruiu a estátua tornou-se o quê?",
+    opcoes: ["Um grande monte que encheu toda a terra", "Um rio de ouro", "Uma cidade fortificada", "Uma grande árvore", "Uma torre"],
+    certa: "A",
+    ref: "Daniel 2:35",
+    explicacao: "A pedra tornou-se um grande monte que encheu toda a terra."
+  },
+  {
+    pergunta: "O que Nabucodonosor fez depois que Daniel revelou e interpretou o sonho?",
+    opcoes: ["Mandou prender Daniel", "Prostrou-se diante de Daniel e reconheceu seu Deus", "Destruiu a estátua", "Abandonou o reino", "Voltou para Jerusalém"],
+    certa: "B",
+    ref: "Daniel 2:46-47",
+    explicacao: "O rei reconheceu que o Deus de Daniel era Deus dos deuses e Senhor dos reis."
+  },
+  {
+    pergunta: "Qual posição Daniel recebeu após interpretar o sonho?",
+    opcoes: ["General do exército", "Governador de toda a província da Babilônia", "Sacerdote do templo", "Rei da Pérsia", "Chefe dos eunucos"],
+    certa: "B",
+    ref: "Daniel 2:48",
+    explicacao: "Nabucodonosor colocou Daniel como governador de toda a província da Babilônia."
+  },
+
+  // DANIEL 3
+  {
+    pergunta: "Em qual região Nabucodonosor construiu a estátua de ouro?",
+    opcoes: ["Jerusalém", "Dura, na província da Babilônia", "Nínive", "Egito", "Susã"],
+    certa: "B",
+    ref: "Daniel 3:1",
+    explicacao: "A estátua foi levantada no campo de Dura, na província da Babilônia."
+  },
+  {
+    pergunta: "Qual era a altura da estátua de ouro construída por Nabucodonosor?",
+    opcoes: ["30 côvados", "40 côvados", "50 côvados", "60 côvados", "100 côvados"],
+    certa: "D",
+    ref: "Daniel 3:1",
+    explicacao: "A estátua tinha sessenta côvados de altura."
+  },
+  {
+    pergunta: "Qual era a largura da estátua de ouro?",
+    opcoes: ["Seis côvados", "Dez côvados", "Doze côvados", "Vinte côvados", "Trinta côvados"],
+    certa: "A",
+    ref: "Daniel 3:1",
+    explicacao: "A estátua tinha sessenta côvados de altura e seis côvados de largura."
+  },
+  {
+    pergunta: "O que as pessoas deveriam fazer ao ouvir os instrumentos musicais?",
+    opcoes: ["Sair do local", "Ajoelhar-se e adorar a estátua", "Cantar um hino", "Ficar em silêncio", "Ir ao palácio"],
+    certa: "B",
+    ref: "Daniel 3:4-5",
+    explicacao: "Todos deveriam se prostrar e adorar a estátua de ouro ao ouvir os instrumentos."
+  },
+  {
+    pergunta: "Qual instrumento musical é citado no decreto do rei?",
+    opcoes: ["Harpa", "Flauta", "Violão", "Tamborim", "Cítara moderna"],
+    certa: "B",
+    ref: "Daniel 3:5",
+    explicacao: "A flauta está entre os instrumentos citados no decreto, junto com buzina, harpa, saltério e outros."
+  },
+  {
+    pergunta: "Quem denunciou os judeus que não adoraram a estátua?",
+    opcoes: ["Os caldeus", "Os persas", "Os egípcios", "Os gregos", "Os medos"],
+    certa: "A",
+    ref: "Daniel 3:8-12",
+    explicacao: "Alguns homens caldeus foram até o rei para acusar os judeus."
+  },
+  {
+    pergunta: "Qual foi a resposta dos três amigos diante da ameaça do rei?",
+    opcoes: ["Pediram mais tempo", "Negaram sua fé", "Declararam que Deus poderia livrá-los, mas não adorariam a estátua", "Fugiram da Babilônia", "Concordaram em adorar"],
+    certa: "C",
+    ref: "Daniel 3:16-18",
+    explicacao: "Eles confiaram em Deus e declararam que não serviriam aos deuses do rei nem adorariam a estátua."
+  },
+  {
+    pergunta: "Quantas vezes mais quente o rei mandou aquecer a fornalha?",
+    opcoes: ["Duas vezes", "Três vezes", "Cinco vezes", "Sete vezes", "Dez vezes"],
+    certa: "D",
+    ref: "Daniel 3:19",
+    explicacao: "Nabucodonosor ordenou que a fornalha fosse aquecida sete vezes mais do que o costume."
+  },
+  {
+    pergunta: "O que aconteceu com os homens que lançaram os três jovens na fornalha?",
+    opcoes: ["Foram recompensados", "Morreram por causa das chamas", "Fugiram", "Foram presos", "Nada aconteceu"],
+    certa: "B",
+    ref: "Daniel 3:22",
+    explicacao: "O fogo era tão intenso que matou os homens que levaram os jovens até a fornalha."
+  },
+  {
+    pergunta: "O que aconteceu com as roupas dos três jovens dentro da fornalha?",
+    opcoes: ["Foram completamente queimadas", "Ficaram brancas", "Não sofreram dano algum", "Transformaram-se em cinzas", "Desapareceram"],
+    certa: "C",
+    ref: "Daniel 3:27",
+    explicacao: "O fogo não teve poder sobre eles; nem mesmo suas roupas foram danificadas."
+  },
+  {
+    pergunta: "Qual parte do corpo dos três jovens não apresentava cheiro de fogo?",
+    opcoes: ["As mãos", "Os cabelos", "As roupas", "Os pés", "Todo o corpo"],
+    certa: "B",
+    ref: "Daniel 3:27",
+    explicacao: "O texto afirma que nem seus cabelos foram chamuscados e nem havia cheiro de fogo neles."
+  },
+
+  // DANIEL 4
+  {
+    pergunta: "A quem Nabucodonosor dirigiu a mensagem registrada no início do capítulo 4?",
+    opcoes: ["Somente aos sacerdotes", "A todos os povos, nações e línguas", "Somente aos judeus", "Ao exército da Babilônia", "Aos reis da Pérsia"],
+    certa: "B",
+    ref: "Daniel 4:1",
+    explicacao: "O rei enviou sua mensagem a todos os povos, nações e línguas que habitavam na terra."
+  },
+  {
+    pergunta: "Qual era a altura da árvore que Nabucodonosor viu em seu sonho?",
+    opcoes: ["Pequena e fraca", "Crescia muito e chegava até o céu", "Tinha apenas dez côvados", "Era menor que as outras", "Não tinha folhas"],
+    certa: "B",
+    ref: "Daniel 4:10-11",
+    explicacao: "A árvore cresceu e se fortaleceu até alcançar o céu, sendo vista de toda a terra."
+  },
+  {
+    pergunta: "O que acontecia com os animais debaixo da árvore do sonho?",
+    opcoes: ["Eram expulsos", "Encontravam abrigo e alimento", "Eram atacados", "Não conseguiam se aproximar", "Transformavam-se em homens"],
+    certa: "B",
+    ref: "Daniel 4:12",
+    explicacao: "As aves faziam morada em seus ramos e os animais encontravam sombra debaixo dela."
+  },
+  {
+    pergunta: "Quem apareceu na visão de Nabucodonosor ordenando que a árvore fosse cortada?",
+    opcoes: ["Um sacerdote", "Um anjo", "Um vigia, um santo", "Um rei", "Um profeta"],
+    certa: "C",
+    ref: "Daniel 4:13-14",
+    explicacao: "Um vigia e santo desceu do céu e anunciou a ordem de cortar a árvore."
+  },
+  {
+    pergunta: "O que deveria permanecer da árvore depois de cortada?",
+    opcoes: ["Somente as folhas", "O tronco e suas raízes", "Somente os galhos", "Nada deveria permanecer", "Os frutos"],
+    certa: "B",
+    ref: "Daniel 4:15",
+    explicacao: "O tronco e as raízes deveriam permanecer presos com cadeias de ferro e bronze."
+  },
+  {
+    pergunta: "Por quanto tempo o coração do homem seria mudado para o coração de animal na visão?",
+    opcoes: ["Três tempos", "Cinco tempos", "Sete tempos", "Dez tempos", "Doze tempos"],
+    certa: "C",
+    ref: "Daniel 4:16",
+    explicacao: "A visão anunciou que passariam sete tempos sobre ele."
+  },
+  {
+    pergunta: "Qual era o objetivo da sentença anunciada na visão da árvore?",
+    opcoes: ["Mostrar que os sábios eram superiores", "Ensinar que o Altíssimo domina sobre os reinos dos homens", "Destruir a Babilônia imediatamente", "Exaltar os deuses caldeus", "Escolher outro profeta"],
+    certa: "B",
+    ref: "Daniel 4:17",
+    explicacao: "A sentença mostraria que o Altíssimo tem domínio sobre os reinos humanos e os entrega a quem deseja."
+  },
+  {
+    pergunta: "O que Daniel aconselhou Nabucodonosor a fazer para prolongar sua tranquilidade?",
+    opcoes: ["Construir outra estátua", "Abandonar os pecados e praticar justiça", "Fazer guerra contra a Pérsia", "Expulsar os sábios", "Mudar a capital"],
+    certa: "B",
+    ref: "Daniel 4:27",
+    explicacao: "Daniel aconselhou o rei a romper com seus pecados, praticar a justiça e usar de misericórdia com os pobres."
+  },
+  {
+    pergunta: "Onde Nabucodonosor estava quando se orgulhou de sua grandeza?",
+    opcoes: ["No templo", "No terraço do palácio real da Babilônia", "Na fornalha", "No campo de Dura", "Em Jerusalém"],
+    certa: "B",
+    ref: "Daniel 4:29-30",
+    explicacao: "O rei estava passeando no terraço do palácio real da Babilônia quando exaltou sua própria grandeza."
+  },
+  {
+    pergunta: "O que Nabucodonosor reconheceu depois de recuperar o entendimento?",
+    opcoes: ["Que seus magos eram deuses", "Que o domínio de Deus é eterno", "Que a Babilônia era invencível", "Que Daniel era o verdadeiro rei", "Que não existia Deus"],
+    certa: "B",
+    ref: "Daniel 4:34",
+    explicacao: "O rei louvou o Altíssimo e reconheceu que seu domínio é eterno e seu reino permanece de geração em geração."
+  },
+
+  // DANIEL 5
+  {
+    pergunta: "Quantos convidados importantes participaram do banquete de Belsazar?",
+    opcoes: ["Cem", "Quinhentos", "Mil", "Dois mil", "Sete mil"],
+    certa: "C",
+    ref: "Daniel 5:1",
+    explicacao: "Belsazar ofereceu um grande banquete para mil dos seus grandes."
+  },
+  {
+    pergunta: "O que Belsazar mandou trazer para o banquete?",
+    opcoes: ["As armas dos soldados", "Os utensílios de ouro e prata do templo de Jerusalém", "Os livros de Daniel", "A arca da aliança", "As roupas dos sacerdotes"],
+    certa: "B",
+    ref: "Daniel 5:2-3",
+    explicacao: "O rei mandou trazer os utensílios que haviam sido retirados do templo de Jerusalém."
+  },
+  {
+    pergunta: "O que os convidados fizeram enquanto bebiam nos utensílios sagrados?",
+    opcoes: ["Oraram ao Deus de Israel", "Louvaram os deuses de ouro, prata, bronze, ferro, madeira e pedra", "Jejuaram", "Leram a lei de Moisés", "Cantaram salmos"],
+    certa: "B",
+    ref: "Daniel 5:4",
+    explicacao: "Eles beberam e louvaram deuses feitos de diferentes materiais."
+  },
+  {
+    pergunta: "Onde a mão misteriosa começou a escrever?",
+    opcoes: ["Na porta do palácio", "Na parede caiada do palácio, perto do castiçal", "No chão", "No teto", "Na mesa do rei"],
+    certa: "B",
+    ref: "Daniel 5:5",
+    explicacao: "Os dedos de uma mão humana apareceram e escreveram na parede, perto do castiçal."
+  },
+  {
+    pergunta: "Como Belsazar reagiu ao ver a mão escrevendo?",
+    opcoes: ["Riu da situação", "Ficou tranquilo", "Seu rosto mudou e seus joelhos bateram um contra o outro", "Saiu para caçar", "Mandou destruir a parede"],
+    certa: "C",
+    ref: "Daniel 5:6",
+    explicacao: "O rei ficou profundamente assustado, perdeu a cor do rosto e seus joelhos batiam um contra o outro."
+  },
+  {
+    pergunta: "Qual recompensa Belsazar ofereceu a quem interpretasse a escrita?",
+    opcoes: ["Um cavalo e uma espada", "Roupas de púrpura, colar de ouro e o terceiro lugar no reino", "Metade do reino", "Uma cidade", "Mil moedas de prata"],
+    certa: "B",
+    ref: "Daniel 5:7",
+    explicacao: "O rei ofereceu roupas de púrpura, um colar de ouro e o posto de terceiro governante do reino."
+  },
+  {
+    pergunta: "Quem lembrou ao rei que Daniel poderia interpretar a escrita?",
+    opcoes: ["A rainha", "Arioque", "Um soldado", "O chefe dos eunucos", "Um sacerdote"],
+    certa: "A",
+    ref: "Daniel 5:10-12",
+    explicacao: "A rainha entrou no salão e lembrou ao rei das capacidades de Daniel."
+  },
+  {
+    pergunta: "Qual era a primeira palavra escrita na parede?",
+    opcoes: ["Peres", "Mene", "Tekel", "Daniel", "Babilônia"],
+    certa: "B",
+    ref: "Daniel 5:25",
+    explicacao: "A primeira palavra era Mene, seguida por Tequel e Peres."
+  },
+  {
+    pergunta: "O que significava a palavra Tequel?",
+    opcoes: ["Teu reino será destruído", "Foste pesado na balança e achado em falta", "Teus dias foram multiplicados", "Deus estabeleceu teu reino", "A Babilônia será exaltada"],
+    certa: "B",
+    ref: "Daniel 5:27",
+    explicacao: "Tequel significava que Belsazar havia sido pesado na balança e achado em falta."
+  },
+  {
+    pergunta: "O que significava a palavra Peres na interpretação de Daniel?",
+    opcoes: ["Teu reino foi dividido e entregue aos medos e persas", "Teu reino será eterno", "A Babilônia terá paz", "O rei será curado", "Os judeus retornarão imediatamente"],
+    certa: "A",
+    ref: "Daniel 5:28",
+    explicacao: "Peres anunciava que o reino seria dividido e entregue aos medos e persas."
+  },
+
+  // DANIEL 6
+  {
+    pergunta: "Quantos presidentes foram colocados sobre o reino, além dos governadores?",
+    opcoes: ["Dois", "Três", "Quatro", "Cinco", "Sete"],
+    certa: "B",
+    ref: "Daniel 6:1-2",
+    explicacao: "Dario estabeleceu três presidentes sobre os cento e vinte sátrapas."
+  },
+  {
+    pergunta: "Quantos sátrapas foram colocados sobre o reino de Dario?",
+    opcoes: ["30", "60", "70", "100", "120"],
+    certa: "E",
+    ref: "Daniel 6:1",
+    explicacao: "O rei estabeleceu cento e vinte sátrapas para governar todo o reino."
+  },
+  {
+    pergunta: "Por que os outros líderes procuravam encontrar alguma acusação contra Daniel?",
+    opcoes: ["Porque ele era estrangeiro", "Porque tinham inveja de sua excelência e posição", "Porque ele havia roubado dinheiro", "Porque ele era um soldado", "Porque queria ser rei"],
+    certa: "B",
+    ref: "Daniel 6:3-4",
+    explicacao: "Daniel se destacava por possuir um espírito excelente, despertando a inveja dos outros líderes."
+  },
+  {
+    pergunta: "O que os inimigos de Daniel perceberam que poderia ser usado contra ele?",
+    opcoes: ["Sua riqueza", "Sua origem", "Sua fidelidade à lei do seu Deus", "Sua amizade com o rei", "Sua idade"],
+    certa: "C",
+    ref: "Daniel 6:5",
+    explicacao: "Eles sabiam que não encontrariam acusação contra Daniel, a menos que fosse relacionada à lei do seu Deus."
+  },
+  {
+    pergunta: "Por quantos dias o decreto proibiu fazer pedidos a qualquer deus ou homem, exceto ao rei?",
+    opcoes: ["Sete dias", "Dez dias", "Trinta dias", "Quarenta dias", "Sessenta dias"],
+    certa: "C",
+    ref: "Daniel 6:7",
+    explicacao: "O decreto determinava que durante trinta dias ninguém poderia fazer pedidos a outro deus ou homem além do rei."
+  },
+  {
+    pergunta: "Para qual direção Daniel abria suas janelas quando orava?",
+    opcoes: ["Para o norte", "Para o sul", "Para o leste", "Para o oeste", "Para o palácio"],
+    certa: "C",
+    ref: "Daniel 6:10",
+    explicacao: "Daniel orava com as janelas abertas em direção a Jerusalém."
+  },
+  {
+    pergunta: "Quantas vezes ao dia Daniel se ajoelhava para orar?",
+    opcoes: ["Uma vez", "Duas vezes", "Três vezes", "Quatro vezes", "Sete vezes"],
+    certa: "C",
+    ref: "Daniel 6:10",
+    explicacao: "Daniel se ajoelhava três vezes ao dia para orar e dar graças a Deus."
+  },
+  {
+    pergunta: "O que Dario fez ao saber que Daniel havia desobedecido ao decreto?",
+    opcoes: ["Ficou satisfeito", "Ficou muito triste e procurou livrá-lo", "Mandou matar os acusadores imediatamente", "Expulsou Daniel do reino", "Ignorou o acontecimento"],
+    certa: "B",
+    ref: "Daniel 6:14",
+    explicacao: "Dario ficou muito angustiado e trabalhou até o pôr do sol para tentar livrar Daniel."
+  },
+  {
+    pergunta: "O que o rei disse a Daniel antes de ele ser lançado na cova dos leões?",
+    opcoes: ["Que nunca mais o veria", "Que o Deus a quem servia continuamente o livraria", "Que deveria abandonar sua fé", "Que os leões não estavam com fome", "Que seria castigado por sete dias"],
+    certa: "B",
+    ref: "Daniel 6:16",
+    explicacao: "Dario expressou esperança de que o Deus de Daniel o livrasse."
+  },
+  {
+    pergunta: "O que foi colocado na entrada da cova dos leões?",
+    opcoes: ["Uma porta de ferro", "Uma pedra selada pelo rei e pelos seus grandes", "Uma muralha", "Uma corrente de ouro", "Uma estátua"],
+    certa: "B",
+    ref: "Daniel 6:17",
+    explicacao: "Uma pedra foi colocada sobre a entrada da cova e selada com o anel do rei e dos seus grandes."
+  },
+  {
+    pergunta: "O que Daniel respondeu quando Dario perguntou se seu Deus o havia livrado?",
+    opcoes: ["Que havia fugido", "Que Deus enviou seu anjo e fechou a boca dos leões", "Que os leões estavam dormindo", "Que os guardas o ajudaram", "Que não tinha sido lançado na cova"],
+    certa: "B",
+    ref: "Daniel 6:21-22",
+    explicacao: "Daniel declarou que Deus havia enviado seu anjo para fechar a boca dos leões."
+  },
+  {
+    pergunta: "Qual foi o destino dos homens que acusaram Daniel, juntamente com suas famílias?",
+    opcoes: ["Foram perdoados", "Foram lançados na cova dos leões", "Foram enviados para Jerusalém", "Foram colocados no palácio", "Foram presos por dez anos"],
+    certa: "B",
+    ref: "Daniel 6:24",
+    explicacao: "Dario ordenou que os acusadores fossem lançados na cova dos leões."
+  },
+
+  // DANIEL 7
+  {
+    pergunta: "Quantos grandes animais Daniel viu saindo do mar em sua visão?",
     opcoes: ["Dois", "Três", "Quatro", "Cinco", "Sete"],
     certa: "C",
-    ref: "Daniel 3:24-25",
-    explicacao: "Três foram lançados amarrados, mas o rei viu quatro, soltos e sem dano. O quarto parecia um filho dos deuses."
+    ref: "Daniel 7:2-3",
+    explicacao: "Daniel viu quatro grandes animais subindo do mar, diferentes uns dos outros."
   },
   {
-    pergunta: "Por quanto tempo Nabucodonosor ficou sem juízo, vivendo como os animais e comendo erva como os bois?",
-    opcoes: ["Sete dias", "Sete tempos", "Quarenta dias", "Setenta anos", "Três dias"],
+    pergunta: "O que representavam os quatro grandes animais da visão?",
+    opcoes: ["Quatro profetas", "Quatro ventos", "Quatro reis ou reinos", "Quatro anjos", "Quatro cidades"],
+    certa: "C",
+    ref: "Daniel 7:17",
+    explicacao: "O próprio texto explica que os quatro grandes animais representam quatro reis que se levantarão da terra."
+  },
+  {
+    pergunta: "Com qual animal o primeiro reino da visão era comparado?",
+    opcoes: ["Leão", "Urso", "Leopardo", "Cordeiro", "Águia"],
+    certa: "A",
+    ref: "Daniel 7:4",
+    explicacao: "O primeiro animal era semelhante a um leão e tinha asas de águia."
+  },
+  {
+    pergunta: "Qual animal da visão possuía três costelas na boca?",
+    opcoes: ["Leão", "Urso", "Leopardo", "Dragão", "Bode"],
     certa: "B",
-    ref: "Daniel 4:25-34",
-    explicacao: "Depois de sete tempos o rei voltou a si, reconheceu o Altíssimo e recuperou o reino."
+    ref: "Daniel 7:5",
+    explicacao: "O segundo animal era semelhante a um urso e tinha três costelas entre os dentes."
   },
   {
-    pergunta: "Qual rei fez o banquete em que uma mão apareceu escrevendo na parede?",
-    opcoes: ["Nabucodonosor", "Dario", "Belsazar", "Ciro", "Artaxerxes"],
+    pergunta: "Quantas asas tinha o terceiro animal da visão?",
+    opcoes: ["Duas", "Três", "Quatro", "Seis", "Oito"],
     certa: "C",
-    ref: "Daniel 5:1-30",
-    explicacao: "Belsazar bebeu com os utensílios do templo de Jerusalém. Daniel leu a escrita, e naquela mesma noite o rei foi morto."
+    ref: "Daniel 7:6",
+    explicacao: "O terceiro animal era semelhante a um leopardo e tinha quatro asas de ave nas costas."
   },
   {
-    pergunta: "Por que Daniel foi lançado na cova dos leões?",
-    opcoes: [
-      "Recusou adorar a estátua de ouro",
-      "Continuou orando ao seu Deus, apesar do decreto do rei",
-      "Interpretou mal um sonho do rei",
-      "Recusou comer a comida do rei",
-      "Roubou objetos do templo"
-    ],
+    pergunta: "Quantos chifres o quarto animal possuía inicialmente?",
+    opcoes: ["Dois", "Três", "Quatro", "Dez", "Doze"],
+    certa: "D",
+    ref: "Daniel 7:7",
+    explicacao: "O quarto animal era terrível e tinha dez chifres."
+  },
+  {
+    pergunta: "O que surgiu entre os dez chifres do quarto animal?",
+    opcoes: ["Uma coroa", "Um pequeno chifre", "Uma espada", "Uma estrela", "Uma árvore"],
     certa: "B",
-    ref: "Daniel 6:7-22",
-    explicacao: "Daniel orava três vezes ao dia, mesmo depois do decreto de Dario que proibia orar a qualquer outro. Deus fechou a boca dos leões."
+    ref: "Daniel 7:8",
+    explicacao: "Daniel viu surgir um pequeno chifre entre os outros chifres."
   },
   {
-    pergunta: "Na visão do capítulo 7, quem recebeu domínio, glória e um reino eterno, vindo com as nuvens do céu?",
-    opcoes: [
-      "Um anjo com uma espada",
-      "O rei Dario",
-      "Alguém semelhante a um filho de homem",
-      "Um carneiro de dois chifres",
-      "Um bode peludo"
-    ],
-    certa: "C",
-    ref: "Daniel 7:13-14",
-    explicacao: "Ele foi apresentado ao Ancião de Dias, e o seu reino nunca passará."
-  },
-  {
-    pergunta: "Na visão do capítulo 8, o carneiro de dois chifres representa quais reinos?",
-    opcoes: ["Babilônia", "Média e Pérsia", "Grécia", "Roma", "Egito"],
+    pergunta: "Como era chamado aquele que se assentava no trono na visão de Daniel?",
+    opcoes: ["Rei dos reis", "Ancião de Dias", "Príncipe da Pérsia", "Filho de Davi", "Vigia celestial"],
     certa: "B",
-    ref: "Daniel 8:20-21",
-    explicacao: "O anjo Gabriel explicou que o carneiro representa os reis da Média e da Pérsia, e o bode peludo, a Grécia."
+    ref: "Daniel 7:9",
+    explicacao: "Daniel viu o Ancião de Dias assentado em seu trono, com vestes brancas e cabelos como lã pura."
   },
   {
-    pergunta: "Ao ler o profeta Jeremias, Daniel entendeu que a desolação de Jerusalém duraria quantos anos?",
-    opcoes: ["Quarenta", "Cinquenta", "Setenta", "Cento e vinte", "Quatrocentos e trinta"],
-    certa: "C",
-    ref: "Daniel 9:2-3",
-    explicacao: "Daniel percebeu que os setenta anos estavam se cumprindo e orou, confessando os pecados do povo."
+    pergunta: "O que foi aberto diante do Ancião de Dias?",
+    opcoes: ["Os portões da cidade", "Os livros", "O templo", "O mar", "As portas da Babilônia"],
+    certa: "B",
+    ref: "Daniel 7:10",
+    explicacao: "O tribunal se assentou e os livros foram abertos."
+  },
+
+  // DANIEL 8
+  {
+    pergunta: "Onde Daniel estava quando teve a visão do capítulo 8?",
+    opcoes: ["Em Jerusalém", "Junto ao rio Ulai, na cidadela de Susã", "No campo de Dura", "No palácio da Babilônia", "Junto ao rio Jordão"],
+    certa: "B",
+    ref: "Daniel 8:1-2",
+    explicacao: "Daniel teve a visão enquanto estava na cidadela de Susã, junto ao rio Ulai."
   },
   {
-    pergunta: "Qual anjo é chamado de o grande príncipe, que protege o povo de Daniel no tempo de angústia?",
-    opcoes: ["Gabriel", "Rafael", "Miguel", "Uriel", "Elias"],
+    pergunta: "Quantos chifres tinha o bode da visão?",
+    opcoes: ["Um", "Dois", "Três", "Quatro", "Dez"],
+    certa: "A",
+    ref: "Daniel 8:5",
+    explicacao: "O bode vinha do ocidente e possuía um chifre notável entre os olhos."
+  },
+  {
+    pergunta: "O que aconteceu com o grande chifre do bode?",
+    opcoes: ["Foi quebrado", "Transformou-se em ouro", "Duplicou de tamanho", "Desapareceu no mar", "Foi arrancado pelo carneiro"],
+    certa: "A",
+    ref: "Daniel 8:8",
+    explicacao: "Quando o bode se fortaleceu, o grande chifre foi quebrado."
+  },
+  {
+    pergunta: "Quantos chifres notáveis surgiram no lugar do grande chifre quebrado?",
+    opcoes: ["Dois", "Três", "Quatro", "Cinco", "Sete"],
     certa: "C",
+    ref: "Daniel 8:8",
+    explicacao: "Quatro chifres notáveis surgiram em direção aos quatro ventos do céu."
+  },
+  {
+    pergunta: "Qual era o nome do anjo que recebeu a ordem de explicar a visão a Daniel?",
+    opcoes: ["Miguel", "Gabriel", "Rafael", "Uriel", "Nenhum"],
+    certa: "B",
+    ref: "Daniel 8:15-16",
+    explicacao: "Gabriel recebeu a ordem de explicar a visão a Daniel."
+  },
+  {
+    pergunta: "Como Daniel ficou depois de receber a visão?",
+    opcoes: ["Ficou alegre e saiu para viajar", "Desmaiou e ficou doente por alguns dias", "Foi imediatamente ao rei", "Não sentiu nada", "Começou a construir um templo"],
+    certa: "B",
+    ref: "Daniel 8:27",
+    explicacao: "Daniel ficou debilitado e doente por alguns dias após a visão."
+  },
+
+  // DANIEL 9
+  {
+    pergunta: "Em qual ano do reinado de Dario Daniel compreendeu a profecia dos setenta anos?",
+    opcoes: ["Primeiro ano", "Segundo ano", "Terceiro ano", "Quinto ano", "Décimo ano"],
+    certa: "A",
+    ref: "Daniel 9:1-2",
+    explicacao: "Daniel compreendeu a profecia no primeiro ano de Dario, filho de Assuero."
+  },
+  {
+    pergunta: "Qual profeta Daniel estava lendo quando compreendeu a profecia dos setenta anos?",
+    opcoes: ["Isaías", "Ezequiel", "Jeremias", "Malaquias", "Oseias"],
+    certa: "C",
+    ref: "Daniel 9:2",
+    explicacao: "Daniel compreendeu pelos livros, especialmente pela palavra do Senhor ao profeta Jeremias."
+  },
+  {
+    pergunta: "Como Daniel buscou a Deus durante sua oração de confissão?",
+    opcoes: ["Somente cantando", "Com oração, súplicas, jejum, pano de saco e cinza", "Oferecendo sacrifícios de animais", "Fazendo uma viagem", "Construindo um altar de ouro"],
+    certa: "B",
+    ref: "Daniel 9:3",
+    explicacao: "Daniel voltou o rosto ao Senhor, buscando-o com oração, súplicas, jejum, pano de saco e cinza."
+  },
+  {
+    pergunta: "O que Daniel confessou em sua oração?",
+    opcoes: ["Somente os pecados dos reis", "Os pecados e a desobediência de Israel", "Os pecados dos babilônios apenas", "Os pecados dos sacerdotes estrangeiros", "Nenhum pecado"],
+    certa: "B",
+    ref: "Daniel 9:4-11",
+    explicacao: "Daniel confessou os pecados de seu povo, reconhecendo sua desobediência aos mandamentos de Deus."
+  },
+  {
+    pergunta: "Quem apareceu a Daniel enquanto ele ainda estava orando?",
+    opcoes: ["Miguel", "Gabriel", "Elias", "Moisés", "Ezequiel"],
+    certa: "B",
+    ref: "Daniel 9:20-21",
+    explicacao: "Gabriel veio rapidamente até Daniel enquanto ele ainda estava orando."
+  },
+  {
+    pergunta: "Qual era o horário da oferta da tarde quando Gabriel chegou até Daniel?",
+    opcoes: ["Terceira hora", "Sexta hora", "Nona hora", "Décima segunda hora", "Primeira hora"],
+    certa: "C",
+    ref: "Daniel 9:21",
+    explicacao: "Gabriel chegou por volta do tempo da oferta da tarde, correspondente à nona hora."
+  },
+  {
+    pergunta: "Quantas semanas foram determinadas sobre o povo e a cidade santa na profecia?",
+    opcoes: ["Sete semanas", "Trinta semanas", "Sessenta e duas semanas", "Setenta semanas", "Cem semanas"],
+    certa: "D",
+    ref: "Daniel 9:24",
+    explicacao: "A profecia anunciava setenta semanas determinadas sobre o povo de Daniel e sua cidade santa."
+  },
+
+  // DANIEL 10
+  {
+    pergunta: "Em qual ano do reinado de Ciro Daniel recebeu a visão do capítulo 10?",
+    opcoes: ["Primeiro ano", "Segundo ano", "Terceiro ano", "Quinto ano", "Décimo ano"],
+    certa: "C",
+    ref: "Daniel 10:1",
+    explicacao: "A revelação foi dada a Daniel no terceiro ano de Ciro, rei da Pérsia."
+  },
+  {
+    pergunta: "Por quantas semanas Daniel esteve lamentando antes de receber a visão?",
+    opcoes: ["Uma semana", "Duas semanas", "Três semanas", "Sete semanas", "Dez semanas"],
+    certa: "C",
+    ref: "Daniel 10:2-3",
+    explicacao: "Daniel passou três semanas completas lamentando, sem comer manjar desejável, carne ou vinho."
+  },
+  {
+    pergunta: "Em qual rio Daniel estava quando viu o homem vestido de linho?",
+    opcoes: ["Jordão", "Nilo", "Tigre", "Eufrates", "Ulai"],
+    certa: "C",
+    ref: "Daniel 10:4-5",
+    explicacao: "Daniel estava à margem do grande rio Tigre quando teve a visão."
+  },
+  {
+    pergunta: "De que material era o cinto do homem vestido de linho?",
+    opcoes: ["Prata", "Ouro de Ofir", "Bronze", "Ferro", "Couro"],
+    certa: "B",
+    ref: "Daniel 10:5",
+    explicacao: "O homem estava cingido pelos lombos com ouro puro de Ofir."
+  },
+  {
+    pergunta: "Como ficaram os homens que estavam com Daniel quando tiveram a experiência da visão?",
+    opcoes: ["Também viram tudo claramente", "Fugiram e se esconderam aterrorizados", "Começaram a cantar", "Ficaram adormecidos", "Prenderam Daniel"],
+    certa: "B",
+    ref: "Daniel 10:7",
+    explicacao: "Os homens que estavam com Daniel não viram a visão, mas sentiram grande terror e fugiram para se esconder."
+  },
+  {
+    pergunta: "Por quanto tempo o mensageiro celestial disse que foi impedido pelo príncipe do reino da Pérsia?",
+    opcoes: ["Sete dias", "Dez dias", "Vinte e um dias", "Trinta dias", "Quarenta dias"],
+    certa: "C",
+    ref: "Daniel 10:12-13",
+    explicacao: "O mensageiro declarou que o príncipe da Pérsia resistiu durante vinte e um dias, até a chegada de Miguel."
+  },
+  {
+    pergunta: "Quem veio ajudar o mensageiro celestial na luta contra o príncipe da Pérsia?",
+    opcoes: ["Gabriel", "Miguel", "Elias", "Dario", "Ciro"],
+    certa: "B",
+    ref: "Daniel 10:13",
+    explicacao: "Miguel, um dos primeiros príncipes, veio ajudar o mensageiro."
+  },
+  {
+    pergunta: "Quem é mencionado como príncipe da Grécia na visão?",
+    opcoes: ["O príncipe da Pérsia", "O príncipe da Grécia", "O rei de Babilônia", "Miguel", "Gabriel"],
+    certa: "B",
+    ref: "Daniel 10:20",
+    explicacao: "O mensageiro anunciou que lutaria contra o príncipe da Pérsia e depois viria o príncipe da Grécia."
+  },
+
+  // DANIEL 11
+  {
+    pergunta: "Quantos reis ainda se levantariam na Pérsia, segundo a revelação inicial do capítulo 11?",
+    opcoes: ["Dois", "Três", "Quatro", "Cinco", "Sete"],
+    certa: "C",
+    ref: "Daniel 11:2",
+    explicacao: "O texto anuncia que ainda se levantariam três reis na Pérsia e depois um quarto, mais rico que os demais."
+  },
+  {
+    pergunta: "Como seria o quarto rei da Pérsia mencionado na profecia?",
+    opcoes: ["Seria o mais pobre", "Seria muito rico e provocaria todos contra o reino da Grécia", "Abandonaria o trono", "Seria um sacerdote", "Governaria Jerusalém"],
+    certa: "B",
+    ref: "Daniel 11:2",
+    explicacao: "O quarto rei seria mais rico que todos e usaria sua força para mobilizar todos contra o reino da Grécia."
+  },
+  {
+    pergunta: "O que aconteceria com o grande rei mencionado em Daniel 11:3?",
+    opcoes: ["Seu reino nunca teria fim", "Ele dominaria com grande poder, mas seu reino seria quebrado e dividido", "Seria levado para Jerusalém", "Seria derrotado por Nabucodonosor", "Se tornaria sacerdote"],
+    certa: "B",
+    ref: "Daniel 11:3-4",
+    explicacao: "O grande rei dominaria com poder, mas seu reino seria quebrado e dividido para outros, não para sua descendência."
+  },
+  {
+    pergunta: "O que aconteceria com os reis do Norte e do Sul na profecia?",
+    opcoes: ["Viveriam em paz", "Entrariam em conflitos e disputas", "Seriam governados por Daniel", "Abandonariam seus reinos", "Se uniriam a Jerusalém"],
+    certa: "B",
+    ref: "Daniel 11:5-20",
+    explicacao: "Grande parte do capítulo descreve disputas, alianças e conflitos entre os reis do Norte e do Sul."
+  },
+  {
+    pergunta: "O que o rei descrito em Daniel 11:36 faria?",
+    opcoes: ["Exaltaria o Deus verdadeiro", "Faria conforme sua própria vontade e se exaltaria acima de todos", "Reconstruiria Jerusalém", "Libertaria todos os cativos", "Abandonaria seu trono"],
+    certa: "B",
+    ref: "Daniel 11:36",
+    explicacao: "O rei agiria conforme sua vontade, exaltando-se e falando coisas arrogantes contra o Deus dos deuses."
+  },
+
+  // DANIEL 12
+  {
+    pergunta: "Segundo Daniel 12, o que acontecerá com aqueles que estiverem escritos no livro?",
+    opcoes: ["Serão esquecidos", "Serão livrados", "Serão levados para a Babilônia", "Perderão seu reino", "Serão julgados pelos reis"],
+    certa: "B",
     ref: "Daniel 12:1",
-    explicacao: "Miguel é o grande príncipe que se levanta pelo povo de Daniel."
+    explicacao: "Miguel se levantará e haverá um tempo de angústia, mas o povo inscrito no livro será livrado."
+  },
+  {
+    pergunta: "O que acontecerá com muitos dos que dormem no pó da terra?",
+    opcoes: ["Nunca mais despertarão", "Despertarão, uns para a vida eterna e outros para vergonha e desprezo eterno", "Serão transformados em anjos", "Voltarão a viver na Babilônia", "Serão reis"],
+    certa: "B",
+    ref: "Daniel 12:2",
+    explicacao: "Daniel anuncia a ressurreição, com destinos diferentes para os que despertarem."
+  },
+  {
+    pergunta: "A quem os sábios serão comparados em Daniel 12:3?",
+    opcoes: ["Às estrelas do céu", "À areia do mar", "Aos cedros do Líbano", "Aos rios", "Aos montes"],
+    certa: "A",
+    ref: "Daniel 12:3",
+    explicacao: "Os sábios resplandecerão como o brilho do firmamento, e os que conduzirem muitos à justiça serão como estrelas."
+  },
+  {
+    pergunta: "O que Daniel recebeu a ordem de fazer com as palavras da profecia?",
+    opcoes: ["Apagá-las", "Escrevê-las em uma pedra", "Fechá-las e selar o livro até o tempo do fim", "Entregá-las ao rei", "Traduzir para o grego"],
+    certa: "C",
+    ref: "Daniel 12:4",
+    explicacao: "Daniel recebeu a ordem de fechar as palavras e selar o livro até o tempo do fim."
+  },
+  {
+    pergunta: "O que aconteceria com o conhecimento no tempo do fim?",
+    opcoes: ["Diminuiria", "Aumentaria", "Desapareceria", "Seria proibido", "Ficaria limitado aos reis"],
+    certa: "B",
+    ref: "Daniel 12:4",
+    explicacao: "O texto declara que muitos correrão de uma parte para outra e o conhecimento se multiplicará."
+  },
+  {
+    pergunta: "Quantos homens Daniel viu em pé, um de cada lado do rio?",
+    opcoes: ["Um", "Dois", "Três", "Quatro", "Sete"],
+    certa: "B",
+    ref: "Daniel 12:5",
+    explicacao: "Daniel viu dois outros homens em pé, um de um lado do rio e outro do outro lado."
+  },
+  {
+    pergunta: "Por quanto tempo duraria a dispersão do poder do povo santo, segundo Daniel 12:7?",
+    opcoes: ["Um tempo", "Dois tempos", "Um tempo, dois tempos e metade de um tempo", "Sete tempos", "Setenta semanas"],
+    certa: "C",
+    ref: "Daniel 12:7",
+    explicacao: "O homem vestido de linho levantou as mãos e jurou que seria por um tempo, dois tempos e metade de um tempo."
+  },
+  {
+    pergunta: "O que Daniel disse ao ouvir as palavras finais da profecia?",
+    opcoes: ["Que compreendeu tudo", "Que não compreendeu e perguntou qual seria o fim dessas coisas", "Que não queria mais ouvir", "Que deveria voltar para Jerusalém", "Que o rei deveria ser avisado"],
+    certa: "B",
+    ref: "Daniel 12:8",
+    explicacao: "Daniel ouviu, mas não compreendeu, e perguntou qual seria o fim dessas coisas."
+  },
+  {
+    pergunta: "Quem seria purificado, embranquecido e provado no tempo do fim?",
+    opcoes: ["Todos os reis", "Os sábios e os ímpios", "Os ímpios", "Somente os sacerdotes", "Os exércitos da Pérsia"],
+    certa: "B",
+    ref: "Daniel 12:10",
+    explicacao: "Muitos serão purificados, embranquecidos e provados; os ímpios continuarão agindo impiamente."
+  },
+  {
+    pergunta: "Quantos dias são mencionados em Daniel 12:12 para aquele que espera e chega até o fim?",
+    opcoes: ["1.000 dias", "1.290 dias", "1.335 dias", "1.400 dias", "1.500 dias"],
+    certa: "C",
+    ref: "Daniel 12:12",
+    explicacao: "O texto declara bem-aventurado aquele que espera e chega aos mil trezentos e trinta e cinco dias."
   }
 ];
+
 </script>
 
 <!-- =====================================================================
