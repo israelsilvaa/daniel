@@ -118,16 +118,31 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
 .rank-msg{margin:0 0 10px;font-weight:700}
 .rank-vazio{margin:0;color:var(--suave)}
 .rank-lista{list-style:none;margin:0;padding:0}
+.rank-nota{margin:-4px 0 10px;font-size:15px;color:var(--suave)}
 .rank-lista li{
-  display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;
+  display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:center;
   background:#0d1a3b;border-radius:12px;padding:10px 12px;margin-bottom:8px;
 }
-.rank-lista li.eu{border:2px solid var(--ouro)}
-.rank-pos{font:800 22px var(--serif);color:var(--ouro);text-align:center}
+.rank-lista li.eu{outline:2px solid var(--texto);outline-offset:-2px}
+.rank-pos{
+  width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  font:800 18px var(--serif);color:var(--ouro);background:var(--noite);
+}
+/* top 3: ouro, prata e bronze */
+.rank-lista li.p1{background:linear-gradient(90deg,#e4b94f40,#0d1a3b 70%);box-shadow:inset 4px 0 0 #e4b94f}
+.rank-lista li.p2{background:linear-gradient(90deg,#c9d1de33,#0d1a3b 70%);box-shadow:inset 4px 0 0 #c9d1de}
+.rank-lista li.p3{background:linear-gradient(90deg,#cd7f3238,#0d1a3b 70%);box-shadow:inset 4px 0 0 #cd7f32}
+.p1 .rank-pos{background:#e4b94f;color:#2a1f05}
+.p2 .rank-pos{background:#c9d1de;color:#1c2233}
+.p3 .rank-pos{background:#cd7f32;color:#2a1405}
 .rank-nome{font-weight:700;overflow-wrap:anywhere}
-.rank-quando{display:block;font-weight:400;font-size:14px;color:var(--suave)}
+.rank-meta{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;margin-top:2px;font-weight:400;font-size:14px;color:var(--suave)}
+.rank-dica{border:1px solid var(--ouro);color:var(--ouro);border-radius:999px;padding:0 8px;font-size:13px;font-weight:700}
 .rank-pts{font:800 22px var(--serif)}
 .rank-pts small{font-size:.65em;color:var(--suave);font-weight:700}
+.tempo{margin:0 0 4px;color:var(--suave);font-weight:500}
+.tempo b{color:var(--texto)}
+.voltar{display:inline-block;width:auto;min-height:46px;margin:0;padding:8px 16px;font-size:17px}
 
 @media (prefers-reduced-motion:reduce){.barra i{transition:none}.btn:active,.op:active{transform:none}}
 </style>
@@ -136,6 +151,7 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
 <div class="friso" aria-hidden="true"></div>
 <main>
 
+  <!-- rank v3 -->
   <!-- INÍCIO -->
   <section id="tela-inicio">
     <h1>Daniel</h1>
@@ -151,12 +167,13 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
     <p id="nome-aviso" class="campo-aviso" hidden>Digite seu nome para começar.</p>
     <label class="check" for="usar-dicas">
       <input type="checkbox" id="usar-dicas">
-      <span><b>Quero o botão de dica</b><small>A dica mostra a referência bíblica da pergunta. A pontuação é a mesma, mas o ranking mostra 💡 para quem jogou com dica.</small></span>
+      <span><b>Quero o botão de dica</b><small>A dica mostra a referência bíblica da pergunta. A pontuação é a mesma, mas o ranking mostra uma etiqueta “com dica” para quem jogou assim.</small></span>
     </label>
     <div id="avisos" class="aviso" hidden></div>
     <button class="btn" id="btn-comecar">Começar</button>
     <div class="rank">
       <h3>Ranking</h3>
+      <p class="rank-nota">Os 10 melhores. Empate na pontuação: vence quem respondeu mais rápido.</p>
       <div id="rank-inicio"></div>
     </div>
   </section>
@@ -181,10 +198,13 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
 
   <!-- FIM -->
   <section id="tela-fim" hidden>
+    <button class="btn sec voltar" id="btn-inicio">← Voltar ao início</button>
     <h2 id="fim-msg"></h2>
     <div class="placar"><span id="fim-pts">0</span> <small id="fim-total">de 0</small></div>
+    <p class="tempo">Tempo respondendo: <b id="fim-tempo">00:00</b></p>
     <div class="rank">
       <h3>Ranking</h3>
+      <p class="rank-nota">Os 10 melhores. Empate na pontuação: vence quem respondeu mais rápido.</p>
       <p class="rank-msg" id="rank-msg" aria-live="polite"></p>
       <div id="rank-fim"></div>
       <button class="btn sec" id="btn-tentar" hidden>Tentar salvar de novo</button>
@@ -195,7 +215,6 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
     </div>
     <button class="btn" id="btn-de-novo">Jogar de novo</button>
     <button class="btn sec" id="btn-erradas" hidden>Refazer só as que errei (não vale para o ranking)</button>
-    <button class="btn sec" id="btn-inicio">Voltar ao início</button>
   </section>
 
 </main>
@@ -1107,6 +1126,7 @@ const PERGUNTAS = [
 
   let validas = [], deck = [], pos = 0, pts = 0, erradas = [], travado = false, atual = null;
   let nomeAtual = '', rodadaCompleta = true, usarDicas = false;
+  let inicioPergunta = 0, tempoMs = 0;   // tempo só conta enquanto a pergunta está na tela, sem o texto de retorno
 
   function mostrar(nome){
     for(const k in telas) telas[k].hidden = (k !== nome);
@@ -1170,6 +1190,11 @@ const PERGUNTAS = [
   }
 
   // ---------- ranking
+  function fmtTempo(ms){
+    const t = Math.round(ms/1000), m = Math.floor(t/60), sg = t % 60;
+    return String(m).padStart(2,'0') + ':' + String(sg).padStart(2,'0');
+  }
+
   function desenharRanking(el, lista, destaque){
     el.innerHTML = '';
     if(!lista.length){
@@ -1180,17 +1205,26 @@ const PERGUNTAS = [
     const ol = document.createElement('ol'); ol.className = 'rank-lista';
     lista.forEach((r,i)=>{
       const li = document.createElement('li');
-      if(r.id === destaque) li.className = 'eu';
+      if(i < 3) li.classList.add('p' + (i+1));
+      if(r.id === destaque) li.classList.add('eu');
       const a = document.createElement('span'); a.className = 'rank-pos'; a.textContent = (i+1);
-      const b = document.createElement('span'); b.className = 'rank-nome'; b.textContent = r.nome;
-      if(r.dicas){
-        const ic = document.createElement('span');
-        ic.textContent = ' 💡'; ic.title = 'Jogou com dica';
-        ic.setAttribute('role','img'); ic.setAttribute('aria-label','Jogou com dica');
-        b.append(ic);
+
+      const b = document.createElement('span');
+      const nome = document.createElement('span'); nome.className = 'rank-nome'; nome.textContent = r.nome;
+      const meta = document.createElement('span'); meta.className = 'rank-meta';
+      const quando = document.createElement('span'); quando.textContent = r.dia + ' às ' + r.hora;
+      meta.append(quando);
+      if(typeof r.tempo === 'number'){
+        const tp = document.createElement('span'); tp.textContent = 'tempo ' + fmtTempo(r.tempo);
+        meta.append(tp);
       }
-      const q = document.createElement('span'); q.className = 'rank-quando'; q.textContent = r.dia + ' às ' + r.hora;
-      b.append(q);
+      if(r.dicas){
+        const d = document.createElement('span'); d.className = 'rank-dica'; d.textContent = '💡 com dica';
+        meta.append(d);
+      }
+      nome.style.display = 'block';
+      b.append(nome, meta);
+
       const c = document.createElement('span'); c.className = 'rank-pts'; c.textContent = r.acertos;
       const t = document.createElement('small'); t.textContent = ' / ' + r.total;
       c.append(t);
@@ -1200,7 +1234,7 @@ const PERGUNTAS = [
   }
 
   async function buscarRanking(){
-    const r = await fetch(API + '?total=' + validas.length, {cache:'no-store'});
+    const r = await fetch(API, {cache:'no-store'});
     if(!r.ok) throw new Error('falhou');
     return (await r.json()).ranking || [];
   }
@@ -1220,12 +1254,17 @@ const PERGUNTAS = [
     try{
       const r = await fetch(API, {
         method:'POST', headers:{'content-type':'application/json'},
-        body: JSON.stringify({nome:nomeAtual, acertos:pts, total:deck.length, dicas:usarDicas})
+        body: JSON.stringify({
+          nome:nomeAtual, acertos:pts, total:deck.length,
+          tempo:Math.round(tempoMs), dicas:usarDicas
+        })
       });
       if(!r.ok) throw new Error('falhou');
       const d = await r.json();
-      msg.textContent = 'Você ficou em ' + d.posicao + 'º lugar entre ' + d.participantes + ' rodadas.';
-      desenharRanking(box, d.ranking, d.entrada.id);
+      msg.textContent = d.entrou
+        ? 'Você entrou no ranking: ' + d.posicao + 'º lugar!'
+        : 'Seu resultado (' + pts + ' de ' + deck.length + ', ' + fmtTempo(tempoMs) + ') não entrou no top 10.';
+      desenharRanking(box, d.ranking, d.entrou ? d.entrada.id : null);
     }catch(e){
       msg.textContent = 'Não consegui salvar seu resultado no ranking.';
       tentar.hidden = false;
@@ -1237,13 +1276,14 @@ const PERGUNTAS = [
     const base = lista.slice();
     if(CONFIG.embaralhar) embaralhar(base);
     deck = base.map(preparar);
-    pos = 0; pts = 0; erradas = [];
+    pos = 0; pts = 0; erradas = []; tempoMs = 0;
     mostrar('jogo');
     render();
   }
 
   function render(){
     atual = deck[pos]; travado = false;
+    inicioPergunta = performance.now();
     $('#progresso').textContent = 'Pergunta ' + (pos+1) + ' de ' + deck.length;
     $('#acertos').textContent = 'Acertos: ' + pts;
     $('#barra-i').style.width = (pos/deck.length*100) + '%';
@@ -1276,6 +1316,7 @@ const PERGUNTAS = [
   function responder(i){
     if(travado) return;
     travado = true;
+    tempoMs += performance.now() - inicioPergunta;
     $('#btn-dica').hidden = true;
     const certa = atual.certa;
     const acertou = (i === certa);
@@ -1313,6 +1354,7 @@ const PERGUNTAS = [
     const total = deck.length, pct = pts/total;
     $('#fim-pts').textContent = pts;
     $('#fim-total').textContent = 'de ' + total;
+    $('#fim-tempo').textContent = fmtTempo(tempoMs);
     $('#fim-msg').textContent =
       pct === 1 ? 'Perfeito! Você conhece bem o livro de Daniel.' :
       pct >= .8 ? 'Muito bem! Quase tudo certo.' :

@@ -1,6 +1,8 @@
 import { getStore } from "@netlify/blobs";
 
-const MAX_REGISTROS = 2000;
+// O ranking guarda só os melhores. Para mudar o tamanho, troque este número.
+const LIMITE = 10;
+const SEM_TEMPO = Number.MAX_SAFE_INTEGER; // registros antigos, sem tempo, ficam atrás no desempate
 
 const json = (dados, status = 200) =>
   new Response(JSON.stringify(dados), {
@@ -19,17 +21,24 @@ function quando() {
   return { dia: `${g("day")}/${g("month")}/${g("year")}`, hora: `${g("hour")}:${g("minute")}` };
 }
 
-// mais acertos primeiro; empate: quem fez antes fica na frente
-const ordenar = (lista) => lista.sort((a, b) => b.acertos - a.acertos || a.ts - b.ts);
+// Cada resultado é guardado como foi na hora (acertos e total daquela rodada), sem depender
+// do tamanho atual do banco de perguntas. A ordem usa a porcentagem de acertos (acertos/total),
+// então rodadas de bancos diferentes continuam comparáveis.
+// 1) maior % de acertos  2) menor tempo  3) quem fez primeiro
+const ordenar = (lista) =>
+  lista.sort(
+    (a, b) =>
+      b.acertos * a.total - a.acertos * b.total ||
+      (a.tempo ?? SEM_TEMPO) - (b.tempo ?? SEM_TEMPO) ||
+      a.ts - b.ts
+  );
 
 export default async (req) => {
   const store = getStore("quiz-daniel");
   const lista = (await store.get("ranking", { type: "json" })) || [];
 
   if (req.method === "GET") {
-    const total = parseInt(new URL(req.url).searchParams.get("total"), 10);
-    const filtrada = Number.isInteger(total) ? lista.filter((r) => r.total === total) : lista;
-    return json({ ranking: ordenar(filtrada).slice(0, 20) });
+    return json({ ranking: ordenar(lista).slice(0, LIMITE) });
   }
 
   if (req.method === "POST") {
@@ -37,24 +46,26 @@ export default async (req) => {
     try { corpo = await req.json(); } catch { return json({ erro: "JSON inválido" }, 400); }
 
     const nome = String(corpo.nome ?? "").replace(/\s+/g, " ").trim().slice(0, 30);
-    const { acertos, total } = corpo;
+    const { acertos, total, tempo } = corpo;
     const valido =
-      nome && Number.isInteger(acertos) && Number.isInteger(total) &&
-      total >= 1 && total <= 1000 && acertos >= 0 && acertos <= total;
+      nome &&
+      Number.isInteger(acertos) && Number.isInteger(total) && Number.isInteger(tempo) &&
+      total >= 1 && total <= 5000 && acertos >= 0 && acertos <= total &&
+      tempo >= 0 && tempo <= 24 * 60 * 60 * 1000;
     if (!valido) return json({ erro: "Dados inválidos" }, 400);
 
-    const dicas = corpo.dicas === true;
-    const entrada = { id: crypto.randomUUID(), nome, acertos, total, dicas, ...quando(), ts: Date.now() };
+    const entrada = {
+      id: crypto.randomUUID(), nome, acertos, total, tempo,
+      dicas: corpo.dicas === true, ...quando(), ts: Date.now(),
+    };
     lista.push(entrada);
-    await store.setJSON("ranking", lista.slice(-MAX_REGISTROS));
 
-    const daRodada = ordenar(lista.filter((r) => r.total === total));
-    return json({
-      entrada,
-      posicao: daRodada.findIndex((r) => r.id === entrada.id) + 1,
-      participantes: daRodada.length,
-      ranking: daRodada.slice(0, 20),
-    });
+    // fica só o top: se entrou o 11º, sai o pior
+    const top = ordenar(lista).slice(0, LIMITE);
+    await store.setJSON("ranking", top);
+
+    const posicao = top.findIndex((r) => r.id === entrada.id) + 1; // 0 = não entrou
+    return json({ entrou: posicao > 0, posicao: posicao || null, entrada, ranking: top });
   }
 
   return json({ erro: "Método não permitido" }, 405);
