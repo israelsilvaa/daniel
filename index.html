@@ -447,7 +447,7 @@
 
     .rank-lista li {
       display: grid;
-      grid-template-columns: 36px 1fr auto;
+      grid-template-columns: 36px 1fr;
       gap: 10px;
       align-items: center;
       background: #0d1a3b;
@@ -511,31 +511,30 @@
     .rank-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px 10px;
+      gap: 6px;
       align-items: center;
-      margin-top: 2px;
-      font-weight: 400;
-      font-size: 14px;
-      color: var(--suave)
+      margin-top: 6px
     }
 
-    .rank-dica {
-      border: 1px solid var(--ouro);
-      color: var(--ouro);
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 9px;
       border-radius: 999px;
-      padding: 0 8px;
+      border: 1px solid var(--lapis-claro);
+      background: var(--lapis);
+      color: var(--texto);
       font-size: 13px;
-      font-weight: 700
+      font-weight: 700;
+      line-height: 1.4;
+      white-space: nowrap
     }
 
-    .rank-pts {
-      font: 800 22px var(--serif)
-    }
-
-    .rank-pts small {
-      font-size: .65em;
-      color: var(--suave);
-      font-weight: 700
+    .badge.dica {
+      background: transparent;
+      border-color: var(--ouro);
+      color: var(--ouro)
     }
 
     .tempo {
@@ -685,9 +684,10 @@
       <div class="info">
         <p><b id="info-total">0</b> perguntas nesta rodada.</p>
         <p>Cada pergunta tem 5 alternativas (A a E) e só uma está certa. A ordem das alternativas muda a cada vez.</p>
+        <p id="info-melhor" hidden></p>
         <p class="ideia"><b>A ideia:</b> tente responder de cabeça primeiro. Se não souber, use a dica, leia a
           referência na Bíblia, raciocine e então responda. Ler o texto ajuda a fixar o que você aprende.</p>
-          <p><b id="info-total">v1.3</b></p>
+          <p><b id="info-total">v1.4</b></p>
       </div>
       <label class="campo" for="nome">Seu nome (aparece no ranking)</label>
       <input id="nome" type="text" maxlength="30" autocomplete="given-name" placeholder="Digite seu nome">
@@ -709,21 +709,21 @@
         <h3>Algumas imagens/ilustrações do livro de Daniel</h3>
         <p class="galeria-dica">🔍 Toque em uma imagem para ampliar.</p>
         <div class="galeria-grade">
-          <figure><a href="imagens/belshazzar_feast.jpg" target="_blank" rel="noopener"><img src="imagens/belshazzar_feast.jpg" alt="O banquete de Belsazar" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>O banquete de Belsazar</figcaption></figure>
-          <figure><a href="imagens/mene_mene_tequel_parsim.png" target="_blank" rel="noopener"><img src="imagens/mene_mene_tequel_parsim.png" alt="Mene, Mene, Tequel, Parsim" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Mene, Mene, Tequel, Parsim</figcaption></figure>
-          <figure><a href="imagens/mene_mene_tequel_parsign_explicado.png" target="_blank" rel="noopener"><img src="imagens/mene_mene_tequel_parsign_explicado.png" alt="Mene, Mene, Tequel, Parsim explicado" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Mene, Mene, Tequel, Parsim explicado</figcaption></figure>
-          <figure><a href="imagens/estatua_do_sonho.png" target="_blank" rel="noopener"><img src="imagens/estatua_do_sonho.png" alt="A estátua do sonho de Nabucodonosor" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>A estátua do sonho de Nabucodonosor</figcaption></figure>
-          <figure><a href="imagens/nabucodonozor_doido.jpg" target="_blank" rel="noopener"><img src="imagens/nabucodonozor_doido.jpg" alt="Nabucodonosor" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Nabucodonosor</figcaption></figure>
-          <figure><a href="imagens/o_quarto_homen_fornalha.jpg" target="_blank" rel="noopener"><img src="imagens/o_quarto_homen_fornalha.jpg" alt="O quarto homem na fornalha" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>O quarto homem na fornalha</figcaption></figure>
-          <figure><a href="imagens/daniel_na_cova_dos_leoes.jpg" target="_blank" rel="noopener"><img src="imagens/daniel_na_cova_dos_leoes.jpg" alt="Daniel na cova dos leões" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Daniel na cova dos leões</figcaption></figure>
-          <figure><a href="imagens/daniel_rejeita_majar.jpg" target="_blank" rel="noopener"><img src="imagens/daniel_rejeita_majar.jpg" alt="Daniel rejeita a comida do rei" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Daniel rejeita a comida do rei</figcaption></figure>
-          <figure><a href="imagens/daniel_nao_se_posta.webp" target="_blank" rel="noopener"><img src="imagens/daniel_nao_se_posta.webp" alt="Daniel não se contamina" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Daniel não se contamina</figcaption></figure>
-          <figure><a href="imagens/janelas_em_direcao_a_jerusalem.jpg" target="_blank" rel="noopener"><img src="imagens/janelas_em_direcao_a_jerusalem.jpg" alt="Janelas voltadas para Jerusalém" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Janelas voltadas para Jerusalém</figcaption></figure>
           <figure><a href="imagens/composicao_das_bestas.webp" target="_blank" rel="noopener"><img src="imagens/composicao_das_bestas.webp" alt="As quatro bestas" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>As quatro bestas</figcaption></figure>
           <figure><a href="imagens/Leo1-4.webp" target="_blank" rel="noopener"><img src="imagens/Leo1-4.webp" alt="O leão (Daniel 7)" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>O leão (Daniel 7)</figcaption></figure>
           <figure><a href="imagens/o_urso.webp" target="_blank" rel="noopener"><img src="imagens/o_urso.webp" alt="O urso (Daniel 7)" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>O urso (Daniel 7)</figcaption></figure>
           <figure><a href="imagens/Lions1_2.webp" target="_blank" rel="noopener"><img src="imagens/Lions1_2.webp" alt="Leões" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Leões</figcaption></figure>
           <figure><a href="imagens/carneiro_e_bode.webp" target="_blank" rel="noopener"><img src="imagens/carneiro_e_bode.webp" alt="O carneiro e o bode" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>O carneiro e o bode</figcaption></figure>
+          <figure><a href="imagens/belshazzar_feast.jpg" target="_blank" rel="noopener"><img src="imagens/belshazzar_feast.jpg" alt="O banquete de Belsazar" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>O banquete de Belsazar</figcaption></figure>
+          <figure><a href="imagens/mene_mene_tequel_parsim.png" target="_blank" rel="noopener"><img src="imagens/mene_mene_tequel_parsim.png" alt="Mene, Mene, Tequel, Parsim" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Mene, Mene, Tequel, Parsim</figcaption></figure>
+          <figure><a href="imagens/mene_mene_tequel_parsign_explicado.png" target="_blank" rel="noopener"><img src="imagens/mene_mene_tequel_parsign_explicado.png" alt="Mene, Mene, Tequel, Parsim explicado" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Mene, Mene, Tequel, Parsim explicado</figcaption></figure>
+          <figure><a href="imagens/estatua_do_sonho.png" target="_blank" rel="noopener"><img src="imagens/estatua_do_sonho.png" alt="A estátua do sonho de Nabucodonosor" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>A estátua do sonho de Nabucodonosor</figcaption></figure>
+          <figure><a href="imagens/nabucodonozor_doido.jpg" target="_blank" rel="noopener"><img src="imagens/nabucodonozor_doido.jpg" alt="Nabucodonosor" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Nabucodonosor perde a razão</figcaption></figure>
+          <figure><a href="imagens/o_quarto_homen_fornalha.jpg" target="_blank" rel="noopener"><img src="imagens/o_quarto_homen_fornalha.jpg" alt="O quarto homem na fornalha" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>O quarto homem na fornalha</figcaption></figure>
+          <figure><a href="imagens/daniel_na_cova_dos_leoes.jpg" target="_blank" rel="noopener"><img src="imagens/daniel_na_cova_dos_leoes.jpg" alt="Daniel na cova dos leões" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Daniel na cova dos leões</figcaption></figure>
+          <figure><a href="imagens/daniel_rejeita_majar.jpg" target="_blank" rel="noopener"><img src="imagens/daniel_rejeita_majar.jpg" alt="Daniel rejeita a comida do rei" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Daniel rejeita a comida do rei</figcaption></figure>
+          <figure><a href="imagens/daniel_nao_se_posta.webp" target="_blank" rel="noopener"><img src="imagens/daniel_nao_se_posta.webp" alt="Daniel não se prosta" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Daniel não se prosta</figcaption></figure>
+          <figure><a href="imagens/janelas_em_direcao_a_jerusalem.jpg" target="_blank" rel="noopener"><img src="imagens/janelas_em_direcao_a_jerusalem.jpg" alt="Janelas voltadas para Jerusalém" loading="lazy"><span class="lupa" aria-hidden="true">🔍</span></a><figcaption>Janelas voltadas para Jerusalém</figcaption></figure>
         </div>
       </div>
     </section>
@@ -1781,33 +1781,22 @@
           const b = document.createElement('span');
           const nome = document.createElement('span'); nome.className = 'rank-nome'; nome.textContent = r.nome;
           const meta = document.createElement('span'); meta.className = 'rank-meta';
-          const quando = document.createElement('span'); quando.textContent = r.dia + ' às ' + r.hora;
-          meta.append(quando);
+          const badge = (icone, texto, extra) => {
+            const t = document.createElement('span'); t.className = 'badge' + (extra ? ' ' + extra : '');
+            t.textContent = icone + ' ' + texto; meta.append(t);
+          };
+          badge('✅', r.acertos + '/' + r.total);
+          if (r.total > 0) badge('🎯', Math.round(r.acertos / r.total * 100) + '%');
           if (typeof r.tempo === 'number') {
-            const tp = document.createElement('span'); tp.textContent = 'tempo ' + fmtTempo(r.tempo);
-            meta.append(tp);
+            badge('⏱️', fmtTempo(r.tempo));
+            if (r.total > 0) badge('⚡', (r.tempo / r.total / 1000).toFixed(1).replace('.', ',') + ' s/perg.');
           }
-          if (r.total > 0) {
-            const pc = document.createElement('span');
-            pc.textContent = Math.round(r.acertos / r.total * 100) + '% de acerto';
-            meta.append(pc);
-            if (typeof r.tempo === 'number') {
-              const md = document.createElement('span');
-              md.textContent = (r.tempo / r.total / 1000).toFixed(1).replace('.', ',') + ' s/pergunta';
-              meta.append(md);
-            }
-          }
-          if (r.dicas) {
-            const d = document.createElement('span'); d.className = 'rank-dica'; d.textContent = '💡 com dica';
-            meta.append(d);
-          }
+          badge('📅', r.dia + ' ' + r.hora);
+          if (r.dicas) badge('💡', 'com dica', 'dica');
           nome.style.display = 'block';
           b.append(nome, meta);
 
-          const c = document.createElement('span'); c.className = 'rank-pts'; c.textContent = r.acertos;
-          const t = document.createElement('small'); t.textContent = ' / ' + r.total;
-          c.append(t);
-          li.append(a, b, c); ol.append(li);
+          li.append(a, b); ol.append(li);
         });
         el.append(ol);
       }
