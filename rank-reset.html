@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Resetar ranking</title>
+  <style>
+    body{font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;background:#f4f1e8;color:#222}
+    main{text-align:center;padding:24px}
+    button{font-size:1.1rem;padding:14px 28px;border:0;border-radius:10px;background:#b3261e;color:#fff;cursor:pointer}
+    button:disabled{opacity:.6;cursor:wait}
+    #msg{margin-top:18px;min-height:1.4em}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Resetar ranking</h1>
+    <button id="btn">Resetar</button>
+    <p id="msg" aria-live="polite"></p>
+  </main>
+  <script>
+    const btn = document.getElementById('btn'), msg = document.getElementById('msg');
+    btn.addEventListener('click', async () => {
+      if (!confirm('Tem certeza que deseja resetar o ranking? Essa ação não pode ser desfeita.')) return;
+      btn.disabled = true;
+      msg.textContent = 'Resetando…';
+      try {
+        const r = await fetch('/api/rank-reset', {method: 'POST'});
+        const d = await r.json();
+        if (!r.ok || !d.ok) throw new Error(d.erro || 'falhou');
+        msg.textContent = 'Ranking resetado! (' + d.apagados + ' registro(s) apagado(s))';
+      } catch (e) {
+        msg.textContent = 'Erro ao resetar: ' + e.message;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
