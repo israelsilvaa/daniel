@@ -43,7 +43,8 @@ export default async (req) => {
       total >= 1 && total <= 1000 && acertos >= 0 && acertos <= total;
     if (!valido) return json({ erro: "Dados inválidos" }, 400);
 
-    const entrada = { id: crypto.randomUUID(), nome, acertos, total, ...quando(), ts: Date.now() };
+    const dicas = corpo.dicas === true;
+    const entrada = { id: crypto.randomUUID(), nome, acertos, total, dicas, ...quando(), ts: Date.now() };
     lista.push(entrada);
     await store.setJSON("ranking", lista.slice(-MAX_REGISTROS));
 

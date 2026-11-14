@@ -103,6 +103,14 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
 }
 #nome::placeholder{color:#7f8cb3}
 .campo-aviso{margin:8px 0 0;color:#ffb199;font-weight:700}
+.ideia{margin-top:6px;padding-top:8px;border-top:1px solid #1d3f86}
+.check{display:flex;gap:12px;align-items:flex-start;margin-top:16px;padding:12px 14px;border-radius:14px;background:#0d1a3b;cursor:pointer}
+.check input{flex:0 0 26px;width:26px;height:26px;margin:0;accent-color:var(--ouro)}
+.check b{display:block}
+.check small{display:block;color:var(--suave);font-size:15px;line-height:1.3;margin-top:2px}
+.dica{margin:-4px 0 16px}
+.dica .btn{min-height:46px;margin:0;font-size:17px;width:auto;padding:8px 16px;display:inline-block}
+.dica-ref{margin:0;font:800 24px var(--serif);color:var(--ouro)}
 
 /* ranking */
 .rank{margin-top:26px}
@@ -136,10 +144,15 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
       <p><b id="info-total">0</b> perguntas nesta rodada.</p>
       <p>Cada pergunta tem 5 alternativas (A a E) e só uma está certa. A ordem das alternativas muda a cada vez.</p>
       <p id="info-melhor" hidden></p>
+      <p class="ideia"><b>A ideia:</b> tente responder de cabeça primeiro. Se não souber, use a dica, leia a referência na Bíblia, raciocine e então responda. Ler o texto ajuda a fixar o que você aprende.</p>
     </div>
     <label class="campo" for="nome">Seu nome (aparece no ranking)</label>
     <input id="nome" type="text" maxlength="30" autocomplete="given-name" placeholder="Digite seu nome">
     <p id="nome-aviso" class="campo-aviso" hidden>Digite seu nome para começar.</p>
+    <label class="check" for="usar-dicas">
+      <input type="checkbox" id="usar-dicas">
+      <span><b>Quero o botão de dica</b><small>A dica mostra a referência bíblica da pergunta. A pontuação é a mesma, mas o ranking mostra 💡 para quem jogou com dica.</small></span>
+    </label>
     <div id="avisos" class="aviso" hidden></div>
     <button class="btn" id="btn-comecar">Começar</button>
     <div class="rank">
@@ -153,6 +166,10 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
     <div class="topo"><span id="progresso"></span><span id="acertos"></span></div>
     <div class="barra" aria-hidden="true"><i id="barra-i"></i></div>
     <h2 id="pergunta"></h2>
+    <div id="dica" class="dica" hidden>
+      <button type="button" class="btn sec" id="btn-dica">💡 Dica: ver a referência</button>
+      <p class="dica-ref" id="dica-ref" hidden></p>
+    </div>
     <ul id="opcoes"></ul>
     <div id="retorno" class="retorno" hidden aria-live="polite">
       <strong id="retorno-titulo"></strong>
@@ -178,6 +195,7 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
     </div>
     <button class="btn" id="btn-de-novo">Jogar de novo</button>
     <button class="btn sec" id="btn-erradas" hidden>Refazer só as que errei (não vale para o ranking)</button>
+    <button class="btn sec" id="btn-inicio">Voltar ao início</button>
   </section>
 
 </main>
@@ -1084,10 +1102,11 @@ const PERGUNTAS = [
   const telas = {inicio:$('#tela-inicio'), jogo:$('#tela-jogo'), fim:$('#tela-fim')};
   const CHAVE = 'quiz-daniel-melhor';
   const CHAVE_NOME = 'quiz-daniel-nome';
+  const CHAVE_DICAS = 'quiz-daniel-dicas';
   const API = '/api/ranking';
 
   let validas = [], deck = [], pos = 0, pts = 0, erradas = [], travado = false, atual = null;
-  let nomeAtual = '', rodadaCompleta = true;
+  let nomeAtual = '', rodadaCompleta = true, usarDicas = false;
 
   function mostrar(nome){
     for(const k in telas) telas[k].hidden = (k !== nome);
@@ -1164,6 +1183,12 @@ const PERGUNTAS = [
       if(r.id === destaque) li.className = 'eu';
       const a = document.createElement('span'); a.className = 'rank-pos'; a.textContent = (i+1);
       const b = document.createElement('span'); b.className = 'rank-nome'; b.textContent = r.nome;
+      if(r.dicas){
+        const ic = document.createElement('span');
+        ic.textContent = ' 💡'; ic.title = 'Jogou com dica';
+        ic.setAttribute('role','img'); ic.setAttribute('aria-label','Jogou com dica');
+        b.append(ic);
+      }
       const q = document.createElement('span'); q.className = 'rank-quando'; q.textContent = r.dia + ' às ' + r.hora;
       b.append(q);
       const c = document.createElement('span'); c.className = 'rank-pts'; c.textContent = r.acertos;
@@ -1195,7 +1220,7 @@ const PERGUNTAS = [
     try{
       const r = await fetch(API, {
         method:'POST', headers:{'content-type':'application/json'},
-        body: JSON.stringify({nome:nomeAtual, acertos:pts, total:deck.length})
+        body: JSON.stringify({nome:nomeAtual, acertos:pts, total:deck.length, dicas:usarDicas})
       });
       if(!r.ok) throw new Error('falhou');
       const d = await r.json();
@@ -1236,11 +1261,22 @@ const PERGUNTAS = [
     });
     $('#retorno').hidden = true;
     $('#btn-proxima').hidden = true;
+    $('#dica').hidden = !usarDicas;
+    $('#btn-dica').hidden = false;
+    $('#dica-ref').hidden = true;
+  }
+
+  function mostrarDica(){
+    if(travado) return;
+    $('#dica-ref').textContent = atual.q.ref || 'Esta pergunta não tem referência.';
+    $('#dica-ref').hidden = false;
+    $('#btn-dica').hidden = true;
   }
 
   function responder(i){
     if(travado) return;
     travado = true;
+    $('#btn-dica').hidden = true;
     const certa = atual.certa;
     const acertou = (i === certa);
     if(acertou) pts++; else erradas.push(atual);
@@ -1306,20 +1342,26 @@ const PERGUNTAS = [
     $('#btn-erradas').hidden = erradas.length === 0;
   }
 
-  try{ $('#nome').value = localStorage.getItem(CHAVE_NOME) || '' }catch(e){}
+  try{
+    $('#nome').value = localStorage.getItem(CHAVE_NOME) || '';
+    $('#usar-dicas').checked = localStorage.getItem(CHAVE_DICAS) === '1';
+  }catch(e){}
 
   $('#btn-comecar').addEventListener('click',()=>{
     const nome = $('#nome').value.replace(/\s+/g,' ').trim();
     if(!nome){$('#nome-aviso').hidden = false; $('#nome').focus(); return}
     $('#nome-aviso').hidden = true;
     nomeAtual = nome;
-    try{ localStorage.setItem(CHAVE_NOME, nome) }catch(e){}
+    usarDicas = $('#usar-dicas').checked;
+    try{ localStorage.setItem(CHAVE_NOME, nome); localStorage.setItem(CHAVE_DICAS, usarDicas ? '1' : '0') }catch(e){}
     iniciar(validas,false);
   });
   $('#nome').addEventListener('input',()=>{$('#nome-aviso').hidden = true});
   $('#btn-proxima').addEventListener('click',proxima);
-  // volta para a tela inicial (dá para trocar o nome, e o ranking é atualizado)
-  $('#btn-de-novo').addEventListener('click',()=>{preencherInicio();mostrar('inicio')});
+  $('#btn-dica').addEventListener('click',mostrarDica);
+  $('#btn-de-novo').addEventListener('click',()=>iniciar(validas,false));
+  // volta para a tela inicial (dá para trocar nome e dica, e o ranking é atualizado)
+  $('#btn-inicio').addEventListener('click',()=>{preencherInicio();mostrar('inicio')});
   $('#btn-erradas').addEventListener('click',()=>iniciar(erradas.map(it=>it.q),true));
   $('#btn-tentar').addEventListener('click',salvarResultado);
 
