@@ -96,6 +96,31 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
 .erro-item .r{color:var(--ok)}
 .erro-item .ref{color:var(--ouro);margin-top:4px;font-size:16px}
 
+.campo{display:block;margin-top:18px;font-weight:700;color:var(--suave)}
+#nome{
+  display:block;width:100%;min-height:56px;margin-top:6px;padding:10px 14px;
+  border:2px solid var(--lapis-claro);border-radius:14px;background:#0d1a3b;color:var(--texto);font:500 20px var(--sans);
+}
+#nome::placeholder{color:#7f8cb3}
+.campo-aviso{margin:8px 0 0;color:#ffb199;font-weight:700}
+
+/* ranking */
+.rank{margin-top:26px}
+.rank h3{font-size:24px;margin-bottom:8px;color:var(--ouro)}
+.rank-msg{margin:0 0 10px;font-weight:700}
+.rank-vazio{margin:0;color:var(--suave)}
+.rank-lista{list-style:none;margin:0;padding:0}
+.rank-lista li{
+  display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;
+  background:#0d1a3b;border-radius:12px;padding:10px 12px;margin-bottom:8px;
+}
+.rank-lista li.eu{border:2px solid var(--ouro)}
+.rank-pos{font:800 22px var(--serif);color:var(--ouro);text-align:center}
+.rank-nome{font-weight:700;overflow-wrap:anywhere}
+.rank-quando{display:block;font-weight:400;font-size:14px;color:var(--suave)}
+.rank-pts{font:800 22px var(--serif)}
+.rank-pts small{font-size:.65em;color:var(--suave);font-weight:700}
+
 @media (prefers-reduced-motion:reduce){.barra i{transition:none}.btn:active,.op:active{transform:none}}
 </style>
 </head>
@@ -109,11 +134,18 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
     <p class="sub">Teste o que você sabe sobre o livro inteiro, do cativeiro na Babilônia às visões do fim.</p>
     <div class="info">
       <p><b id="info-total">0</b> perguntas nesta rodada.</p>
-      <p>Cada pergunta tem 5 alternativas (A a E) e só uma está certa.</p>
+      <p>Cada pergunta tem 5 alternativas (A a E) e só uma está certa. A ordem das alternativas muda a cada vez.</p>
       <p id="info-melhor" hidden></p>
     </div>
+    <label class="campo" for="nome">Seu nome (aparece no ranking)</label>
+    <input id="nome" type="text" maxlength="30" autocomplete="given-name" placeholder="Digite seu nome">
+    <p id="nome-aviso" class="campo-aviso" hidden>Digite seu nome para começar.</p>
     <div id="avisos" class="aviso" hidden></div>
     <button class="btn" id="btn-comecar">Começar</button>
+    <div class="rank">
+      <h3>Ranking</h3>
+      <div id="rank-inicio"></div>
+    </div>
   </section>
 
   <!-- JOGO -->
@@ -134,12 +166,18 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
   <section id="tela-fim" hidden>
     <h2 id="fim-msg"></h2>
     <div class="placar"><span id="fim-pts">0</span> <small id="fim-total">de 0</small></div>
+    <div class="rank">
+      <h3>Ranking</h3>
+      <p class="rank-msg" id="rank-msg" aria-live="polite"></p>
+      <div id="rank-fim"></div>
+      <button class="btn sec" id="btn-tentar" hidden>Tentar salvar de novo</button>
+    </div>
     <div id="fim-revisao" class="revisao" hidden>
       <h3>Para rever</h3>
       <div id="fim-lista"></div>
     </div>
     <button class="btn" id="btn-de-novo">Jogar de novo</button>
-    <button class="btn sec" id="btn-erradas" hidden>Refazer só as que errei</button>
+    <button class="btn sec" id="btn-erradas" hidden>Refazer só as que errei (não vale para o ranking)</button>
   </section>
 
 </main>
@@ -162,9 +200,10 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
      ===================================================================== -->
 <script id="perguntas">
 const CONFIG = {
-  embaralhar: true,   // true = ordem das perguntas muda a cada rodada; false = ordem fixa
-  porRodada: 0        // 0 = usa todas as perguntas; ou ex.: 10 = sorteia 10 por rodada
+  embaralhar: true    // true = ordem das perguntas muda a cada rodada; false = ordem fixa
 };
+// Toda rodada usa TODAS as perguntas do banco. As alternativas (A a E) são sempre
+// sorteadas de novo, então a letra certa não depende da ordem em que foi escrita abaixo.
 
 
 const PERGUNTAS = [
@@ -1044,8 +1083,11 @@ const PERGUNTAS = [
   const $ = s => document.querySelector(s);
   const telas = {inicio:$('#tela-inicio'), jogo:$('#tela-jogo'), fim:$('#tela-fim')};
   const CHAVE = 'quiz-daniel-melhor';
+  const CHAVE_NOME = 'quiz-daniel-nome';
+  const API = '/api/ranking';
 
   let validas = [], deck = [], pos = 0, pts = 0, erradas = [], travado = false, atual = null;
+  let nomeAtual = '', rodadaCompleta = true;
 
   function mostrar(nome){
     for(const k in telas) telas[k].hidden = (k !== nome);
@@ -1073,6 +1115,13 @@ const PERGUNTAS = [
     return a;
   }
 
+  // sorteia a ordem das 5 alternativas e descobre onde ficou a certa
+  function preparar(q){
+    const orig = LETRAS.indexOf(String(q.certa).toUpperCase());
+    const ordem = embaralhar([0,1,2,3,4]);
+    return {q:q, opcoes:ordem.map(i=>q.opcoes[i]), certa:ordem.indexOf(orig)};
+  }
+
   function melhor(){
     try{return JSON.parse(localStorage.getItem(CHAVE))}catch(e){return null}
   }
@@ -1085,8 +1134,7 @@ const PERGUNTAS = [
 
   function preencherInicio(){
     const problemas = validar();
-    const total = (CONFIG.porRodada > 0) ? Math.min(CONFIG.porRodada, validas.length) : validas.length;
-    $('#info-total').textContent = total;
+    $('#info-total').textContent = validas.length;
     const m = melhor(), el = $('#info-melhor');
     if(m){el.hidden = false; el.textContent = 'Seu melhor resultado: ' + m.p + ' de ' + m.t + '.'}
     const av = $('#avisos');
@@ -1099,12 +1147,71 @@ const PERGUNTAS = [
       av.append(ul);
     }else av.hidden = true;
     $('#btn-comecar').disabled = validas.length === 0;
+    carregarRanking();
+  }
+
+  // ---------- ranking
+  function desenharRanking(el, lista, destaque){
+    el.innerHTML = '';
+    if(!lista.length){
+      const p = document.createElement('p'); p.className = 'rank-vazio';
+      p.textContent = 'Ninguém jogou ainda. Seja o primeiro!';
+      el.append(p); return;
+    }
+    const ol = document.createElement('ol'); ol.className = 'rank-lista';
+    lista.forEach((r,i)=>{
+      const li = document.createElement('li');
+      if(r.id === destaque) li.className = 'eu';
+      const a = document.createElement('span'); a.className = 'rank-pos'; a.textContent = (i+1);
+      const b = document.createElement('span'); b.className = 'rank-nome'; b.textContent = r.nome;
+      const q = document.createElement('span'); q.className = 'rank-quando'; q.textContent = r.dia + ' às ' + r.hora;
+      b.append(q);
+      const c = document.createElement('span'); c.className = 'rank-pts'; c.textContent = r.acertos;
+      const t = document.createElement('small'); t.textContent = ' / ' + r.total;
+      c.append(t);
+      li.append(a,b,c); ol.append(li);
+    });
+    el.append(ol);
+  }
+
+  async function buscarRanking(){
+    const r = await fetch(API + '?total=' + validas.length, {cache:'no-store'});
+    if(!r.ok) throw new Error('falhou');
+    return (await r.json()).ranking || [];
+  }
+
+  async function carregarRanking(el, destaque){
+    el = el || $('#rank-inicio');
+    el.textContent = 'Carregando…';
+    try{ desenharRanking(el, await buscarRanking(), destaque) }
+    catch(e){ el.textContent = 'Ranking indisponível no momento.' }
+  }
+
+  async function salvarResultado(){
+    const box = $('#rank-fim'), msg = $('#rank-msg'), tentar = $('#btn-tentar');
+    tentar.hidden = true;
+    msg.textContent = 'Salvando seu resultado…';
+    box.textContent = '';
+    try{
+      const r = await fetch(API, {
+        method:'POST', headers:{'content-type':'application/json'},
+        body: JSON.stringify({nome:nomeAtual, acertos:pts, total:deck.length})
+      });
+      if(!r.ok) throw new Error('falhou');
+      const d = await r.json();
+      msg.textContent = 'Você ficou em ' + d.posicao + 'º lugar entre ' + d.participantes + ' rodadas.';
+      desenharRanking(box, d.ranking, d.entrada.id);
+    }catch(e){
+      msg.textContent = 'Não consegui salvar seu resultado no ranking.';
+      tentar.hidden = false;
+    }
   }
 
   function iniciar(lista, ehRefazer){
-    deck = lista.slice();
-    if(CONFIG.embaralhar) embaralhar(deck);
-    if(!ehRefazer && CONFIG.porRodada > 0) deck = deck.slice(0, CONFIG.porRodada);
+    rodadaCompleta = !ehRefazer;
+    const base = lista.slice();
+    if(CONFIG.embaralhar) embaralhar(base);
+    deck = base.map(preparar);
     pos = 0; pts = 0; erradas = [];
     mostrar('jogo');
     render();
@@ -1115,7 +1222,7 @@ const PERGUNTAS = [
     $('#progresso').textContent = 'Pergunta ' + (pos+1) + ' de ' + deck.length;
     $('#acertos').textContent = 'Acertos: ' + pts;
     $('#barra-i').style.width = (pos/deck.length*100) + '%';
-    $('#pergunta').textContent = atual.pergunta;
+    $('#pergunta').textContent = atual.q.pergunta;
     const ul = $('#opcoes'); ul.innerHTML = '';
     atual.opcoes.forEach((txt,i)=>{
       const li = document.createElement('li');
@@ -1134,7 +1241,7 @@ const PERGUNTAS = [
   function responder(i){
     if(travado) return;
     travado = true;
-    const certa = LETRAS.indexOf(String(atual.certa).toUpperCase());
+    const certa = atual.certa;
     const acertou = (i === certa);
     if(acertou) pts++; else erradas.push(atual);
     document.querySelectorAll('.op').forEach((b,k)=>{
@@ -1147,10 +1254,10 @@ const PERGUNTAS = [
     const r = $('#retorno');
     r.classList.toggle('erro', !acertou);
     $('#retorno-titulo').textContent = acertou ? 'Certo!' : 'Não foi dessa vez. A resposta é a letra ' + LETRAS[certa] + '.';
-    $('#retorno-texto').textContent = atual.explicacao || '';
-    $('#retorno-texto').hidden = !atual.explicacao;
-    $('#retorno-ref').textContent = atual.ref || '';
-    $('#retorno-ref').hidden = !atual.ref;
+    $('#retorno-texto').textContent = atual.q.explicacao || '';
+    $('#retorno-texto').hidden = !atual.q.explicacao;
+    $('#retorno-ref').textContent = atual.q.ref || '';
+    $('#retorno-ref').hidden = !atual.q.ref;
     r.hidden = false;
     const bp = $('#btn-proxima');
     bp.textContent = (pos+1 < deck.length) ? 'Próxima pergunta' : 'Ver resultado';
@@ -1175,16 +1282,23 @@ const PERGUNTAS = [
       pct >= .8 ? 'Muito bem! Quase tudo certo.' :
       pct >= .5 ? 'Bom resultado. Reveja as que errou e tente de novo.' :
                   'Vale reler o livro de Daniel e tentar outra vez.';
-    guardarMelhor(pts,total);
+    if(rodadaCompleta){
+      guardarMelhor(pts,total);
+      salvarResultado();
+    }else{
+      $('#rank-msg').textContent = 'Rodada de revisão: não entra no ranking.';
+      $('#btn-tentar').hidden = true;
+      carregarRanking($('#rank-fim'));
+    }
 
     const rev = $('#fim-revisao'), lista = $('#fim-lista');
     lista.innerHTML = '';
     rev.hidden = erradas.length === 0;
-    erradas.forEach(q=>{
-      const c = LETRAS.indexOf(String(q.certa).toUpperCase());
+    erradas.forEach(it=>{
+      const q = it.q, c = it.certa;
       const d = document.createElement('div'); d.className = 'erro-item';
       const a = document.createElement('p'); a.className = 'q'; a.textContent = q.pergunta;
-      const b = document.createElement('p'); b.className = 'r'; b.textContent = 'Certa: ' + LETRAS[c] + ') ' + q.opcoes[c];
+      const b = document.createElement('p'); b.className = 'r'; b.textContent = 'Certa: ' + LETRAS[c] + ') ' + it.opcoes[c];
       d.append(a,b);
       if(q.ref){const r = document.createElement('p'); r.className = 'ref'; r.textContent = q.ref; d.append(r)}
       lista.append(d);
@@ -1192,10 +1306,22 @@ const PERGUNTAS = [
     $('#btn-erradas').hidden = erradas.length === 0;
   }
 
-  $('#btn-comecar').addEventListener('click',()=>iniciar(validas,false));
+  try{ $('#nome').value = localStorage.getItem(CHAVE_NOME) || '' }catch(e){}
+
+  $('#btn-comecar').addEventListener('click',()=>{
+    const nome = $('#nome').value.replace(/\s+/g,' ').trim();
+    if(!nome){$('#nome-aviso').hidden = false; $('#nome').focus(); return}
+    $('#nome-aviso').hidden = true;
+    nomeAtual = nome;
+    try{ localStorage.setItem(CHAVE_NOME, nome) }catch(e){}
+    iniciar(validas,false);
+  });
+  $('#nome').addEventListener('input',()=>{$('#nome-aviso').hidden = true});
   $('#btn-proxima').addEventListener('click',proxima);
-  $('#btn-de-novo').addEventListener('click',()=>{preencherInicio();iniciar(validas,false)});
-  $('#btn-erradas').addEventListener('click',()=>iniciar(erradas.slice(),true));
+  // volta para a tela inicial (dá para trocar o nome, e o ranking é atualizado)
+  $('#btn-de-novo').addEventListener('click',()=>{preencherInicio();mostrar('inicio')});
+  $('#btn-erradas').addEventListener('click',()=>iniciar(erradas.map(it=>it.q),true));
+  $('#btn-tentar').addEventListener('click',salvarResultado);
 
   // teclado (útil no computador): A–E responde, Enter avança
   document.addEventListener('keydown',e=>{
