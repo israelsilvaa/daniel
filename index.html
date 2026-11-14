@@ -1,225 +1,650 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#12224a">
-<title>Quiz do livro de Daniel</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --noite:#12224a;      /* fundo */
-  --lapis:#1d3f86;      /* azul dos azulejos */
-  --lapis-claro:#3b5db0;
-  --ouro:#e4b94f;       /* destaque */
-  --texto:#f4efe0;
-  --suave:#b9c4e3;
-  --ok:#2fae86;
-  --erro:#d4613f;
-  --serif:'Alegreya',Georgia,'Times New Roman',serif;
-  --sans:'Alegreya Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;min-height:100%}
-body{
-  background-color:var(--noite);
-  background-image:radial-gradient(circle,#e4b94f26 0 2px,transparent 2.5px),radial-gradient(circle,#e4b94f14 0 2px,transparent 2.5px);
-  background-size:36px 36px;background-position:0 0,18px 18px;
-  color:var(--texto);font-family:var(--sans);font-size:18px;line-height:1.4;
-}
-/* friso de azulejos, como o da Porta de Ishtar na Babilônia */
-.friso{height:14px;background:repeating-linear-gradient(90deg,var(--ouro) 0 12px,var(--lapis) 12px 24px)}
-main{
-  max-width:560px;margin:0 auto;min-height:100dvh;
-  padding:20px 16px calc(28px + env(safe-area-inset-bottom,0px));
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-}
-[hidden]{display:none!important}
-h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#12224a">
+  <title>Quiz do livro de Daniel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Alegreya+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --noite: #12224a;
+      /* fundo */
+      --lapis: #1d3f86;
+      /* azul dos azulejos */
+      --lapis-claro: #3b5db0;
+      --ouro: #e4b94f;
+      /* destaque */
+      --texto: #f4efe0;
+      --suave: #b9c4e3;
+      --ok: #2fae86;
+      --erro: #d4613f;
+      --serif: 'Alegreya', Georgia, 'Times New Roman', serif;
+      --sans: 'Alegreya Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
 
-/* botões */
-.btn{
-  display:block;width:100%;min-height:56px;padding:12px 18px;margin-top:14px;
-  border:0;border-radius:14px;background:var(--ouro);color:#2a1f05;
-  font:700 19px var(--sans);cursor:pointer;
-}
-.btn:active{transform:scale(.985)}
-.btn.sec{background:transparent;color:var(--texto);border:2px solid var(--lapis-claro)}
-:focus-visible{outline:3px solid var(--ouro);outline-offset:3px}
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent
+    }
 
-/* início */
-#tela-inicio h1{font-size:clamp(64px,22vw,104px);line-height:.95;letter-spacing:.02em;margin-top:34px;color:var(--ouro)}
-#tela-inicio .sub{font-family:var(--serif);font-size:23px;line-height:1.3;margin:14px 0 22px;max-width:30ch}
-.info{background:#0d1a3b;border-radius:16px;padding:14px 16px;color:var(--suave)}
-.info p{margin:0}.info p+p{margin-top:6px}
-.info b{color:var(--texto)}
-.aviso{margin-top:14px;padding:12px 14px;border-radius:12px;background:#4a2418;border:2px solid var(--erro);font-size:16px}
-.aviso ul{margin:6px 0 0;padding-left:20px}
+    html,
+    body {
+      margin: 0;
+      min-height: 100%
+    }
 
-/* jogo */
-.topo{display:flex;justify-content:space-between;align-items:baseline;color:var(--suave);font-weight:500}
-.barra{height:8px;border-radius:4px;background:#0d1a3b;margin:8px 0 22px;overflow:hidden}
-.barra i{display:block;height:100%;width:0;background:var(--ouro);transition:width .3s}
-#pergunta{font-size:25px;line-height:1.25;margin-bottom:18px}
-#opcoes{list-style:none;margin:0;padding:0}
-.op{
-  display:flex;gap:14px;align-items:center;width:100%;min-height:60px;padding:10px 14px;margin:0 0 10px;
-  text-align:left;border:2px solid var(--lapis-claro);background:#1a3573;color:var(--texto);
-  font:500 18px/1.3 var(--sans);border-radius:14px;cursor:pointer;
-}
-.op:active:not(:disabled){transform:scale(.99)}
-.op .letra{
-  flex:0 0 38px;height:38px;border-radius:9px;display:grid;place-items:center;
-  background:var(--ouro);color:#2a1f05;font:800 21px var(--serif);
-}
-.op:disabled{cursor:default;color:var(--texto)}
-.op.certa{border-color:var(--ok);background:#14604e}
-.op.errada{border-color:var(--erro);background:#6b2a1f}
-.op.apagada{opacity:.55}
-.retorno{margin-top:6px;padding:14px 16px;border-radius:14px;background:#0d1a3b;border-left:6px solid var(--ok)}
-.retorno.erro{border-left-color:var(--erro)}
-.retorno strong{display:block;font:800 23px var(--serif);margin-bottom:4px}
-.retorno p{margin:0}
-.retorno .ref{margin-top:8px;color:var(--ouro);font-weight:700}
+    body {
+      background-color: var(--noite);
+      background-image: radial-gradient(circle, #e4b94f26 0 2px, transparent 2.5px), radial-gradient(circle, #e4b94f14 0 2px, transparent 2.5px);
+      background-size: 36px 36px;
+      background-position: 0 0, 18px 18px;
+      color: var(--texto);
+      font-family: var(--sans);
+      font-size: 18px;
+      line-height: 1.4;
+    }
 
-/* fim */
-#tela-fim h2{font-size:28px;margin-top:14px}
-.placar{font:800 clamp(64px,24vw,110px)/1 var(--serif);color:var(--ouro);margin:10px 0 4px}
-.placar small{font-size:.38em;color:var(--suave);font-weight:700}
-.revisao{margin-top:22px}
-.revisao h3{font-size:22px;margin-bottom:10px}
-.erro-item{background:#0d1a3b;border-radius:14px;padding:12px 14px;margin-bottom:10px}
-.erro-item p{margin:0}
-.erro-item .q{font-weight:700;margin-bottom:6px}
-.erro-item .r{color:var(--ok)}
-.erro-item .ref{color:var(--ouro);margin-top:4px;font-size:16px}
+    /* friso de azulejos, como o da Porta de Ishtar na Babilônia */
+    .friso {
+      height: 14px;
+      background: repeating-linear-gradient(90deg, var(--ouro) 0 12px, var(--lapis) 12px 24px)
+    }
 
-.campo{display:block;margin-top:18px;font-weight:700;color:var(--suave)}
-#nome{
-  display:block;width:100%;min-height:56px;margin-top:6px;padding:10px 14px;
-  border:2px solid var(--lapis-claro);border-radius:14px;background:#0d1a3b;color:var(--texto);font:500 20px var(--sans);
-}
-#nome::placeholder{color:#7f8cb3}
-.campo-aviso{margin:8px 0 0;color:#ffb199;font-weight:700}
-.ideia{margin-top:6px;padding-top:8px;border-top:1px solid #1d3f86}
-.check{display:flex;gap:12px;align-items:flex-start;margin-top:16px;padding:12px 14px;border-radius:14px;background:#0d1a3b;cursor:pointer}
-.check input{flex:0 0 26px;width:26px;height:26px;margin:0;accent-color:var(--ouro)}
-.check b{display:block}
-.check small{display:block;color:var(--suave);font-size:15px;line-height:1.3;margin-top:2px}
-.dica{margin:-4px 0 16px}
-.dica .btn{min-height:46px;margin:0;font-size:17px;width:auto;padding:8px 16px;display:inline-block}
-.dica-ref{margin:0;font:800 24px var(--serif);color:var(--ouro)}
+    main {
+      max-width: 560px;
+      margin: 0 auto;
+      min-height: 100dvh;
+      padding: 20px 16px calc(28px + env(safe-area-inset-bottom, 0px));
+      padding-left: max(16px, env(safe-area-inset-left, 0px));
+      padding-right: max(16px, env(safe-area-inset-right, 0px));
+    }
 
-/* ranking */
-.rank{margin-top:26px}
-.rank h3{font-size:24px;margin-bottom:8px;color:var(--ouro)}
-.rank-msg{margin:0 0 10px;font-weight:700}
-.rank-vazio{margin:0;color:var(--suave)}
-.rank-lista{list-style:none;margin:0;padding:0}
-.rank-nota{margin:-4px 0 10px;font-size:15px;color:var(--suave)}
-.rank-lista li{
-  display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:center;
-  background:#0d1a3b;border-radius:12px;padding:10px 12px;margin-bottom:8px;
-}
-.rank-lista li.eu{outline:2px solid var(--texto);outline-offset:-2px}
-.rank-pos{
-  width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
-  font:800 18px var(--serif);color:var(--ouro);background:var(--noite);
-}
-/* top 3: ouro, prata e bronze */
-.rank-lista li.p1{background:linear-gradient(90deg,#e4b94f40,#0d1a3b 70%);box-shadow:inset 4px 0 0 #e4b94f}
-.rank-lista li.p2{background:linear-gradient(90deg,#c9d1de33,#0d1a3b 70%);box-shadow:inset 4px 0 0 #c9d1de}
-.rank-lista li.p3{background:linear-gradient(90deg,#cd7f3238,#0d1a3b 70%);box-shadow:inset 4px 0 0 #cd7f32}
-.p1 .rank-pos{background:#e4b94f;color:#2a1f05}
-.p2 .rank-pos{background:#c9d1de;color:#1c2233}
-.p3 .rank-pos{background:#cd7f32;color:#2a1405}
-.rank-nome{font-weight:700;overflow-wrap:anywhere}
-.rank-meta{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;margin-top:2px;font-weight:400;font-size:14px;color:var(--suave)}
-.rank-dica{border:1px solid var(--ouro);color:var(--ouro);border-radius:999px;padding:0 8px;font-size:13px;font-weight:700}
-.rank-pts{font:800 22px var(--serif)}
-.rank-pts small{font-size:.65em;color:var(--suave);font-weight:700}
-.tempo{margin:0 0 4px;color:var(--suave);font-weight:500}
-.tempo b{color:var(--texto)}
-.voltar{display:inline-block;width:auto;min-height:46px;margin:0;padding:8px 16px;font-size:17px}
+    [hidden] {
+      display: none !important
+    }
 
-@media (prefers-reduced-motion:reduce){.barra i{transition:none}.btn:active,.op:active{transform:none}}
-</style>
+    h1,
+    h2,
+    h3 {
+      font-family: var(--serif);
+      margin: 0;
+      font-weight: 800
+    }
+
+    /* botões */
+    .btn {
+      display: block;
+      width: 100%;
+      min-height: 56px;
+      padding: 12px 18px;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--ouro);
+      color: #2a1f05;
+      font: 700 19px var(--sans);
+      cursor: pointer;
+    }
+
+    .btn:active {
+      transform: scale(.985)
+    }
+
+    .btn.sec {
+      background: transparent;
+      color: var(--texto);
+      border: 2px solid var(--lapis-claro)
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--ouro);
+      outline-offset: 3px
+    }
+
+    /* início */
+    #tela-inicio h1 {
+      font-size: clamp(64px, 22vw, 104px);
+      line-height: .95;
+      letter-spacing: .02em;
+      margin-top: 34px;
+      color: var(--ouro)
+    }
+
+    #tela-inicio .sub {
+      font-family: var(--serif);
+      font-size: 23px;
+      line-height: 1.3;
+      margin: 14px 0 22px;
+      max-width: 30ch
+    }
+
+    .info {
+      background: #0d1a3b;
+      border-radius: 16px;
+      padding: 14px 16px;
+      color: var(--suave)
+    }
+
+    .info p {
+      margin: 0
+    }
+
+    .info p+p {
+      margin-top: 6px
+    }
+
+    .info b {
+      color: var(--texto)
+    }
+
+    .aviso {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #4a2418;
+      border: 2px solid var(--erro);
+      font-size: 16px
+    }
+
+    .aviso ul {
+      margin: 6px 0 0;
+      padding-left: 20px
+    }
+
+    /* jogo */
+    .topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      color: var(--suave);
+      font-weight: 500
+    }
+
+    .barra {
+      height: 8px;
+      border-radius: 4px;
+      background: #0d1a3b;
+      margin: 8px 0 22px;
+      overflow: hidden
+    }
+
+    .barra i {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: var(--ouro);
+      transition: width .3s
+    }
+
+    #pergunta {
+      font-size: 25px;
+      line-height: 1.25;
+      margin-bottom: 18px
+    }
+
+    #opcoes {
+      list-style: none;
+      margin: 0;
+      padding: 0
+    }
+
+    .op {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      width: 100%;
+      min-height: 60px;
+      padding: 10px 14px;
+      margin: 0 0 10px;
+      text-align: left;
+      border: 2px solid var(--lapis-claro);
+      background: #1a3573;
+      color: var(--texto);
+      font: 500 18px/1.3 var(--sans);
+      border-radius: 14px;
+      cursor: pointer;
+    }
+
+    .op:active:not(:disabled) {
+      transform: scale(.99)
+    }
+
+    .op .letra {
+      flex: 0 0 38px;
+      height: 38px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      background: var(--ouro);
+      color: #2a1f05;
+      font: 800 21px var(--serif);
+    }
+
+    .op:disabled {
+      cursor: default;
+      color: var(--texto)
+    }
+
+    .op.certa {
+      border-color: var(--ok);
+      background: #14604e
+    }
+
+    .op.errada {
+      border-color: var(--erro);
+      background: #6b2a1f
+    }
+
+    .op.apagada {
+      opacity: .55
+    }
+
+    .retorno {
+      margin-top: 6px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #0d1a3b;
+      border-left: 6px solid var(--ok)
+    }
+
+    .retorno.erro {
+      border-left-color: var(--erro)
+    }
+
+    .retorno strong {
+      display: block;
+      font: 800 23px var(--serif);
+      margin-bottom: 4px
+    }
+
+    .retorno p {
+      margin: 0
+    }
+
+    .retorno .ref {
+      margin-top: 8px;
+      color: var(--ouro);
+      font-weight: 700
+    }
+
+    /* fim */
+    #tela-fim h2 {
+      font-size: 28px;
+      margin-top: 14px
+    }
+
+    .placar {
+      font: 800 clamp(64px, 24vw, 110px)/1 var(--serif);
+      color: var(--ouro);
+      margin: 10px 0 4px
+    }
+
+    .placar small {
+      font-size: .38em;
+      color: var(--suave);
+      font-weight: 700
+    }
+
+    .revisao {
+      margin-top: 22px
+    }
+
+    .revisao h3 {
+      font-size: 22px;
+      margin-bottom: 10px
+    }
+
+    .erro-item {
+      background: #0d1a3b;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px
+    }
+
+    .erro-item p {
+      margin: 0
+    }
+
+    .erro-item .q {
+      font-weight: 700;
+      margin-bottom: 6px
+    }
+
+    .erro-item .r {
+      color: var(--ok)
+    }
+
+    .erro-item .ref {
+      color: var(--ouro);
+      margin-top: 4px;
+      font-size: 16px
+    }
+
+    .campo {
+      display: block;
+      margin-top: 18px;
+      font-weight: 700;
+      color: var(--suave)
+    }
+
+    #nome {
+      display: block;
+      width: 100%;
+      min-height: 56px;
+      margin-top: 6px;
+      padding: 10px 14px;
+      border: 2px solid var(--lapis-claro);
+      border-radius: 14px;
+      background: #0d1a3b;
+      color: var(--texto);
+      font: 500 20px var(--sans);
+    }
+
+    #nome::placeholder {
+      color: #7f8cb3
+    }
+
+    .campo-aviso {
+      margin: 8px 0 0;
+      color: #ffb199;
+      font-weight: 700
+    }
+
+    .ideia {
+      margin-top: 6px;
+      padding-top: 8px;
+      border-top: 1px solid #1d3f86
+    }
+
+    .check {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #0d1a3b;
+      cursor: pointer
+    }
+
+    .check input {
+      flex: 0 0 26px;
+      width: 26px;
+      height: 26px;
+      margin: 0;
+      accent-color: var(--ouro)
+    }
+
+    .check b {
+      display: block
+    }
+
+    .check small {
+      display: block;
+      color: var(--suave);
+      font-size: 15px;
+      line-height: 1.3;
+      margin-top: 2px
+    }
+
+    .dica {
+      margin: -4px 0 16px
+    }
+
+    .dica .btn {
+      min-height: 46px;
+      margin: 0;
+      font-size: 17px;
+      width: auto;
+      padding: 8px 16px;
+      display: inline-block
+    }
+
+    .dica-ref {
+      margin: 0;
+      font: 800 24px var(--serif);
+      color: var(--ouro)
+    }
+
+    /* ranking */
+    .rank {
+      margin-top: 26px
+    }
+
+    .rank h3 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: var(--ouro)
+    }
+
+    .rank-msg {
+      margin: 0 0 10px;
+      font-weight: 700
+    }
+
+    .rank-vazio {
+      margin: 0;
+      color: var(--suave)
+    }
+
+    .rank-lista {
+      list-style: none;
+      margin: 0;
+      padding: 0
+    }
+
+    .rank-nota {
+      margin: -4px 0 10px;
+      font-size: 15px;
+      color: var(--suave)
+    }
+
+    .rank-lista li {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      background: #0d1a3b;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+
+    .rank-lista li.eu {
+      outline: 2px solid var(--texto);
+      outline-offset: -2px
+    }
+
+    .rank-pos {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font: 800 18px var(--serif);
+      color: var(--ouro);
+      background: var(--noite);
+    }
+
+    /* top 3: ouro, prata e bronze */
+    .rank-lista li.p1 {
+      background: linear-gradient(90deg, #e4b94f40, #0d1a3b 70%);
+      box-shadow: inset 4px 0 0 #e4b94f
+    }
+
+    .rank-lista li.p2 {
+      background: linear-gradient(90deg, #c9d1de33, #0d1a3b 70%);
+      box-shadow: inset 4px 0 0 #c9d1de
+    }
+
+    .rank-lista li.p3 {
+      background: linear-gradient(90deg, #cd7f3238, #0d1a3b 70%);
+      box-shadow: inset 4px 0 0 #cd7f32
+    }
+
+    .p1 .rank-pos {
+      background: #e4b94f;
+      color: #2a1f05
+    }
+
+    .p2 .rank-pos {
+      background: #c9d1de;
+      color: #1c2233
+    }
+
+    .p3 .rank-pos {
+      background: #cd7f32;
+      color: #2a1405
+    }
+
+    .rank-nome {
+      font-weight: 700;
+      overflow-wrap: anywhere
+    }
+
+    .rank-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 10px;
+      align-items: center;
+      margin-top: 2px;
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--suave)
+    }
+
+    .rank-dica {
+      border: 1px solid var(--ouro);
+      color: var(--ouro);
+      border-radius: 999px;
+      padding: 0 8px;
+      font-size: 13px;
+      font-weight: 700
+    }
+
+    .rank-pts {
+      font: 800 22px var(--serif)
+    }
+
+    .rank-pts small {
+      font-size: .65em;
+      color: var(--suave);
+      font-weight: 700
+    }
+
+    .tempo {
+      margin: 0 0 4px;
+      color: var(--suave);
+      font-weight: 500
+    }
+
+    .tempo b {
+      color: var(--texto)
+    }
+
+    .voltar {
+      display: inline-block;
+      width: auto;
+      min-height: 46px;
+      margin: 0;
+      padding: 8px 16px;
+      font-size: 17px
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      .barra i {
+        transition: none
+      }
+
+      .btn:active,
+      .op:active {
+        transform: none
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="friso" aria-hidden="true"></div>
-<main>
+  <div class="friso" aria-hidden="true"></div>
+  <main>
 
-  <!-- rank v3 -->
-  <!-- INÍCIO -->
-  <section id="tela-inicio">
-    <h1>Daniel</h1>
-    <p class="sub">Teste o que você sabe sobre o livro inteiro, do cativeiro na Babilônia às visões do fim.</p>
-    <div class="info">
-      <p><b id="info-total">0</b> perguntas nesta rodada.</p>
-      <p>Cada pergunta tem 5 alternativas (A a E) e só uma está certa. A ordem das alternativas muda a cada vez.</p>
-      <p id="info-melhor" hidden></p>
-      <p class="ideia"><b>A ideia:</b> tente responder de cabeça primeiro. Se não souber, use a dica, leia a referência na Bíblia, raciocine e então responda. Ler o texto ajuda a fixar o que você aprende.</p>
-    </div>
-    <label class="campo" for="nome">Seu nome (aparece no ranking)</label>
-    <input id="nome" type="text" maxlength="30" autocomplete="given-name" placeholder="Digite seu nome">
-    <p id="nome-aviso" class="campo-aviso" hidden>Digite seu nome para começar.</p>
-    <label class="check" for="usar-dicas">
-      <input type="checkbox" id="usar-dicas">
-      <span><b>Quero o botão de dica</b><small>A dica mostra a referência bíblica da pergunta. A pontuação é a mesma, mas o ranking mostra uma etiqueta “com dica” para quem jogou assim.</small></span>
-    </label>
-    <div id="avisos" class="aviso" hidden></div>
-    <button class="btn" id="btn-comecar">Começar</button>
-    <div class="rank">
-      <h3>Ranking</h3>
-      <p class="rank-nota">Os 10 melhores. Empate na pontuação: vence quem respondeu mais rápido.</p>
-      <div id="rank-inicio"></div>
-    </div>
-  </section>
+    <!-- INÍCIO -->
+    <section id="tela-inicio">
+      <h1>Daniel</h1>
+      <p class="sub">Teste o que você sabe sobre o livro inteiro, do cativeiro na Babilônia às visões do fim.</p>
+      <div class="info">
+        <p><b id="info-total">0</b> perguntas nesta rodada.</p>
+        <p>Cada pergunta tem 5 alternativas (A a E) e só uma está certa. A ordem das alternativas muda a cada vez.</p>
+        <p id="info-melhor" hidden></p>
+        <p class="ideia"><b>A ideia:</b> tente responder de cabeça primeiro. Se não souber, use a dica, leia a
+          referência na Bíblia, raciocine e então responda. Ler o texto ajuda a fixar o que você aprende.</p>
+          <p><b id="info-total">v1.0</b></p>
+      </div>
+      <label class="campo" for="nome">Seu nome (aparece no ranking)</label>
+      <input id="nome" type="text" maxlength="30" autocomplete="given-name" placeholder="Digite seu nome">
+      <p id="nome-aviso" class="campo-aviso" hidden>Digite seu nome para começar.</p>
+      <label class="check" for="usar-dicas">
+        <input type="checkbox" id="usar-dicas">
+        <span><b>Quero o botão de dica</b><small>A dica mostra a referência bíblica da pergunta. A pontuação é a mesma,
+            mas o ranking mostra uma etiqueta “com dica” para quem jogou assim.</small></span>
+      </label>
+      <div id="avisos" class="aviso" hidden></div>
+      <button class="btn" id="btn-comecar">Começar</button>
+      <div class="rank">
+        <h3>Ranking</h3>
+        <p class="rank-nota">Os 10 melhores. Empate na pontuação: vence quem respondeu mais rápido.</p>
+        <div id="rank-inicio"></div>
+      </div>
+    </section>
 
-  <!-- JOGO -->
-  <section id="tela-jogo" hidden>
-    <div class="topo"><span id="progresso"></span><span id="acertos"></span></div>
-    <div class="barra" aria-hidden="true"><i id="barra-i"></i></div>
-    <h2 id="pergunta"></h2>
-    <div id="dica" class="dica" hidden>
-      <button type="button" class="btn sec" id="btn-dica">💡 Dica: ver a referência</button>
-      <p class="dica-ref" id="dica-ref" hidden></p>
-    </div>
-    <ul id="opcoes"></ul>
-    <div id="retorno" class="retorno" hidden aria-live="polite">
-      <strong id="retorno-titulo"></strong>
-      <p id="retorno-texto"></p>
-      <p class="ref" id="retorno-ref"></p>
-    </div>
-    <button class="btn" id="btn-proxima" hidden>Próxima pergunta</button>
-  </section>
+    <!-- JOGO -->
+    <section id="tela-jogo" hidden>
+      <div class="topo"><span id="progresso"></span><span id="acertos"></span></div>
+      <div class="barra" aria-hidden="true"><i id="barra-i"></i></div>
+      <h2 id="pergunta"></h2>
+      <div id="dica" class="dica" hidden>
+        <button type="button" class="btn sec" id="btn-dica">💡 Dica: ver a referência</button>
+        <p class="dica-ref" id="dica-ref" hidden></p>
+      </div>
+      <ul id="opcoes"></ul>
+      <div id="retorno" class="retorno" hidden aria-live="polite">
+        <strong id="retorno-titulo"></strong>
+        <p id="retorno-texto"></p>
+        <p class="ref" id="retorno-ref"></p>
+      </div>
+      <button class="btn" id="btn-proxima" hidden>Próxima pergunta</button>
+    </section>
 
-  <!-- FIM -->
-  <section id="tela-fim" hidden>
-    <button class="btn sec voltar" id="btn-inicio">← Voltar ao início</button>
-    <h2 id="fim-msg"></h2>
-    <div class="placar"><span id="fim-pts">0</span> <small id="fim-total">de 0</small></div>
-    <p class="tempo">Tempo respondendo: <b id="fim-tempo">00:00</b></p>
-    <div class="rank">
-      <h3>Ranking</h3>
-      <p class="rank-nota">Os 10 melhores. Empate na pontuação: vence quem respondeu mais rápido.</p>
-      <p class="rank-msg" id="rank-msg" aria-live="polite"></p>
-      <div id="rank-fim"></div>
-      <button class="btn sec" id="btn-tentar" hidden>Tentar salvar de novo</button>
-    </div>
-    <div id="fim-revisao" class="revisao" hidden>
-      <h3>Para rever</h3>
-      <div id="fim-lista"></div>
-    </div>
-    <button class="btn" id="btn-de-novo">Jogar de novo</button>
-    <button class="btn sec" id="btn-erradas" hidden>Refazer só as que errei (não vale para o ranking)</button>
-  </section>
+    <!-- FIM -->
+    <section id="tela-fim" hidden>
+      <button class="btn sec voltar" id="btn-inicio">← Voltar ao início</button>
+      <h2 id="fim-msg"></h2>
+      <div class="placar"><span id="fim-pts">0</span> <small id="fim-total">de 0</small></div>
+      <p class="tempo">Tempo respondendo: <b id="fim-tempo">00:00</b></p>
+      <div class="rank">
+        <h3>Ranking</h3>
+        <p class="rank-nota">Os 10 melhores. Empate na pontuação: vence quem respondeu mais rápido.</p>
+        <p class="rank-msg" id="rank-msg" aria-live="polite"></p>
+        <div id="rank-fim"></div>
+        <button class="btn sec" id="btn-tentar" hidden>Tentar salvar de novo</button>
+      </div>
+      <div id="fim-revisao" class="revisao" hidden>
+        <h3>Para rever</h3>
+        <div id="fim-lista"></div>
+      </div>
+      <button class="btn" id="btn-de-novo">Jogar de novo</button>
+      <button class="btn sec" id="btn-erradas" hidden>Refazer só as que errei (não vale para o ranking)</button>
+    </section>
 
-</main>
+  </main>
 
-<!-- =====================================================================
+  <!-- =====================================================================
      PERGUNTAS: é aqui que você escreve mais perguntas.
      Copie um bloco { ... } inteiro, cole no fim da lista (antes do ] ) e
      troque os textos. Não esqueça a vírgula depois de cada bloco.
@@ -235,1188 +660,1190 @@ h1,h2,h3{font-family:var(--serif);margin:0;font-weight:800}
      Dicas: use sempre 5 alternativas. Dentro dos textos, use aspas simples ('assim'),
      não aspas duplas. Se algo estiver errado, um aviso vermelho aparece na tela inicial.
      ===================================================================== -->
-<script id="perguntas">
-const CONFIG = {
-  embaralhar: true    // true = ordem das perguntas muda a cada rodada; false = ordem fixa
-};
-// Toda rodada usa TODAS as perguntas do banco. As alternativas (A a E) são sempre
-// sorteadas de novo, então a letra certa não depende da ordem em que foi escrita abaixo.
+  <script id="perguntas">
+    const CONFIG = {
+      embaralhar: true    // true = ordem das perguntas muda a cada rodada; false = ordem fixa
+    };
+    // Toda rodada usa TODAS as perguntas do banco. As alternativas (A a E) são sempre
+    // sorteadas de novo, então a letra certa não depende da ordem em que foi escrita abaixo.
 
 
-const PERGUNTAS = [
-  // DANIEL 1
-  {
-    pergunta: "De qual cidade Nabucodonosor levou os utensílios da casa de Deus?",
-    opcoes: ["Samaria", "Jerusalém", "Belém", "Nínive", "Damasco"],
-    certa: "B",
-    ref: "Daniel 1:1-2",
-    explicacao: "Nabucodonosor cercou Jerusalém e levou parte dos utensílios da casa de Deus para a terra de Sinar."
-  },
-  {
-    pergunta: "Quem era o rei de Judá quando Nabucodonosor cercou Jerusalém?",
-    opcoes: ["Ezequias", "Josias", "Jeoaquim", "Zedequias", "Manassés"],
-    certa: "C",
-    ref: "Daniel 1:1",
-    explicacao: "Jeoaquim era o rei de Judá quando Nabucodonosor veio contra Jerusalém."
-  },
-  {
-    pergunta: "Qual era o nome do chefe dos eunucos responsável pelos jovens levados à Babilônia?",
-    opcoes: ["Aspenaz", "Arioque", "Arioc", "Belsazar", "Abednego"],
-    certa: "A",
-    ref: "Daniel 1:3",
-    explicacao: "Aspenaz era o chefe dos eunucos a quem o rei confiou a seleção e preparação dos jovens."
-  },
-  {
-    pergunta: "De qual linhagem deveriam ser os jovens escolhidos para servir no palácio do rei?",
-    opcoes: ["Dos sacerdotes", "Dos levitas", "Da família real e dos nobres", "Dos soldados", "Dos comerciantes"],
-    certa: "C",
-    ref: "Daniel 1:3-4",
-    explicacao: "O rei ordenou que fossem escolhidos jovens dos filhos de Israel, da linhagem real e dos nobres."
-  },
-  {
-    pergunta: "Por quantos anos os jovens deveriam receber instrução antes de se apresentarem ao rei?",
-    opcoes: ["Um ano", "Dois anos", "Três anos", "Quatro anos", "Sete anos"],
-    certa: "C",
-    ref: "Daniel 1:5",
-    explicacao: "Eles deveriam ser educados durante três anos antes de se apresentarem diante do rei."
-  },
-  {
-    pergunta: "Qual era o nome hebraico de Sadraque?",
-    opcoes: ["Daniel", "Hananias", "Misael", "Azarias", "Jeoaquim"],
-    certa: "B",
-    ref: "Daniel 1:6-7",
-    explicacao: "Hananias recebeu o nome babilônico de Sadraque."
-  },
-  {
-    pergunta: "Qual era o nome hebraico de Mesaque?",
-    opcoes: ["Hananias", "Azarias", "Misael", "Daniel", "Ezequiel"],
-    certa: "C",
-    ref: "Daniel 1:6-7",
-    explicacao: "Misael recebeu o nome babilônico de Mesaque."
-  },
-  {
-    pergunta: "Qual era o nome hebraico de Abede-Nego?",
-    opcoes: ["Misael", "Daniel", "Hananias", "Azarias", "Jeremias"],
-    certa: "D",
-    ref: "Daniel 1:6-7",
-    explicacao: "Azarias recebeu o nome babilônico de Abede-Nego."
-  },
-  {
-    pergunta: "O que Daniel decidiu não fazer para não se contaminar?",
-    opcoes: ["Não falar com o rei", "Não entrar no palácio", "Não se contaminar com a comida e o vinho do rei", "Não estudar a língua dos caldeus", "Não trabalhar"],
-    certa: "C",
-    ref: "Daniel 1:8",
-    explicacao: "Daniel decidiu não se contaminar com a comida e o vinho oferecidos pelo rei."
-  },
-  {
-    pergunta: "Por quantos dias Daniel pediu que ele e seus amigos fossem provados com legumes e água?",
-    opcoes: ["Três dias", "Sete dias", "Dez dias", "Quarenta dias", "Vinte dias"],
-    certa: "C",
-    ref: "Daniel 1:11-14",
-    explicacao: "Daniel propôs um teste de dez dias com legumes para comer e água para beber."
-  },
-  {
-    pergunta: "Como estavam Daniel e seus amigos ao final dos dez dias de alimentação?",
-    opcoes: ["Mais fracos que os outros", "Mais robustos que os outros jovens", "Doentes", "Sem nenhuma diferença", "Foram dispensados"],
-    certa: "B",
-    ref: "Daniel 1:15",
-    explicacao: "Eles estavam com melhor aparência e mais robustos do que os jovens que comiam das iguarias do rei."
-  },
-  {
-    pergunta: "Em quais conhecimentos Deus deu sabedoria aos quatro jovens?",
-    opcoes: ["Somente na guerra", "Na escrita e na matemática", "Em toda a cultura e sabedoria", "Somente na música", "Na agricultura"],
-    certa: "C",
-    ref: "Daniel 1:17",
-    explicacao: "Deus concedeu aos quatro jovens conhecimento e inteligência em toda a cultura e sabedoria."
-  },
-  {
-    pergunta: "Em que área Daniel recebeu entendimento especial de Deus?",
-    opcoes: ["Na construção de templos", "Em visões e sonhos", "Na medicina", "Na arte da guerra", "Na agricultura"],
-    certa: "B",
-    ref: "Daniel 1:17",
-    explicacao: "Daniel recebeu entendimento em todas as visões e sonhos."
-  },
-  {
-    pergunta: "Quem foi considerado dez vezes mais sábio que todos os magos e encantadores do reino?",
-    opcoes: ["Somente Daniel", "Os quatro jovens", "Somente Hananias", "Somente Misael", "Nabucodonosor"],
-    certa: "B",
-    ref: "Daniel 1:19-20",
-    explicacao: "O rei encontrou os quatro jovens dez vezes mais sábios que todos os magos e encantadores."
-  },
+    const PERGUNTAS = [
+      // DANIEL 1
+      {
+        pergunta: "De qual cidade Nabucodonosor levou os utensílios da casa de Deus?",
+        opcoes: ["Samaria", "Jerusalém", "Belém", "Nínive", "Damasco"],
+        certa: "B",
+        ref: "Daniel 1:1-2",
+        explicacao: "Nabucodonosor cercou Jerusalém e levou parte dos utensílios da casa de Deus para a terra de Sinar."
+      },
+      {
+        pergunta: "Quem era o rei de Judá quando Nabucodonosor cercou Jerusalém?",
+        opcoes: ["Ezequias", "Josias", "Jeoaquim", "Zedequias", "Manassés"],
+        certa: "C",
+        ref: "Daniel 1:1",
+        explicacao: "Jeoaquim era o rei de Judá quando Nabucodonosor veio contra Jerusalém."
+      },
+      {
+        pergunta: "Qual era o nome do chefe dos eunucos responsável pelos jovens levados à Babilônia?",
+        opcoes: ["Aspenaz", "Arioque", "Potifar", "Belsazar", "Abede-Nego"],
+        certa: "A",
+        ref: "Daniel 1:3",
+        explicacao: "Aspenaz era o chefe dos eunucos a quem o rei confiou a seleção e preparação dos jovens."
+      },
+      {
+        pergunta: "De qual linhagem deveriam ser os jovens escolhidos para servir no palácio do rei?",
+        opcoes: ["Dos sacerdotes", "Dos levitas", "Da família real e dos nobres", "Dos soldados", "Dos comerciantes"],
+        certa: "C",
+        ref: "Daniel 1:3-4",
+        explicacao: "O rei ordenou que fossem escolhidos jovens dos filhos de Israel, da linhagem real e dos nobres."
+      },
+      {
+        pergunta: "Por quantos anos os jovens deveriam receber instrução antes de se apresentarem ao rei?",
+        opcoes: ["Um ano", "Dois anos", "Três anos", "Quatro anos", "Sete anos"],
+        certa: "C",
+        ref: "Daniel 1:5",
+        explicacao: "Eles deveriam ser educados durante três anos antes de se apresentarem diante do rei."
+      },
+      {
+        pergunta: "Qual era o nome hebraico de Sadraque?",
+        opcoes: ["Daniel", "Hananias", "Misael", "Azarias", "Jeoaquim"],
+        certa: "B",
+        ref: "Daniel 1:6-7",
+        explicacao: "Hananias recebeu o nome babilônico de Sadraque."
+      },
+      {
+        pergunta: "Qual era o nome hebraico de Mesaque?",
+        opcoes: ["Hananias", "Azarias", "Misael", "Daniel", "Ezequiel"],
+        certa: "C",
+        ref: "Daniel 1:6-7",
+        explicacao: "Misael recebeu o nome babilônico de Mesaque."
+      },
+      {
+        pergunta: "Qual era o nome hebraico de Abede-Nego?",
+        opcoes: ["Misael", "Daniel", "Hananias", "Azarias", "Jeremias"],
+        certa: "D",
+        ref: "Daniel 1:6-7",
+        explicacao: "Azarias recebeu o nome babilônico de Abede-Nego."
+      },
+      {
+        pergunta: "Qual foi a decisão de Daniel diante da mesa do rei?",
+        opcoes: ["Não falar com o rei", "Não entrar no palácio", "Não comer a comida nem beber o vinho do rei", "Não estudar a língua dos caldeus", "Não trabalhar para o rei"],
+        certa: "C",
+        ref: "Daniel 1:8",
+        explicacao: "Daniel resolveu no coração não se contaminar com a comida e o vinho do rei."
+      },
+      {
+        pergunta: "Por quantos dias Daniel pediu que ele e seus amigos fossem provados com legumes e água?",
+        opcoes: ["Três dias", "Sete dias", "Dez dias", "Quarenta dias", "Vinte dias"],
+        certa: "C",
+        ref: "Daniel 1:11-14",
+        explicacao: "Daniel propôs um teste de dez dias com legumes para comer e água para beber."
+      },
+      {
+        pergunta: "Como estavam Daniel e seus amigos ao final dos dez dias de alimentação?",
+        opcoes: ["Mais fracos que os outros", "Mais robustos que os outros jovens", "Doentes", "Sem nenhuma diferença", "Foram dispensados"],
+        certa: "B",
+        ref: "Daniel 1:15",
+        explicacao: "Eles estavam com melhor aparência e mais robustos do que os jovens que comiam das iguarias do rei."
+      },
+      {
+        pergunta: "Em quais conhecimentos Deus deu sabedoria aos quatro jovens?",
+        opcoes: ["Somente na guerra", "Na escrita e na matemática", "Em toda a cultura e sabedoria", "Somente na música", "Na agricultura"],
+        certa: "C",
+        ref: "Daniel 1:17",
+        explicacao: "Deus concedeu aos quatro jovens conhecimento e inteligência em toda a cultura e sabedoria."
+      },
+      {
+        pergunta: "Em que área Daniel recebeu entendimento especial de Deus?",
+        opcoes: ["Na construção de templos", "Em visões e sonhos", "Na medicina", "Na arte da guerra", "No comércio"],
+        certa: "B",
+        ref: "Daniel 1:17",
+        explicacao: "Daniel recebeu entendimento em todas as visões e sonhos."
+      },
+      {
+        pergunta: "Quem foi considerado dez vezes mais sábio que todos os magos e encantadores do reino?",
+        opcoes: ["Somente Daniel", "Os quatro jovens", "Somente os três amigos de Daniel", "Os sábios da Babilônia", "Aspenaz"],
+        certa: "B",
+        ref: "Daniel 1:19-20",
+        explicacao: "O rei encontrou os quatro jovens dez vezes mais sábios que todos os magos e encantadores."
+      },
 
-  // DANIEL 2
-  {
-    pergunta: "Em qual ano do reinado de Nabucodonosor ele teve sonhos que perturbaram seu espírito?",
-    opcoes: ["Primeiro ano", "Segundo ano", "Terceiro ano", "Quarto ano", "Sétimo ano"],
-    certa: "B",
-    ref: "Daniel 2:1",
-    explicacao: "O capítulo informa que os sonhos aconteceram no segundo ano do reinado de Nabucodonosor."
-  },
-  {
-    pergunta: "O que Nabucodonosor exigiu dos sábios da Babilônia?",
-    opcoes: ["Que construíssem um templo", "Que descobrissem e interpretassem seu sonho", "Que encontrassem Daniel", "Que preparassem um exército", "Que explicassem a lei de Moisés"],
-    certa: "B",
-    ref: "Daniel 2:2-6",
-    explicacao: "O rei exigiu que os sábios revelassem tanto o sonho quanto sua interpretação."
-  },
-  {
-    pergunta: "O que aconteceria aos sábios caso não revelassem o sonho do rei?",
-    opcoes: ["Seriam enviados para Jerusalém", "Seriam presos por dez anos", "Seriam despedaçados e suas casas destruídas", "Perderiam seus cargos", "Seriam expulsos da Babilônia"],
-    certa: "C",
-    ref: "Daniel 2:5",
-    explicacao: "Nabucodonosor decretou uma punição severa: os sábios seriam despedaçados e suas casas destruídas."
-  },
-  {
-    pergunta: "Quem procurou Daniel para comunicar o decreto de morte contra os sábios?",
-    opcoes: ["Aspenaz", "Arioque", "Belsazar", "Gabriel", "Dario"],
-    certa: "B",
-    ref: "Daniel 2:14-15",
-    explicacao: "Arioque, chefe da guarda do rei, procurou Daniel para cumprir o decreto."
-  },
-  {
-    pergunta: "O que Daniel pediu ao rei quando soube do decreto?",
-    opcoes: ["Que o libertasse do serviço", "Que lhe desse tempo para revelar a interpretação", "Que libertasse todos os sábios", "Que cancelasse o sonho", "Que chamasse os sacerdotes"],
-    certa: "B",
-    ref: "Daniel 2:16",
-    explicacao: "Daniel pediu tempo para apresentar ao rei a interpretação do sonho."
-  },
-  {
-    pergunta: "Com quem Daniel compartilhou o pedido de oração para conhecer o mistério do sonho?",
-    opcoes: ["Com os soldados", "Com os sacerdotes", "Com Hananias, Misael e Azarias", "Com os magos", "Com os oficiais do rei"],
-    certa: "C",
-    ref: "Daniel 2:17-18",
-    explicacao: "Daniel pediu que seus três amigos buscassem misericórdia de Deus sobre aquele mistério."
-  },
-  {
-    pergunta: "Durante qual período Daniel recebeu a revelação do mistério?",
-    opcoes: ["Durante a madrugada", "Durante a noite", "Ao meio-dia", "Durante uma viagem", "No templo"],
-    certa: "B",
-    ref: "Daniel 2:19",
-    explicacao: "O mistério foi revelado a Daniel numa visão durante a noite."
-  },
-  {
-    pergunta: "Segundo Daniel, quem muda os tempos e as estações?",
-    opcoes: ["Os reis", "Os sacerdotes", "O Altíssimo", "Os anjos", "Os sábios"],
-    certa: "C",
-    ref: "Daniel 2:20-21",
-    explicacao: "Daniel louvou a Deus porque Ele muda os tempos e as estações, remove reis e estabelece reis."
-  },
-  {
-    pergunta: "Qual era o nome do Deus a quem Daniel atribuiu a revelação do sonho?",
-    opcoes: ["Bel", "O Deus dos céus", "Marduque", "Dagom", "Baal"],
-    certa: "B",
-    ref: "Daniel 2:27-28",
-    explicacao: "Daniel declarou que existe um Deus nos céus que revela os mistérios."
-  },
-  {
-    pergunta: "Qual parte da estátua era feita de prata?",
-    opcoes: ["A cabeça", "O peito e os braços", "O ventre e as coxas", "As pernas", "Os pés"],
-    certa: "B",
-    ref: "Daniel 2:32",
-    explicacao: "O peito e os braços da estátua eram de prata."
-  },
-  {
-    pergunta: "De que material eram o ventre e as coxas da estátua?",
-    opcoes: ["Ouro", "Prata", "Bronze", "Ferro", "Barro"],
-    certa: "C",
-    ref: "Daniel 2:32",
-    explicacao: "O ventre e as coxas eram feitos de bronze."
-  },
-  {
-    pergunta: "De que material eram as pernas da grande estátua?",
-    opcoes: ["Ouro", "Prata", "Bronze", "Ferro", "Barro"],
-    certa: "D",
-    ref: "Daniel 2:33",
-    explicacao: "As pernas da estátua eram de ferro."
-  },
-  {
-    pergunta: "O que os pés da estátua representavam em sua composição?",
-    opcoes: ["Somente ouro", "Somente ferro", "Ferro misturado com barro", "Prata misturada com bronze", "Bronze misturado com ouro"],
-    certa: "C",
-    ref: "Daniel 2:33,41-43",
-    explicacao: "Os pés eram parcialmente de ferro e parcialmente de barro."
-  },
-  {
-    pergunta: "O que aconteceu com a pedra que atingiu a estátua?",
-    opcoes: ["Transformou-se em ouro", "Destruiu toda a estátua", "Virou um grande rio", "Foi lançada ao mar", "Desapareceu"],
-    certa: "B",
-    ref: "Daniel 2:34-35",
-    explicacao: "A pedra atingiu os pés da estátua e todos os materiais foram despedaçados."
-  },
-  {
-    pergunta: "Como foi cortada a pedra que destruiu a estátua?",
-    opcoes: ["Por mãos humanas", "Por ferramentas de ferro", "Sem auxílio de mãos humanas", "Por um exército", "Por uma espada"],
-    certa: "C",
-    ref: "Daniel 2:34-35",
-    explicacao: "A pedra foi cortada sem auxílio de mãos e atingiu a estátua."
-  },
-  {
-    pergunta: "No sonho, a pedra que destruiu a estátua tornou-se o quê?",
-    opcoes: ["Um grande monte que encheu toda a terra", "Um rio de ouro", "Uma cidade fortificada", "Uma grande árvore", "Uma torre"],
-    certa: "A",
-    ref: "Daniel 2:35",
-    explicacao: "A pedra tornou-se um grande monte que encheu toda a terra."
-  },
-  {
-    pergunta: "O que Nabucodonosor fez depois que Daniel revelou e interpretou o sonho?",
-    opcoes: ["Mandou prender Daniel", "Prostrou-se diante de Daniel e reconheceu seu Deus", "Destruiu a estátua", "Abandonou o reino", "Voltou para Jerusalém"],
-    certa: "B",
-    ref: "Daniel 2:46-47",
-    explicacao: "O rei reconheceu que o Deus de Daniel era Deus dos deuses e Senhor dos reis."
-  },
-  {
-    pergunta: "Qual posição Daniel recebeu após interpretar o sonho?",
-    opcoes: ["General do exército", "Governador de toda a província da Babilônia", "Sacerdote do templo", "Rei da Pérsia", "Chefe dos eunucos"],
-    certa: "B",
-    ref: "Daniel 2:48",
-    explicacao: "Nabucodonosor colocou Daniel como governador de toda a província da Babilônia."
-  },
+      // DANIEL 2
+      {
+        pergunta: "Em qual ano do reinado de Nabucodonosor ele teve sonhos que perturbaram seu espírito?",
+        opcoes: ["Primeiro ano", "Segundo ano", "Terceiro ano", "Quarto ano", "Sétimo ano"],
+        certa: "B",
+        ref: "Daniel 2:1",
+        explicacao: "O capítulo informa que os sonhos aconteceram no segundo ano do reinado de Nabucodonosor."
+      },
+      {
+        pergunta: "O que Nabucodonosor exigiu dos sábios da Babilônia?",
+        opcoes: ["Que construíssem um templo", "Que descobrissem e interpretassem seu sonho", "Que encontrassem Daniel", "Que preparassem um exército", "Que explicassem a lei de Moisés"],
+        certa: "B",
+        ref: "Daniel 2:2-6",
+        explicacao: "O rei exigiu que os sábios revelassem tanto o sonho quanto sua interpretação."
+      },
+      {
+        pergunta: "O que aconteceria aos sábios caso não revelassem o sonho do rei?",
+        opcoes: ["Seriam enviados para Jerusalém", "Seriam presos por dez anos", "Seriam despedaçados e suas casas destruídas", "Perderiam seus cargos", "Seriam expulsos da Babilônia"],
+        certa: "C",
+        ref: "Daniel 2:5",
+        explicacao: "Nabucodonosor decretou uma punição severa: os sábios seriam despedaçados e suas casas destruídas."
+      },
+      {
+        pergunta: "Quem era o chefe da guarda do rei, encarregado de executar o decreto contra os sábios?",
+        opcoes: ["Aspenaz", "Arioque", "Belsazar", "Gabriel", "Dario"],
+        certa: "B",
+        ref: "Daniel 2:14-15",
+        explicacao: "Arioque, chefe da guarda do rei, saiu para executar o decreto, e Daniel falou com ele com prudência."
+      },
+      {
+        pergunta: "O que Daniel pediu ao rei quando soube do decreto?",
+        opcoes: ["Que o libertasse do serviço", "Que lhe desse tempo para revelar a interpretação", "Que libertasse todos os sábios", "Que cancelasse o sonho", "Que chamasse os sacerdotes"],
+        certa: "B",
+        ref: "Daniel 2:16",
+        explicacao: "Daniel pediu tempo para apresentar ao rei a interpretação do sonho."
+      },
+      {
+        pergunta: "Com quem Daniel compartilhou o pedido de oração para conhecer o mistério do sonho?",
+        opcoes: ["Com os soldados", "Com os sacerdotes", "Com Hananias, Misael e Azarias", "Com os magos", "Com os oficiais do rei"],
+        certa: "C",
+        ref: "Daniel 2:17-18",
+        explicacao: "Daniel pediu que seus três amigos buscassem misericórdia de Deus sobre aquele mistério."
+      },
+      {
+        pergunta: "Em que momento o mistério foi revelado a Daniel?",
+        opcoes: ["Pela manhã", "À noite, numa visão", "Ao meio-dia", "Durante a tarde", "Durante uma viagem"],
+        certa: "B",
+        ref: "Daniel 2:19",
+        explicacao: "O mistério foi revelado a Daniel numa visão durante a noite."
+      },
+      {
+        pergunta: "Segundo Daniel, quem muda os tempos e as estações?",
+        opcoes: ["Os reis", "Os sacerdotes", "Deus", "Os anjos", "Os sábios"],
+        certa: "C",
+        ref: "Daniel 2:20-21",
+        explicacao: "Daniel louvou a Deus porque Ele muda os tempos e as estações, remove reis e estabelece reis."
+      },
+      {
+        pergunta: "A quem Daniel atribuiu a revelação do sonho do rei?",
+        opcoes: ["A Bel, deus dos babilônios", "Ao Deus dos céus", "Aos astros e estrelas", "A Dagom", "A Baal"],
+        certa: "B",
+        ref: "Daniel 2:27-28",
+        explicacao: "Daniel declarou que existe um Deus nos céus que revela os mistérios."
+      },
+      {
+        pergunta: "Qual parte da estátua era feita de prata?",
+        opcoes: ["A cabeça", "O peito e os braços", "O ventre e as coxas", "As pernas", "Os pés"],
+        certa: "B",
+        ref: "Daniel 2:32",
+        explicacao: "O peito e os braços da estátua eram de prata."
+      },
+      {
+        pergunta: "De que material eram o ventre e as coxas da estátua?",
+        opcoes: ["Ouro", "Prata", "Bronze", "Ferro", "Barro"],
+        certa: "C",
+        ref: "Daniel 2:32",
+        explicacao: "O ventre e as coxas eram feitos de bronze."
+      },
+      {
+        pergunta: "De que material eram as pernas da grande estátua?",
+        opcoes: ["Ouro", "Prata", "Bronze", "Ferro", "Barro"],
+        certa: "D",
+        ref: "Daniel 2:33",
+        explicacao: "As pernas da estátua eram de ferro."
+      },
+      {
+        pergunta: "De que eram feitos os pés da estátua?",
+        opcoes: ["Somente ouro", "Somente ferro", "Ferro misturado com barro", "Prata misturada com bronze", "Bronze misturado com ouro"],
+        certa: "C",
+        ref: "Daniel 2:33,41-43",
+        explicacao: "Os pés eram parcialmente de ferro e parcialmente de barro."
+      },
+      {
+        pergunta: "O que a pedra fez ao atingir os pés da estátua?",
+        opcoes: ["Transformou a estátua em ouro", "Despedaçou toda a estátua", "Formou um grande rio", "Foi lançada ao mar", "Desapareceu sem efeito"],
+        certa: "B",
+        ref: "Daniel 2:34-35",
+        explicacao: "A pedra atingiu os pés e todos os materiais foram despedaçados e levados como palha pelo vento."
+      },
+      {
+        pergunta: "Como foi cortada a pedra que destruiu a estátua?",
+        opcoes: ["Por mãos humanas", "Por ferramentas de ferro", "Sem auxílio de mãos humanas", "Por um exército", "Por uma espada"],
+        certa: "C",
+        ref: "Daniel 2:34-35",
+        explicacao: "A pedra foi cortada sem auxílio de mãos e atingiu a estátua."
+      },
+      {
+        pergunta: "No sonho, a pedra que destruiu a estátua tornou-se o quê?",
+        opcoes: ["Um grande monte que encheu toda a terra", "Um rio de ouro", "Uma cidade fortificada", "Uma grande árvore", "Uma torre"],
+        certa: "A",
+        ref: "Daniel 2:35",
+        explicacao: "A pedra tornou-se um grande monte que encheu toda a terra."
+      },
+      {
+        pergunta: "O que Nabucodonosor fez depois que Daniel revelou e interpretou o sonho?",
+        opcoes: ["Mandou prender Daniel", "Prostrou-se diante de Daniel e reconheceu seu Deus", "Destruiu a estátua", "Abandonou o reino", "Voltou para Jerusalém"],
+        certa: "B",
+        ref: "Daniel 2:46-47",
+        explicacao: "O rei reconheceu que o Deus de Daniel era Deus dos deuses e Senhor dos reis."
+      },
+      {
+        pergunta: "Qual posição Daniel recebeu após interpretar o sonho?",
+        opcoes: ["General do exército", "Governador de toda a província da Babilônia", "Sacerdote do templo", "Rei da Pérsia", "Chefe dos eunucos"],
+        certa: "B",
+        ref: "Daniel 2:48",
+        explicacao: "Nabucodonosor colocou Daniel como governador de toda a província da Babilônia."
+      },
 
-  // DANIEL 3
-  {
-    pergunta: "Em qual região Nabucodonosor construiu a estátua de ouro?",
-    opcoes: ["Jerusalém", "Dura, na província da Babilônia", "Nínive", "Egito", "Susã"],
-    certa: "B",
-    ref: "Daniel 3:1",
-    explicacao: "A estátua foi levantada no campo de Dura, na província da Babilônia."
-  },
-  {
-    pergunta: "Qual era a altura da estátua de ouro construída por Nabucodonosor?",
-    opcoes: ["30 côvados", "40 côvados", "50 côvados", "60 côvados", "100 côvados"],
-    certa: "D",
-    ref: "Daniel 3:1",
-    explicacao: "A estátua tinha sessenta côvados de altura."
-  },
-  {
-    pergunta: "Qual era a largura da estátua de ouro?",
-    opcoes: ["Seis côvados", "Dez côvados", "Doze côvados", "Vinte côvados", "Trinta côvados"],
-    certa: "A",
-    ref: "Daniel 3:1",
-    explicacao: "A estátua tinha sessenta côvados de altura e seis côvados de largura."
-  },
-  {
-    pergunta: "O que as pessoas deveriam fazer ao ouvir os instrumentos musicais?",
-    opcoes: ["Sair do local", "Ajoelhar-se e adorar a estátua", "Cantar um hino", "Ficar em silêncio", "Ir ao palácio"],
-    certa: "B",
-    ref: "Daniel 3:4-5",
-    explicacao: "Todos deveriam se prostrar e adorar a estátua de ouro ao ouvir os instrumentos."
-  },
-  {
-    pergunta: "Qual instrumento musical é citado no decreto do rei?",
-    opcoes: ["Harpa", "Flauta", "Violão", "Tamborim", "Cítara moderna"],
-    certa: "B",
-    ref: "Daniel 3:5",
-    explicacao: "A flauta está entre os instrumentos citados no decreto, junto com buzina, harpa, saltério e outros."
-  },
-  {
-    pergunta: "Quem denunciou os judeus que não adoraram a estátua?",
-    opcoes: ["Os caldeus", "Os persas", "Os egípcios", "Os gregos", "Os medos"],
-    certa: "A",
-    ref: "Daniel 3:8-12",
-    explicacao: "Alguns homens caldeus foram até o rei para acusar os judeus."
-  },
-  {
-    pergunta: "Qual foi a resposta dos três amigos diante da ameaça do rei?",
-    opcoes: ["Pediram mais tempo", "Negaram sua fé", "Declararam que Deus poderia livrá-los, mas não adorariam a estátua", "Fugiram da Babilônia", "Concordaram em adorar"],
-    certa: "C",
-    ref: "Daniel 3:16-18",
-    explicacao: "Eles confiaram em Deus e declararam que não serviriam aos deuses do rei nem adorariam a estátua."
-  },
-  {
-    pergunta: "Quantas vezes mais quente o rei mandou aquecer a fornalha?",
-    opcoes: ["Duas vezes", "Três vezes", "Cinco vezes", "Sete vezes", "Dez vezes"],
-    certa: "D",
-    ref: "Daniel 3:19",
-    explicacao: "Nabucodonosor ordenou que a fornalha fosse aquecida sete vezes mais do que o costume."
-  },
-  {
-    pergunta: "O que aconteceu com os homens que lançaram os três jovens na fornalha?",
-    opcoes: ["Foram recompensados", "Morreram por causa das chamas", "Fugiram", "Foram presos", "Nada aconteceu"],
-    certa: "B",
-    ref: "Daniel 3:22",
-    explicacao: "O fogo era tão intenso que matou os homens que levaram os jovens até a fornalha."
-  },
-  {
-    pergunta: "O que aconteceu com as roupas dos três jovens dentro da fornalha?",
-    opcoes: ["Foram completamente queimadas", "Ficaram brancas", "Não sofreram dano algum", "Transformaram-se em cinzas", "Desapareceram"],
-    certa: "C",
-    ref: "Daniel 3:27",
-    explicacao: "O fogo não teve poder sobre eles; nem mesmo suas roupas foram danificadas."
-  },
-  {
-    pergunta: "Qual parte do corpo dos três jovens não apresentava cheiro de fogo?",
-    opcoes: ["As mãos", "Os cabelos", "As roupas", "Os pés", "Todo o corpo"],
-    certa: "B",
-    ref: "Daniel 3:27",
-    explicacao: "O texto afirma que nem seus cabelos foram chamuscados e nem havia cheiro de fogo neles."
-  },
+      // DANIEL 3
+      {
+        pergunta: "Em qual região Nabucodonosor construiu a estátua de ouro?",
+        opcoes: ["Jerusalém", "Dura, na província da Babilônia", "Nínive", "Egito", "Susã"],
+        certa: "B",
+        ref: "Daniel 3:1",
+        explicacao: "A estátua foi levantada no campo de Dura, na província da Babilônia."
+      },
+      {
+        pergunta: "Qual era a altura da estátua de ouro construída por Nabucodonosor?",
+        opcoes: ["30 côvados", "40 côvados", "50 côvados", "60 côvados", "100 côvados"],
+        certa: "D",
+        ref: "Daniel 3:1",
+        explicacao: "A estátua tinha sessenta côvados de altura."
+      },
+      {
+        pergunta: "Qual era a largura da estátua de ouro?",
+        opcoes: ["Seis côvados", "Dez côvados", "Doze côvados", "Vinte côvados", "Trinta côvados"],
+        certa: "A",
+        ref: "Daniel 3:1",
+        explicacao: "A estátua tinha sessenta côvados de altura e seis côvados de largura."
+      },
+      {
+        pergunta: "O que as pessoas deveriam fazer ao ouvir os instrumentos musicais?",
+        opcoes: ["Sair do local", "Prostrar-se e adorar a estátua", "Cantar um hino", "Ficar em silêncio", "Ir ao palácio"],
+        certa: "B",
+        ref: "Daniel 3:4-5",
+        explicacao: "Todos deveriam se prostrar e adorar a estátua de ouro ao ouvir os instrumentos."
+      },
+      {
+        pergunta: "Qual destes instrumentos é citado no decreto do rei?",
+        opcoes: ["Violão", "Flauta", "Tamborim", "Pandeiro", "Gaita de boca"],
+        certa: "B",
+        ref: "Daniel 3:5",
+        explicacao: "A flauta está entre os instrumentos citados no decreto, junto com trombeta, harpa, saltério e outros."
+      },
+      {
+        pergunta: "Quem denunciou os judeus que não adoraram a estátua?",
+        opcoes: ["Os caldeus", "Os persas", "Os egípcios", "Os gregos", "Os medos"],
+        certa: "A",
+        ref: "Daniel 3:8-12",
+        explicacao: "Alguns homens caldeus foram até o rei para acusar os judeus."
+      },
+      {
+        pergunta: "Qual foi a resposta dos três amigos diante da ameaça do rei?",
+        opcoes: ["Pediram mais tempo", "Negaram sua fé", "Declararam que Deus poderia livrá-los, mas não adorariam a estátua", "Fugiram da Babilônia", "Concordaram em adorar"],
+        certa: "C",
+        ref: "Daniel 3:16-18",
+        explicacao: "Eles confiaram em Deus e declararam que não serviriam aos deuses do rei nem adorariam a estátua."
+      },
+      {
+        pergunta: "Quantas vezes mais quente o rei mandou aquecer a fornalha?",
+        opcoes: ["Duas vezes", "Três vezes", "Cinco vezes", "Sete vezes", "Dez vezes"],
+        certa: "D",
+        ref: "Daniel 3:19",
+        explicacao: "Nabucodonosor ordenou que a fornalha fosse aquecida sete vezes mais do que o costume."
+      },
+      {
+        pergunta: "O que aconteceu com os homens que lançaram os três jovens na fornalha?",
+        opcoes: ["Foram recompensados", "Morreram por causa das chamas", "Fugiram", "Foram presos", "Nada aconteceu"],
+        certa: "B",
+        ref: "Daniel 3:22",
+        explicacao: "O fogo era tão intenso que matou os homens que levaram os jovens até a fornalha."
+      },
+      {
+        pergunta: "O que aconteceu com as roupas dos três jovens dentro da fornalha?",
+        opcoes: ["Foram completamente queimadas", "Ficaram brancas", "Não sofreram dano algum", "Transformaram-se em cinzas", "Desapareceram"],
+        certa: "C",
+        ref: "Daniel 3:27",
+        explicacao: "O fogo não teve poder sobre eles; nem mesmo suas roupas foram danificadas."
+      },
+      {
+        pergunta: "O que o texto diz sobre os cabelos dos três jovens ao saírem da fornalha?",
+        opcoes: ["Ficaram brancos", "Nem um fio foi chamuscado", "Foram cortados pelo rei", "Queimaram parcialmente", "Caíram todos"],
+        certa: "B",
+        ref: "Daniel 3:27",
+        explicacao: "Nem um cabelo da cabeça deles foi chamuscado, e nem cheiro de fogo havia passado sobre eles."
+      },
 
-  // DANIEL 4
-  {
-    pergunta: "A quem Nabucodonosor dirigiu a mensagem registrada no início do capítulo 4?",
-    opcoes: ["Somente aos sacerdotes", "A todos os povos, nações e línguas", "Somente aos judeus", "Ao exército da Babilônia", "Aos reis da Pérsia"],
-    certa: "B",
-    ref: "Daniel 4:1",
-    explicacao: "O rei enviou sua mensagem a todos os povos, nações e línguas que habitavam na terra."
-  },
-  {
-    pergunta: "Qual era a altura da árvore que Nabucodonosor viu em seu sonho?",
-    opcoes: ["Pequena e fraca", "Crescia muito e chegava até o céu", "Tinha apenas dez côvados", "Era menor que as outras", "Não tinha folhas"],
-    certa: "B",
-    ref: "Daniel 4:10-11",
-    explicacao: "A árvore cresceu e se fortaleceu até alcançar o céu, sendo vista de toda a terra."
-  },
-  {
-    pergunta: "O que acontecia com os animais debaixo da árvore do sonho?",
-    opcoes: ["Eram expulsos", "Encontravam abrigo e alimento", "Eram atacados", "Não conseguiam se aproximar", "Transformavam-se em homens"],
-    certa: "B",
-    ref: "Daniel 4:12",
-    explicacao: "As aves faziam morada em seus ramos e os animais encontravam sombra debaixo dela."
-  },
-  {
-    pergunta: "Quem apareceu na visão de Nabucodonosor ordenando que a árvore fosse cortada?",
-    opcoes: ["Um sacerdote", "Um anjo", "Um vigia, um santo", "Um rei", "Um profeta"],
-    certa: "C",
-    ref: "Daniel 4:13-14",
-    explicacao: "Um vigia e santo desceu do céu e anunciou a ordem de cortar a árvore."
-  },
-  {
-    pergunta: "O que deveria permanecer da árvore depois de cortada?",
-    opcoes: ["Somente as folhas", "O tronco e suas raízes", "Somente os galhos", "Nada deveria permanecer", "Os frutos"],
-    certa: "B",
-    ref: "Daniel 4:15",
-    explicacao: "O tronco e as raízes deveriam permanecer presos com cadeias de ferro e bronze."
-  },
-  {
-    pergunta: "Por quanto tempo o coração do homem seria mudado para o coração de animal na visão?",
-    opcoes: ["Três tempos", "Cinco tempos", "Sete tempos", "Dez tempos", "Doze tempos"],
-    certa: "C",
-    ref: "Daniel 4:16",
-    explicacao: "A visão anunciou que passariam sete tempos sobre ele."
-  },
-  {
-    pergunta: "Qual era o objetivo da sentença anunciada na visão da árvore?",
-    opcoes: ["Mostrar que os sábios eram superiores", "Ensinar que o Altíssimo domina sobre os reinos dos homens", "Destruir a Babilônia imediatamente", "Exaltar os deuses caldeus", "Escolher outro profeta"],
-    certa: "B",
-    ref: "Daniel 4:17",
-    explicacao: "A sentença mostraria que o Altíssimo tem domínio sobre os reinos humanos e os entrega a quem deseja."
-  },
-  {
-    pergunta: "O que Daniel aconselhou Nabucodonosor a fazer para prolongar sua tranquilidade?",
-    opcoes: ["Construir outra estátua", "Abandonar os pecados e praticar justiça", "Fazer guerra contra a Pérsia", "Expulsar os sábios", "Mudar a capital"],
-    certa: "B",
-    ref: "Daniel 4:27",
-    explicacao: "Daniel aconselhou o rei a romper com seus pecados, praticar a justiça e usar de misericórdia com os pobres."
-  },
-  {
-    pergunta: "Onde Nabucodonosor estava quando se orgulhou de sua grandeza?",
-    opcoes: ["No templo", "No terraço do palácio real da Babilônia", "Na fornalha", "No campo de Dura", "Em Jerusalém"],
-    certa: "B",
-    ref: "Daniel 4:29-30",
-    explicacao: "O rei estava passeando no terraço do palácio real da Babilônia quando exaltou sua própria grandeza."
-  },
-  {
-    pergunta: "O que Nabucodonosor reconheceu depois de recuperar o entendimento?",
-    opcoes: ["Que seus magos eram deuses", "Que o domínio de Deus é eterno", "Que a Babilônia era invencível", "Que Daniel era o verdadeiro rei", "Que não existia Deus"],
-    certa: "B",
-    ref: "Daniel 4:34",
-    explicacao: "O rei louvou o Altíssimo e reconheceu que seu domínio é eterno e seu reino permanece de geração em geração."
-  },
+      // DANIEL 4
+      {
+        pergunta: "A quem Nabucodonosor dirigiu a mensagem registrada no início do capítulo 4?",
+        opcoes: ["Somente aos sacerdotes", "A todos os povos, nações e línguas", "Somente aos judeus", "Ao exército da Babilônia", "Aos reis da Pérsia"],
+        certa: "B",
+        ref: "Daniel 4:1",
+        explicacao: "O rei enviou sua mensagem a todos os povos, nações e línguas que habitavam na terra."
+      },
+      {
+        pergunta: "Como era a árvore que Nabucodonosor viu em seu sonho?",
+        opcoes: ["Pequena e fraca", "Crescia muito e chegava até o céu", "Tinha apenas dez côvados", "Era menor que as outras", "Não tinha folhas"],
+        certa: "B",
+        ref: "Daniel 4:10-11",
+        explicacao: "A árvore cresceu e se fortaleceu até alcançar o céu, sendo vista de toda a terra."
+      },
+      {
+        pergunta: "O que acontecia com os animais debaixo da árvore do sonho?",
+        opcoes: ["Eram expulsos", "Encontravam abrigo e alimento", "Eram atacados", "Não conseguiam se aproximar", "Transformavam-se em homens"],
+        certa: "B",
+        ref: "Daniel 4:12",
+        explicacao: "As aves faziam morada em seus ramos e os animais encontravam sombra debaixo dela."
+      },
+      {
+        pergunta: "Quem desceu do céu na visão de Nabucodonosor e ordenou que a árvore fosse cortada?",
+        opcoes: ["Um sacerdote", "Um soldado", "Um vigia, um santo", "Um rei", "Um profeta"],
+        certa: "C",
+        ref: "Daniel 4:13-14",
+        explicacao: "Um vigia e santo desceu do céu e anunciou a ordem de cortar a árvore."
+      },
+      {
+        pergunta: "O que deveria permanecer da árvore depois de cortada?",
+        opcoes: ["Somente as folhas", "O tronco e suas raízes", "Somente os galhos", "Nada deveria permanecer", "Os frutos"],
+        certa: "B",
+        ref: "Daniel 4:15",
+        explicacao: "O tronco e as raízes deveriam permanecer presos com cadeias de ferro e bronze."
+      },
+      {
+        pergunta: "Por quanto tempo o coração do homem seria mudado para o coração de animal na visão?",
+        opcoes: ["Três tempos", "Cinco tempos", "Sete tempos", "Dez tempos", "Doze tempos"],
+        certa: "C",
+        ref: "Daniel 4:16",
+        explicacao: "A visão anunciou que passariam sete tempos sobre ele."
+      },
+      {
+        pergunta: "Qual era o objetivo da sentença anunciada na visão da árvore?",
+        opcoes: ["Mostrar que os sábios eram superiores", "Ensinar que o Altíssimo domina sobre os reinos dos homens", "Destruir a Babilônia imediatamente", "Exaltar os deuses caldeus", "Escolher outro profeta"],
+        certa: "B",
+        ref: "Daniel 4:17",
+        explicacao: "A sentença mostraria que o Altíssimo tem domínio sobre os reinos humanos e os entrega a quem deseja."
+      },
+      {
+        pergunta: "O que Daniel aconselhou Nabucodonosor a fazer para prolongar sua tranquilidade?",
+        opcoes: ["Construir outra estátua", "Abandonar os pecados e praticar justiça", "Fazer guerra contra a Pérsia", "Expulsar os sábios", "Mudar a capital"],
+        certa: "B",
+        ref: "Daniel 4:27",
+        explicacao: "Daniel aconselhou o rei a romper com seus pecados, praticar a justiça e usar de misericórdia com os pobres."
+      },
+      {
+        pergunta: "Onde Nabucodonosor estava quando se orgulhou de sua grandeza?",
+        opcoes: ["No templo", "No terraço do palácio real da Babilônia", "Na fornalha", "No campo de Dura", "Em Jerusalém"],
+        certa: "B",
+        ref: "Daniel 4:29-30",
+        explicacao: "O rei estava passeando no terraço do palácio real da Babilônia quando exaltou sua própria grandeza."
+      },
+      {
+        pergunta: "O que Nabucodonosor reconheceu depois de recuperar o entendimento?",
+        opcoes: ["Que seus magos eram deuses", "Que o domínio de Deus é eterno", "Que a Babilônia era invencível", "Que Daniel era o verdadeiro rei", "Que não existia Deus"],
+        certa: "B",
+        ref: "Daniel 4:34",
+        explicacao: "O rei louvou o Altíssimo e reconheceu que seu domínio é eterno e seu reino permanece de geração em geração."
+      },
 
-  // DANIEL 5
-  {
-    pergunta: "Quantos convidados importantes participaram do banquete de Belsazar?",
-    opcoes: ["Cem", "Quinhentos", "Mil", "Dois mil", "Sete mil"],
-    certa: "C",
-    ref: "Daniel 5:1",
-    explicacao: "Belsazar ofereceu um grande banquete para mil dos seus grandes."
-  },
-  {
-    pergunta: "O que Belsazar mandou trazer para o banquete?",
-    opcoes: ["As armas dos soldados", "Os utensílios de ouro e prata do templo de Jerusalém", "Os livros de Daniel", "A arca da aliança", "As roupas dos sacerdotes"],
-    certa: "B",
-    ref: "Daniel 5:2-3",
-    explicacao: "O rei mandou trazer os utensílios que haviam sido retirados do templo de Jerusalém."
-  },
-  {
-    pergunta: "O que os convidados fizeram enquanto bebiam nos utensílios sagrados?",
-    opcoes: ["Oraram ao Deus de Israel", "Louvaram os deuses de ouro, prata, bronze, ferro, madeira e pedra", "Jejuaram", "Leram a lei de Moisés", "Cantaram salmos"],
-    certa: "B",
-    ref: "Daniel 5:4",
-    explicacao: "Eles beberam e louvaram deuses feitos de diferentes materiais."
-  },
-  {
-    pergunta: "Onde a mão misteriosa começou a escrever?",
-    opcoes: ["Na porta do palácio", "Na parede caiada do palácio, perto do castiçal", "No chão", "No teto", "Na mesa do rei"],
-    certa: "B",
-    ref: "Daniel 5:5",
-    explicacao: "Os dedos de uma mão humana apareceram e escreveram na parede, perto do castiçal."
-  },
-  {
-    pergunta: "Como Belsazar reagiu ao ver a mão escrevendo?",
-    opcoes: ["Riu da situação", "Ficou tranquilo", "Seu rosto mudou e seus joelhos bateram um contra o outro", "Saiu para caçar", "Mandou destruir a parede"],
-    certa: "C",
-    ref: "Daniel 5:6",
-    explicacao: "O rei ficou profundamente assustado, perdeu a cor do rosto e seus joelhos batiam um contra o outro."
-  },
-  {
-    pergunta: "Qual recompensa Belsazar ofereceu a quem interpretasse a escrita?",
-    opcoes: ["Um cavalo e uma espada", "Roupas de púrpura, colar de ouro e o terceiro lugar no reino", "Metade do reino", "Uma cidade", "Mil moedas de prata"],
-    certa: "B",
-    ref: "Daniel 5:7",
-    explicacao: "O rei ofereceu roupas de púrpura, um colar de ouro e o posto de terceiro governante do reino."
-  },
-  {
-    pergunta: "Quem lembrou ao rei que Daniel poderia interpretar a escrita?",
-    opcoes: ["A rainha", "Arioque", "Um soldado", "O chefe dos eunucos", "Um sacerdote"],
-    certa: "A",
-    ref: "Daniel 5:10-12",
-    explicacao: "A rainha entrou no salão e lembrou ao rei das capacidades de Daniel."
-  },
-  {
-    pergunta: "Qual era a primeira palavra escrita na parede?",
-    opcoes: ["Peres", "Mene", "Tekel", "Daniel", "Babilônia"],
-    certa: "B",
-    ref: "Daniel 5:25",
-    explicacao: "A primeira palavra era Mene, seguida por Tequel e Peres."
-  },
-  {
-    pergunta: "O que significava a palavra Tequel?",
-    opcoes: ["Teu reino será destruído", "Foste pesado na balança e achado em falta", "Teus dias foram multiplicados", "Deus estabeleceu teu reino", "A Babilônia será exaltada"],
-    certa: "B",
-    ref: "Daniel 5:27",
-    explicacao: "Tequel significava que Belsazar havia sido pesado na balança e achado em falta."
-  },
-  {
-    pergunta: "O que significava a palavra Peres na interpretação de Daniel?",
-    opcoes: ["Teu reino foi dividido e entregue aos medos e persas", "Teu reino será eterno", "A Babilônia terá paz", "O rei será curado", "Os judeus retornarão imediatamente"],
-    certa: "A",
-    ref: "Daniel 5:28",
-    explicacao: "Peres anunciava que o reino seria dividido e entregue aos medos e persas."
-  },
+      // DANIEL 5
+      {
+        pergunta: "Quantos convidados importantes participaram do banquete de Belsazar?",
+        opcoes: ["Cem", "Quinhentos", "Mil", "Dois mil", "Sete mil"],
+        certa: "C",
+        ref: "Daniel 5:1",
+        explicacao: "Belsazar ofereceu um grande banquete para mil dos seus grandes."
+      },
+      {
+        pergunta: "O que Belsazar mandou trazer para o banquete?",
+        opcoes: ["As armas dos soldados", "Os utensílios de ouro e prata do templo de Jerusalém", "Os livros de Daniel", "A arca da aliança", "As roupas dos sacerdotes"],
+        certa: "B",
+        ref: "Daniel 5:2-3",
+        explicacao: "O rei mandou trazer os utensílios que haviam sido retirados do templo de Jerusalém."
+      },
+      {
+        pergunta: "O que os convidados fizeram enquanto bebiam nos utensílios sagrados?",
+        opcoes: ["Oraram ao Deus de Israel", "Louvaram os deuses de ouro, prata, bronze, ferro, madeira e pedra", "Jejuaram", "Leram a lei de Moisés", "Cantaram salmos"],
+        certa: "B",
+        ref: "Daniel 5:4",
+        explicacao: "Eles beberam e louvaram deuses feitos de diferentes materiais."
+      },
+      {
+        pergunta: "Onde a mão misteriosa começou a escrever?",
+        opcoes: ["Na porta do palácio", "Na parede caiada do palácio, perto do castiçal", "No chão", "No teto", "Na mesa do rei"],
+        certa: "B",
+        ref: "Daniel 5:5",
+        explicacao: "Os dedos de uma mão humana apareceram e escreveram na parede, perto do castiçal."
+      },
+      {
+        pergunta: "Como Belsazar reagiu ao ver a mão escrevendo?",
+        opcoes: ["Riu da situação", "Ficou tranquilo", "Seu rosto mudou e seus joelhos bateram um contra o outro", "Saiu para caçar", "Mandou destruir a parede"],
+        certa: "C",
+        ref: "Daniel 5:6",
+        explicacao: "O rei ficou profundamente assustado, perdeu a cor do rosto e seus joelhos batiam um contra o outro."
+      },
+      {
+        pergunta: "Qual recompensa Belsazar ofereceu a quem interpretasse a escrita?",
+        opcoes: ["Um cavalo e uma espada", "Roupas de púrpura, colar de ouro e o terceiro lugar no reino", "Metade do reino", "Uma cidade", "Mil moedas de prata"],
+        certa: "B",
+        ref: "Daniel 5:7",
+        explicacao: "O rei ofereceu roupas de púrpura, um colar de ouro e o posto de terceiro governante do reino."
+      },
+      {
+        pergunta: "Quem lembrou ao rei que Daniel poderia interpretar a escrita?",
+        opcoes: ["A rainha", "Arioque", "Um soldado", "O chefe dos eunucos", "Um sacerdote"],
+        certa: "A",
+        ref: "Daniel 5:10-12",
+        explicacao: "A rainha entrou no salão e lembrou ao rei das capacidades de Daniel."
+      },
+      {
+        pergunta: "Qual era a primeira palavra escrita na parede?",
+        opcoes: ["Peres", "Mene", "Tequel", "Daniel", "Babilônia"],
+        certa: "B",
+        ref: "Daniel 5:25",
+        explicacao: "A primeira palavra era Mene, seguida por Tequel e Peres."
+      },
+      {
+        pergunta: "O que significava a palavra Tequel?",
+        opcoes: ["Teu reino será destruído", "Foste pesado na balança e achado em falta", "Teus dias foram multiplicados", "Deus estabeleceu teu reino", "A Babilônia será exaltada"],
+        certa: "B",
+        ref: "Daniel 5:27",
+        explicacao: "Tequel significava que Belsazar havia sido pesado na balança e achado em falta."
+      },
+      {
+        pergunta: "O que significava a palavra Peres na interpretação de Daniel?",
+        opcoes: ["Teu reino foi dividido e entregue aos medos e persas", "Teu reino será eterno", "A Babilônia terá paz", "O rei será curado", "Os judeus retornarão imediatamente"],
+        certa: "A",
+        ref: "Daniel 5:28",
+        explicacao: "Peres anunciava que o reino seria dividido e entregue aos medos e persas."
+      },
 
-  // DANIEL 6
-  {
-    pergunta: "Quantos presidentes foram colocados sobre o reino, além dos governadores?",
-    opcoes: ["Dois", "Três", "Quatro", "Cinco", "Sete"],
-    certa: "B",
-    ref: "Daniel 6:1-2",
-    explicacao: "Dario estabeleceu três presidentes sobre os cento e vinte sátrapas."
-  },
-  {
-    pergunta: "Quantos sátrapas foram colocados sobre o reino de Dario?",
-    opcoes: ["30", "60", "70", "100", "120"],
-    certa: "E",
-    ref: "Daniel 6:1",
-    explicacao: "O rei estabeleceu cento e vinte sátrapas para governar todo o reino."
-  },
-  {
-    pergunta: "Por que os outros líderes procuravam encontrar alguma acusação contra Daniel?",
-    opcoes: ["Porque ele era estrangeiro", "Porque tinham inveja de sua excelência e posição", "Porque ele havia roubado dinheiro", "Porque ele era um soldado", "Porque queria ser rei"],
-    certa: "B",
-    ref: "Daniel 6:3-4",
-    explicacao: "Daniel se destacava por possuir um espírito excelente, despertando a inveja dos outros líderes."
-  },
-  {
-    pergunta: "O que os inimigos de Daniel perceberam que poderia ser usado contra ele?",
-    opcoes: ["Sua riqueza", "Sua origem", "Sua fidelidade à lei do seu Deus", "Sua amizade com o rei", "Sua idade"],
-    certa: "C",
-    ref: "Daniel 6:5",
-    explicacao: "Eles sabiam que não encontrariam acusação contra Daniel, a menos que fosse relacionada à lei do seu Deus."
-  },
-  {
-    pergunta: "Por quantos dias o decreto proibiu fazer pedidos a qualquer deus ou homem, exceto ao rei?",
-    opcoes: ["Sete dias", "Dez dias", "Trinta dias", "Quarenta dias", "Sessenta dias"],
-    certa: "C",
-    ref: "Daniel 6:7",
-    explicacao: "O decreto determinava que durante trinta dias ninguém poderia fazer pedidos a outro deus ou homem além do rei."
-  },
-  {
-    pergunta: "Para qual direção Daniel abria suas janelas quando orava?",
-    opcoes: ["Para o norte", "Para o sul", "Para o leste", "Para o oeste", "Para o palácio"],
-    certa: "C",
-    ref: "Daniel 6:10",
-    explicacao: "Daniel orava com as janelas abertas em direção a Jerusalém."
-  },
-  {
-    pergunta: "Quantas vezes ao dia Daniel se ajoelhava para orar?",
-    opcoes: ["Uma vez", "Duas vezes", "Três vezes", "Quatro vezes", "Sete vezes"],
-    certa: "C",
-    ref: "Daniel 6:10",
-    explicacao: "Daniel se ajoelhava três vezes ao dia para orar e dar graças a Deus."
-  },
-  {
-    pergunta: "O que Dario fez ao saber que Daniel havia desobedecido ao decreto?",
-    opcoes: ["Ficou satisfeito", "Ficou muito triste e procurou livrá-lo", "Mandou matar os acusadores imediatamente", "Expulsou Daniel do reino", "Ignorou o acontecimento"],
-    certa: "B",
-    ref: "Daniel 6:14",
-    explicacao: "Dario ficou muito angustiado e trabalhou até o pôr do sol para tentar livrar Daniel."
-  },
-  {
-    pergunta: "O que o rei disse a Daniel antes de ele ser lançado na cova dos leões?",
-    opcoes: ["Que nunca mais o veria", "Que o Deus a quem servia continuamente o livraria", "Que deveria abandonar sua fé", "Que os leões não estavam com fome", "Que seria castigado por sete dias"],
-    certa: "B",
-    ref: "Daniel 6:16",
-    explicacao: "Dario expressou esperança de que o Deus de Daniel o livrasse."
-  },
-  {
-    pergunta: "O que foi colocado na entrada da cova dos leões?",
-    opcoes: ["Uma porta de ferro", "Uma pedra selada pelo rei e pelos seus grandes", "Uma muralha", "Uma corrente de ouro", "Uma estátua"],
-    certa: "B",
-    ref: "Daniel 6:17",
-    explicacao: "Uma pedra foi colocada sobre a entrada da cova e selada com o anel do rei e dos seus grandes."
-  },
-  {
-    pergunta: "O que Daniel respondeu quando Dario perguntou se seu Deus o havia livrado?",
-    opcoes: ["Que havia fugido", "Que Deus enviou seu anjo e fechou a boca dos leões", "Que os leões estavam dormindo", "Que os guardas o ajudaram", "Que não tinha sido lançado na cova"],
-    certa: "B",
-    ref: "Daniel 6:21-22",
-    explicacao: "Daniel declarou que Deus havia enviado seu anjo para fechar a boca dos leões."
-  },
-  {
-    pergunta: "Qual foi o destino dos homens que acusaram Daniel, juntamente com suas famílias?",
-    opcoes: ["Foram perdoados", "Foram lançados na cova dos leões", "Foram enviados para Jerusalém", "Foram colocados no palácio", "Foram presos por dez anos"],
-    certa: "B",
-    ref: "Daniel 6:24",
-    explicacao: "Dario ordenou que os acusadores fossem lançados na cova dos leões."
-  },
+      // DANIEL 6
+      {
+        pergunta: "Quantos presidentes Dario colocou acima dos sátrapas do reino, sendo Daniel um deles?",
+        opcoes: ["Dois", "Três", "Quatro", "Cinco", "Sete"],
+        certa: "B",
+        ref: "Daniel 6:1-2",
+        explicacao: "Dario colocou três presidentes sobre os sátrapas do reino, e Daniel era um deles."
+      },
+      {
+        pergunta: "Quantos sátrapas foram colocados sobre o reino de Dario?",
+        opcoes: ["30", "60", "70", "100", "120"],
+        certa: "E",
+        ref: "Daniel 6:1",
+        explicacao: "O rei estabeleceu cento e vinte sátrapas para governar todo o reino."
+      },
+      {
+        pergunta: "Por que os outros líderes procuravam encontrar alguma acusação contra Daniel?",
+        opcoes: ["Porque ele era estrangeiro", "Porque tinham inveja de sua excelência e posição", "Porque ele havia roubado dinheiro", "Porque ele era um soldado", "Porque queria ser rei"],
+        certa: "B",
+        ref: "Daniel 6:3-4",
+        explicacao: "Daniel se destacava por possuir um espírito excelente, despertando a inveja dos outros líderes."
+      },
+      {
+        pergunta: "O que os inimigos de Daniel perceberam que poderia ser usado contra ele?",
+        opcoes: ["Sua riqueza", "Sua origem", "Sua fidelidade à lei do seu Deus", "Sua amizade com o rei", "Sua idade"],
+        certa: "C",
+        ref: "Daniel 6:5",
+        explicacao: "Eles sabiam que não encontrariam acusação contra Daniel, a menos que fosse relacionada à lei do seu Deus."
+      },
+      {
+        pergunta: "Por quantos dias o decreto proibiu fazer pedidos a qualquer deus ou homem, exceto ao rei?",
+        opcoes: ["Sete dias", "Dez dias", "Trinta dias", "Quarenta dias", "Sessenta dias"],
+        certa: "C",
+        ref: "Daniel 6:7",
+        explicacao: "O decreto determinava que durante trinta dias ninguém poderia fazer pedidos a outro deus ou homem além do rei."
+      },
+      {
+        pergunta: "Para qual cidade Daniel mantinha as janelas abertas quando orava?",
+        opcoes: ["Babilônia", "Susã", "Belém", "Nínive", "Jerusalém"],
+        certa: "E",
+        ref: "Daniel 6:10",
+        explicacao: "Daniel tinha as janelas do quarto abertas na direção de Jerusalém quando orava."
+      },
+      {
+        pergunta: "Quantas vezes ao dia Daniel se ajoelhava para orar?",
+        opcoes: ["Uma vez", "Duas vezes", "Três vezes", "Quatro vezes", "Sete vezes"],
+        certa: "C",
+        ref: "Daniel 6:10",
+        explicacao: "Daniel se ajoelhava três vezes ao dia para orar e dar graças a Deus."
+      },
+      {
+        pergunta: "O que Dario fez ao saber que Daniel havia desobedecido ao decreto?",
+        opcoes: ["Ficou satisfeito", "Ficou muito triste e procurou livrá-lo", "Mandou matar os acusadores imediatamente", "Expulsou Daniel do reino", "Ignorou o acontecimento"],
+        certa: "B",
+        ref: "Daniel 6:14",
+        explicacao: "Dario ficou muito angustiado e trabalhou até o pôr do sol para tentar livrar Daniel."
+      },
+      {
+        pergunta: "O que o rei disse a Daniel antes de ele ser lançado na cova dos leões?",
+        opcoes: ["Que nunca mais o veria", "Que o Deus a quem servia continuamente o livraria", "Que deveria abandonar sua fé", "Que os leões não estavam com fome", "Que seria castigado por sete dias"],
+        certa: "B",
+        ref: "Daniel 6:16",
+        explicacao: "Dario expressou esperança de que o Deus de Daniel o livrasse."
+      },
+      {
+        pergunta: "O que foi colocado na entrada da cova dos leões?",
+        opcoes: ["Uma porta de ferro", "Uma pedra selada pelo rei e pelos seus grandes", "Uma muralha", "Uma corrente de ouro", "Uma estátua"],
+        certa: "B",
+        ref: "Daniel 6:17",
+        explicacao: "Uma pedra foi colocada sobre a entrada da cova e selada com o anel do rei e dos seus grandes."
+      },
+      {
+        pergunta: "O que Daniel respondeu quando Dario perguntou se seu Deus o havia livrado?",
+        opcoes: ["Que havia fugido", "Que Deus enviou seu anjo e fechou a boca dos leões", "Que os leões estavam dormindo", "Que os guardas o ajudaram", "Que não tinha sido lançado na cova"],
+        certa: "B",
+        ref: "Daniel 6:21-22",
+        explicacao: "Daniel declarou que Deus havia enviado seu anjo para fechar a boca dos leões."
+      },
+      {
+        pergunta: "Qual foi o destino dos homens que acusaram Daniel, juntamente com suas famílias?",
+        opcoes: ["Foram perdoados", "Foram lançados na cova dos leões", "Foram enviados para Jerusalém", "Foram colocados no palácio", "Foram presos por dez anos"],
+        certa: "B",
+        ref: "Daniel 6:24",
+        explicacao: "Dario ordenou que os acusadores fossem lançados na cova dos leões."
+      },
 
-  // DANIEL 7
-  {
-    pergunta: "Quantos grandes animais Daniel viu saindo do mar em sua visão?",
-    opcoes: ["Dois", "Três", "Quatro", "Cinco", "Sete"],
-    certa: "C",
-    ref: "Daniel 7:2-3",
-    explicacao: "Daniel viu quatro grandes animais subindo do mar, diferentes uns dos outros."
-  },
-  {
-    pergunta: "O que representavam os quatro grandes animais da visão?",
-    opcoes: ["Quatro profetas", "Quatro ventos", "Quatro reis ou reinos", "Quatro anjos", "Quatro cidades"],
-    certa: "C",
-    ref: "Daniel 7:17",
-    explicacao: "O próprio texto explica que os quatro grandes animais representam quatro reis que se levantarão da terra."
-  },
-  {
-    pergunta: "Com qual animal o primeiro reino da visão era comparado?",
-    opcoes: ["Leão", "Urso", "Leopardo", "Cordeiro", "Águia"],
-    certa: "A",
-    ref: "Daniel 7:4",
-    explicacao: "O primeiro animal era semelhante a um leão e tinha asas de águia."
-  },
-  {
-    pergunta: "Qual animal da visão possuía três costelas na boca?",
-    opcoes: ["Leão", "Urso", "Leopardo", "Dragão", "Bode"],
-    certa: "B",
-    ref: "Daniel 7:5",
-    explicacao: "O segundo animal era semelhante a um urso e tinha três costelas entre os dentes."
-  },
-  {
-    pergunta: "Quantas asas tinha o terceiro animal da visão?",
-    opcoes: ["Duas", "Três", "Quatro", "Seis", "Oito"],
-    certa: "C",
-    ref: "Daniel 7:6",
-    explicacao: "O terceiro animal era semelhante a um leopardo e tinha quatro asas de ave nas costas."
-  },
-  {
-    pergunta: "Quantos chifres o quarto animal possuía inicialmente?",
-    opcoes: ["Dois", "Três", "Quatro", "Dez", "Doze"],
-    certa: "D",
-    ref: "Daniel 7:7",
-    explicacao: "O quarto animal era terrível e tinha dez chifres."
-  },
-  {
-    pergunta: "O que surgiu entre os dez chifres do quarto animal?",
-    opcoes: ["Uma coroa", "Um pequeno chifre", "Uma espada", "Uma estrela", "Uma árvore"],
-    certa: "B",
-    ref: "Daniel 7:8",
-    explicacao: "Daniel viu surgir um pequeno chifre entre os outros chifres."
-  },
-  {
-    pergunta: "Como era chamado aquele que se assentava no trono na visão de Daniel?",
-    opcoes: ["Rei dos reis", "Ancião de Dias", "Príncipe da Pérsia", "Filho de Davi", "Vigia celestial"],
-    certa: "B",
-    ref: "Daniel 7:9",
-    explicacao: "Daniel viu o Ancião de Dias assentado em seu trono, com vestes brancas e cabelos como lã pura."
-  },
-  {
-    pergunta: "O que foi aberto diante do Ancião de Dias?",
-    opcoes: ["Os portões da cidade", "Os livros", "O templo", "O mar", "As portas da Babilônia"],
-    certa: "B",
-    ref: "Daniel 7:10",
-    explicacao: "O tribunal se assentou e os livros foram abertos."
-  },
+      // DANIEL 7
+      {
+        pergunta: "Quantos grandes animais Daniel viu saindo do mar em sua visão?",
+        opcoes: ["Dois", "Três", "Quatro", "Cinco", "Sete"],
+        certa: "C",
+        ref: "Daniel 7:2-3",
+        explicacao: "Daniel viu quatro grandes animais subindo do mar, diferentes uns dos outros."
+      },
+      {
+        pergunta: "O que representavam os quatro grandes animais da visão?",
+        opcoes: ["Quatro profetas", "Quatro ventos", "Quatro reis ou reinos", "Quatro anjos", "Quatro cidades"],
+        certa: "C",
+        ref: "Daniel 7:17",
+        explicacao: "O próprio texto explica que os quatro grandes animais representam quatro reis que se levantarão da terra."
+      },
+      {
+        pergunta: "Com qual animal o primeiro reino da visão era comparado?",
+        opcoes: ["Leão", "Urso", "Leopardo", "Cordeiro", "Águia"],
+        certa: "A",
+        ref: "Daniel 7:4",
+        explicacao: "O primeiro animal era semelhante a um leão e tinha asas de águia."
+      },
+      {
+        pergunta: "Qual animal da visão possuía três costelas na boca?",
+        opcoes: ["Leão", "Urso", "Leopardo", "Dragão", "Bode"],
+        certa: "B",
+        ref: "Daniel 7:5",
+        explicacao: "O segundo animal era semelhante a um urso e tinha três costelas entre os dentes."
+      },
+      {
+        pergunta: "Quantas asas tinha o terceiro animal da visão?",
+        opcoes: ["Duas", "Três", "Quatro", "Seis", "Oito"],
+        certa: "C",
+        ref: "Daniel 7:6",
+        explicacao: "O terceiro animal era semelhante a um leopardo e tinha quatro asas de ave nas costas."
+      },
+      {
+        pergunta: "Quantos chifres o quarto animal possuía inicialmente?",
+        opcoes: ["Dois", "Três", "Quatro", "Dez", "Doze"],
+        certa: "D",
+        ref: "Daniel 7:7",
+        explicacao: "O quarto animal era terrível e tinha dez chifres."
+      },
+      {
+        pergunta: "O que surgiu entre os chifres do quarto animal?",
+        opcoes: ["Uma coroa", "Um pequeno chifre", "Uma espada", "Uma estrela", "Uma árvore"],
+        certa: "B",
+        ref: "Daniel 7:8",
+        explicacao: "Daniel viu surgir um pequeno chifre entre os outros chifres."
+      },
+      {
+        pergunta: "Como era chamado aquele que se assentava no trono na visão de Daniel?",
+        opcoes: ["Rei dos reis", "Ancião de Dias", "Príncipe da Pérsia", "Filho de Davi", "Vigia celestial"],
+        certa: "B",
+        ref: "Daniel 7:9",
+        explicacao: "Daniel viu o Ancião de Dias assentado em seu trono, com vestes brancas e cabelos como lã pura."
+      },
+      {
+        pergunta: "O que foi aberto diante do Ancião de Dias?",
+        opcoes: ["Os portões da cidade", "Os livros", "O templo", "O mar", "As portas da Babilônia"],
+        certa: "B",
+        ref: "Daniel 7:10",
+        explicacao: "O tribunal se assentou e os livros foram abertos."
+      },
 
-  // DANIEL 8
-  {
-    pergunta: "Onde Daniel estava quando teve a visão do capítulo 8?",
-    opcoes: ["Em Jerusalém", "Junto ao rio Ulai, na cidadela de Susã", "No campo de Dura", "No palácio da Babilônia", "Junto ao rio Jordão"],
-    certa: "B",
-    ref: "Daniel 8:1-2",
-    explicacao: "Daniel teve a visão enquanto estava na cidadela de Susã, junto ao rio Ulai."
-  },
-  {
-    pergunta: "Quantos chifres tinha o bode da visão?",
-    opcoes: ["Um", "Dois", "Três", "Quatro", "Dez"],
-    certa: "A",
-    ref: "Daniel 8:5",
-    explicacao: "O bode vinha do ocidente e possuía um chifre notável entre os olhos."
-  },
-  {
-    pergunta: "O que aconteceu com o grande chifre do bode?",
-    opcoes: ["Foi quebrado", "Transformou-se em ouro", "Duplicou de tamanho", "Desapareceu no mar", "Foi arrancado pelo carneiro"],
-    certa: "A",
-    ref: "Daniel 8:8",
-    explicacao: "Quando o bode se fortaleceu, o grande chifre foi quebrado."
-  },
-  {
-    pergunta: "Quantos chifres notáveis surgiram no lugar do grande chifre quebrado?",
-    opcoes: ["Dois", "Três", "Quatro", "Cinco", "Sete"],
-    certa: "C",
-    ref: "Daniel 8:8",
-    explicacao: "Quatro chifres notáveis surgiram em direção aos quatro ventos do céu."
-  },
-  {
-    pergunta: "Qual era o nome do anjo que recebeu a ordem de explicar a visão a Daniel?",
-    opcoes: ["Miguel", "Gabriel", "Rafael", "Uriel", "Nenhum"],
-    certa: "B",
-    ref: "Daniel 8:15-16",
-    explicacao: "Gabriel recebeu a ordem de explicar a visão a Daniel."
-  },
-  {
-    pergunta: "Como Daniel ficou depois de receber a visão?",
-    opcoes: ["Ficou alegre e saiu para viajar", "Desmaiou e ficou doente por alguns dias", "Foi imediatamente ao rei", "Não sentiu nada", "Começou a construir um templo"],
-    certa: "B",
-    ref: "Daniel 8:27",
-    explicacao: "Daniel ficou debilitado e doente por alguns dias após a visão."
-  },
+      // DANIEL 8
+      {
+        pergunta: "Onde Daniel estava quando teve a visão do capítulo 8?",
+        opcoes: ["Em Jerusalém", "Junto ao rio Ulai, na cidadela de Susã", "No campo de Dura", "No palácio da Babilônia", "Junto ao rio Jordão"],
+        certa: "B",
+        ref: "Daniel 8:1-2",
+        explicacao: "Daniel teve a visão enquanto estava na cidadela de Susã, junto ao rio Ulai."
+      },
+      {
+        pergunta: "Quantos chifres tinha o bode da visão?",
+        opcoes: ["Um", "Dois", "Três", "Quatro", "Dez"],
+        certa: "A",
+        ref: "Daniel 8:5",
+        explicacao: "O bode vinha do ocidente e possuía um chifre notável entre os olhos."
+      },
+      {
+        pergunta: "O que aconteceu com o grande chifre do bode?",
+        opcoes: ["Foi quebrado", "Transformou-se em ouro", "Duplicou de tamanho", "Desapareceu no mar", "Foi arrancado pelo carneiro"],
+        certa: "A",
+        ref: "Daniel 8:8",
+        explicacao: "Quando o bode se fortaleceu, o grande chifre foi quebrado."
+      },
+      {
+        pergunta: "Quantos chifres notáveis surgiram no lugar do grande chifre quebrado?",
+        opcoes: ["Dois", "Três", "Quatro", "Cinco", "Sete"],
+        certa: "C",
+        ref: "Daniel 8:8",
+        explicacao: "Quatro chifres notáveis surgiram em direção aos quatro ventos do céu."
+      },
+      {
+        pergunta: "Qual era o nome do anjo que recebeu a ordem de explicar a visão a Daniel?",
+        opcoes: ["Miguel", "Gabriel", "Rafael", "Uriel", "Elias"],
+        certa: "B",
+        ref: "Daniel 8:15-16",
+        explicacao: "Gabriel recebeu a ordem de explicar a visão a Daniel."
+      },
+      {
+        pergunta: "Como Daniel ficou depois de receber a visão?",
+        opcoes: ["Ficou alegre e saiu para viajar", "Desmaiou e ficou doente por alguns dias", "Foi imediatamente ao rei", "Não sentiu nada", "Começou a construir um templo"],
+        certa: "B",
+        ref: "Daniel 8:27",
+        explicacao: "Daniel ficou debilitado e doente por alguns dias após a visão."
+      },
 
-  // DANIEL 9
-  {
-    pergunta: "Em qual ano do reinado de Dario Daniel compreendeu a profecia dos setenta anos?",
-    opcoes: ["Primeiro ano", "Segundo ano", "Terceiro ano", "Quinto ano", "Décimo ano"],
-    certa: "A",
-    ref: "Daniel 9:1-2",
-    explicacao: "Daniel compreendeu a profecia no primeiro ano de Dario, filho de Assuero."
-  },
-  {
-    pergunta: "Qual profeta Daniel estava lendo quando compreendeu a profecia dos setenta anos?",
-    opcoes: ["Isaías", "Ezequiel", "Jeremias", "Malaquias", "Oseias"],
-    certa: "C",
-    ref: "Daniel 9:2",
-    explicacao: "Daniel compreendeu pelos livros, especialmente pela palavra do Senhor ao profeta Jeremias."
-  },
-  {
-    pergunta: "Como Daniel buscou a Deus durante sua oração de confissão?",
-    opcoes: ["Somente cantando", "Com oração, súplicas, jejum, pano de saco e cinza", "Oferecendo sacrifícios de animais", "Fazendo uma viagem", "Construindo um altar de ouro"],
-    certa: "B",
-    ref: "Daniel 9:3",
-    explicacao: "Daniel voltou o rosto ao Senhor, buscando-o com oração, súplicas, jejum, pano de saco e cinza."
-  },
-  {
-    pergunta: "O que Daniel confessou em sua oração?",
-    opcoes: ["Somente os pecados dos reis", "Os pecados e a desobediência de Israel", "Os pecados dos babilônios apenas", "Os pecados dos sacerdotes estrangeiros", "Nenhum pecado"],
-    certa: "B",
-    ref: "Daniel 9:4-11",
-    explicacao: "Daniel confessou os pecados de seu povo, reconhecendo sua desobediência aos mandamentos de Deus."
-  },
-  {
-    pergunta: "Quem apareceu a Daniel enquanto ele ainda estava orando?",
-    opcoes: ["Miguel", "Gabriel", "Elias", "Moisés", "Ezequiel"],
-    certa: "B",
-    ref: "Daniel 9:20-21",
-    explicacao: "Gabriel veio rapidamente até Daniel enquanto ele ainda estava orando."
-  },
-  {
-    pergunta: "Qual era o horário da oferta da tarde quando Gabriel chegou até Daniel?",
-    opcoes: ["Terceira hora", "Sexta hora", "Nona hora", "Décima segunda hora", "Primeira hora"],
-    certa: "C",
-    ref: "Daniel 9:21",
-    explicacao: "Gabriel chegou por volta do tempo da oferta da tarde, correspondente à nona hora."
-  },
-  {
-    pergunta: "Quantas semanas foram determinadas sobre o povo e a cidade santa na profecia?",
-    opcoes: ["Sete semanas", "Trinta semanas", "Sessenta e duas semanas", "Setenta semanas", "Cem semanas"],
-    certa: "D",
-    ref: "Daniel 9:24",
-    explicacao: "A profecia anunciava setenta semanas determinadas sobre o povo de Daniel e sua cidade santa."
-  },
+      // DANIEL 9
+      {
+        pergunta: "Em qual ano do reinado de Dario Daniel compreendeu a profecia dos setenta anos?",
+        opcoes: ["Primeiro ano", "Segundo ano", "Terceiro ano", "Quinto ano", "Décimo ano"],
+        certa: "A",
+        ref: "Daniel 9:1-2",
+        explicacao: "Daniel compreendeu a profecia no primeiro ano de Dario, filho de Assuero."
+      },
+      {
+        pergunta: "Qual profeta Daniel estava lendo quando compreendeu a profecia dos setenta anos?",
+        opcoes: ["Isaías", "Ezequiel", "Jeremias", "Malaquias", "Oseias"],
+        certa: "C",
+        ref: "Daniel 9:2",
+        explicacao: "Daniel compreendeu pelos livros, especialmente pela palavra do Senhor ao profeta Jeremias."
+      },
+      {
+        pergunta: "Como Daniel buscou a Deus durante sua oração de confissão?",
+        opcoes: ["Somente cantando", "Com oração, súplicas, jejum, pano de saco e cinza", "Oferecendo sacrifícios de animais", "Fazendo uma viagem", "Construindo um altar de ouro"],
+        certa: "B",
+        ref: "Daniel 9:3",
+        explicacao: "Daniel voltou o rosto ao Senhor, buscando-o com oração, súplicas, jejum, pano de saco e cinza."
+      },
+      {
+        pergunta: "O que Daniel confessou em sua oração?",
+        opcoes: ["Somente os pecados dos reis", "Os pecados e a desobediência de Israel", "Os pecados dos babilônios apenas", "Os pecados dos sacerdotes estrangeiros", "Nenhum pecado"],
+        certa: "B",
+        ref: "Daniel 9:4-11",
+        explicacao: "Daniel confessou os pecados de seu povo, reconhecendo sua desobediência aos mandamentos de Deus."
+      },
+      {
+        pergunta: "Quem apareceu a Daniel enquanto ele ainda estava orando?",
+        opcoes: ["Miguel", "Gabriel", "Elias", "Moisés", "Ezequiel"],
+        certa: "B",
+        ref: "Daniel 9:20-21",
+        explicacao: "Gabriel veio rapidamente até Daniel enquanto ele ainda estava orando."
+      },
+      {
+        pergunta: "Em que momento do dia Gabriel chegou até Daniel?",
+        opcoes: ["Na madrugada", "Ao meio-dia", "Na hora da oferta da tarde", "À meia-noite", "Ao nascer do sol"],
+        certa: "C",
+        ref: "Daniel 9:21",
+        explicacao: "Gabriel chegou por volta do tempo da oferta da tarde."
+      },
+      {
+        pergunta: "Quantas semanas foram determinadas sobre o povo e a cidade santa na profecia?",
+        opcoes: ["Sete semanas", "Trinta semanas", "Sessenta e duas semanas", "Setenta semanas", "Cem semanas"],
+        certa: "D",
+        ref: "Daniel 9:24",
+        explicacao: "A profecia anunciava setenta semanas determinadas sobre o povo de Daniel e sua cidade santa."
+      },
 
-  // DANIEL 10
-  {
-    pergunta: "Em qual ano do reinado de Ciro Daniel recebeu a visão do capítulo 10?",
-    opcoes: ["Primeiro ano", "Segundo ano", "Terceiro ano", "Quinto ano", "Décimo ano"],
-    certa: "C",
-    ref: "Daniel 10:1",
-    explicacao: "A revelação foi dada a Daniel no terceiro ano de Ciro, rei da Pérsia."
-  },
-  {
-    pergunta: "Por quantas semanas Daniel esteve lamentando antes de receber a visão?",
-    opcoes: ["Uma semana", "Duas semanas", "Três semanas", "Sete semanas", "Dez semanas"],
-    certa: "C",
-    ref: "Daniel 10:2-3",
-    explicacao: "Daniel passou três semanas completas lamentando, sem comer manjar desejável, carne ou vinho."
-  },
-  {
-    pergunta: "Em qual rio Daniel estava quando viu o homem vestido de linho?",
-    opcoes: ["Jordão", "Nilo", "Tigre", "Eufrates", "Ulai"],
-    certa: "C",
-    ref: "Daniel 10:4-5",
-    explicacao: "Daniel estava à margem do grande rio Tigre quando teve a visão."
-  },
-  {
-    pergunta: "De que material era o cinto do homem vestido de linho?",
-    opcoes: ["Prata", "Ouro de Ofir", "Bronze", "Ferro", "Couro"],
-    certa: "B",
-    ref: "Daniel 10:5",
-    explicacao: "O homem estava cingido pelos lombos com ouro puro de Ofir."
-  },
-  {
-    pergunta: "Como ficaram os homens que estavam com Daniel quando tiveram a experiência da visão?",
-    opcoes: ["Também viram tudo claramente", "Fugiram e se esconderam aterrorizados", "Começaram a cantar", "Ficaram adormecidos", "Prenderam Daniel"],
-    certa: "B",
-    ref: "Daniel 10:7",
-    explicacao: "Os homens que estavam com Daniel não viram a visão, mas sentiram grande terror e fugiram para se esconder."
-  },
-  {
-    pergunta: "Por quanto tempo o mensageiro celestial disse que foi impedido pelo príncipe do reino da Pérsia?",
-    opcoes: ["Sete dias", "Dez dias", "Vinte e um dias", "Trinta dias", "Quarenta dias"],
-    certa: "C",
-    ref: "Daniel 10:12-13",
-    explicacao: "O mensageiro declarou que o príncipe da Pérsia resistiu durante vinte e um dias, até a chegada de Miguel."
-  },
-  {
-    pergunta: "Quem veio ajudar o mensageiro celestial na luta contra o príncipe da Pérsia?",
-    opcoes: ["Gabriel", "Miguel", "Elias", "Dario", "Ciro"],
-    certa: "B",
-    ref: "Daniel 10:13",
-    explicacao: "Miguel, um dos primeiros príncipes, veio ajudar o mensageiro."
-  },
-  {
-    pergunta: "Quem é mencionado como príncipe da Grécia na visão?",
-    opcoes: ["O príncipe da Pérsia", "O príncipe da Grécia", "O rei de Babilônia", "Miguel", "Gabriel"],
-    certa: "B",
-    ref: "Daniel 10:20",
-    explicacao: "O mensageiro anunciou que lutaria contra o príncipe da Pérsia e depois viria o príncipe da Grécia."
-  },
+      // DANIEL 10
+      {
+        pergunta: "Em qual ano do reinado de Ciro Daniel recebeu a visão do capítulo 10?",
+        opcoes: ["Primeiro ano", "Segundo ano", "Terceiro ano", "Quinto ano", "Décimo ano"],
+        certa: "C",
+        ref: "Daniel 10:1",
+        explicacao: "A revelação foi dada a Daniel no terceiro ano de Ciro, rei da Pérsia."
+      },
+      {
+        pergunta: "Por quantas semanas Daniel esteve lamentando antes de receber a visão?",
+        opcoes: ["Uma semana", "Duas semanas", "Três semanas", "Sete semanas", "Dez semanas"],
+        certa: "C",
+        ref: "Daniel 10:2-3",
+        explicacao: "Daniel passou três semanas completas lamentando, sem comer manjar desejável, carne ou vinho."
+      },
+      {
+        pergunta: "Em qual rio Daniel estava quando viu o homem vestido de linho?",
+        opcoes: ["Jordão", "Nilo", "Tigre", "Eufrates", "Ulai"],
+        certa: "C",
+        ref: "Daniel 10:4-5",
+        explicacao: "Daniel estava à margem do grande rio Tigre quando teve a visão."
+      },
+      {
+        pergunta: "De que material era o cinto do homem vestido de linho?",
+        opcoes: ["Prata", "Ouro puro", "Bronze", "Ferro", "Couro"],
+        certa: "B",
+        ref: "Daniel 10:5",
+        explicacao: "O homem estava cingido nos lombos com ouro puro, o ouro de Ufaz."
+      },
+      {
+        pergunta: "Como ficaram os homens que estavam com Daniel quando tiveram a experiência da visão?",
+        opcoes: ["Também viram tudo claramente", "Fugiram e se esconderam aterrorizados", "Começaram a cantar", "Ficaram adormecidos", "Prenderam Daniel"],
+        certa: "B",
+        ref: "Daniel 10:7",
+        explicacao: "Os homens que estavam com Daniel não viram a visão, mas sentiram grande terror e fugiram para se esconder."
+      },
+      {
+        pergunta: "Por quanto tempo o mensageiro celestial disse que foi impedido pelo príncipe do reino da Pérsia?",
+        opcoes: ["Sete dias", "Dez dias", "Vinte e um dias", "Trinta dias", "Quarenta dias"],
+        certa: "C",
+        ref: "Daniel 10:12-13",
+        explicacao: "O mensageiro declarou que o príncipe da Pérsia resistiu durante vinte e um dias, até a chegada de Miguel."
+      },
+      {
+        pergunta: "Quem veio ajudar o mensageiro celestial na luta contra o príncipe da Pérsia?",
+        opcoes: ["Gabriel", "Miguel", "Elias", "Dario", "Ciro"],
+        certa: "B",
+        ref: "Daniel 10:13",
+        explicacao: "Miguel, um dos primeiros príncipes, veio ajudar o mensageiro."
+      },
+      {
+        pergunta: "Quem viria em seguida, depois que o mensageiro saísse para pelejar contra o príncipe da Pérsia?",
+        opcoes: ["O príncipe do Egito", "O príncipe da Grécia", "O príncipe de Roma", "O príncipe de Babilônia", "O príncipe de Tiro"],
+        certa: "B",
+        ref: "Daniel 10:20",
+        explicacao: "O mensageiro anunciou que voltaria a pelejar contra o príncipe da Pérsia e que depois viria o príncipe da Grécia."
+      },
 
-  // DANIEL 11
-  {
-    pergunta: "Quantos reis ainda se levantariam na Pérsia, segundo a revelação inicial do capítulo 11?",
-    opcoes: ["Dois", "Três", "Quatro", "Cinco", "Sete"],
-    certa: "C",
-    ref: "Daniel 11:2",
-    explicacao: "O texto anuncia que ainda se levantariam três reis na Pérsia e depois um quarto, mais rico que os demais."
-  },
-  {
-    pergunta: "Como seria o quarto rei da Pérsia mencionado na profecia?",
-    opcoes: ["Seria o mais pobre", "Seria muito rico e provocaria todos contra o reino da Grécia", "Abandonaria o trono", "Seria um sacerdote", "Governaria Jerusalém"],
-    certa: "B",
-    ref: "Daniel 11:2",
-    explicacao: "O quarto rei seria mais rico que todos e usaria sua força para mobilizar todos contra o reino da Grécia."
-  },
-  {
-    pergunta: "O que aconteceria com o grande rei mencionado em Daniel 11:3?",
-    opcoes: ["Seu reino nunca teria fim", "Ele dominaria com grande poder, mas seu reino seria quebrado e dividido", "Seria levado para Jerusalém", "Seria derrotado por Nabucodonosor", "Se tornaria sacerdote"],
-    certa: "B",
-    ref: "Daniel 11:3-4",
-    explicacao: "O grande rei dominaria com poder, mas seu reino seria quebrado e dividido para outros, não para sua descendência."
-  },
-  {
-    pergunta: "O que aconteceria com os reis do Norte e do Sul na profecia?",
-    opcoes: ["Viveriam em paz", "Entrariam em conflitos e disputas", "Seriam governados por Daniel", "Abandonariam seus reinos", "Se uniriam a Jerusalém"],
-    certa: "B",
-    ref: "Daniel 11:5-20",
-    explicacao: "Grande parte do capítulo descreve disputas, alianças e conflitos entre os reis do Norte e do Sul."
-  },
-  {
-    pergunta: "O que o rei descrito em Daniel 11:36 faria?",
-    opcoes: ["Exaltaria o Deus verdadeiro", "Faria conforme sua própria vontade e se exaltaria acima de todos", "Reconstruiria Jerusalém", "Libertaria todos os cativos", "Abandonaria seu trono"],
-    certa: "B",
-    ref: "Daniel 11:36",
-    explicacao: "O rei agiria conforme sua vontade, exaltando-se e falando coisas arrogantes contra o Deus dos deuses."
-  },
+      // DANIEL 11
+      {
+        pergunta: "Quantos reis ainda se levantariam na Pérsia, segundo a revelação inicial do capítulo 11?",
+        opcoes: ["Dois", "Três", "Quatro", "Cinco", "Sete"],
+        certa: "B",
+        ref: "Daniel 11:2",
+        explicacao: "O texto anuncia que ainda se levantariam três reis na Pérsia e depois um quarto, mais rico que os demais."
+      },
+      {
+        pergunta: "Como seria o quarto rei da Pérsia mencionado na profecia?",
+        opcoes: ["Seria o mais pobre", "Seria muito rico e provocaria todos contra o reino da Grécia", "Abandonaria o trono", "Seria um sacerdote", "Governaria Jerusalém"],
+        certa: "B",
+        ref: "Daniel 11:2",
+        explicacao: "O quarto rei seria mais rico que todos e usaria sua força para mobilizar todos contra o reino da Grécia."
+      },
+      {
+        pergunta: "O que aconteceria com o grande rei mencionado em Daniel 11:3?",
+        opcoes: ["Seu reino nunca teria fim", "Ele dominaria com grande poder, mas seu reino seria quebrado e dividido", "Seria levado para Jerusalém", "Seria derrotado por Nabucodonosor", "Se tornaria sacerdote"],
+        certa: "B",
+        ref: "Daniel 11:3-4",
+        explicacao: "O grande rei dominaria com poder, mas seu reino seria quebrado e dividido para outros, não para sua descendência."
+      },
+      {
+        pergunta: "O que aconteceria com os reis do Norte e do Sul na profecia?",
+        opcoes: ["Viveriam em paz", "Entrariam em conflitos e disputas", "Seriam governados por Daniel", "Abandonariam seus reinos", "Se uniriam a Jerusalém"],
+        certa: "B",
+        ref: "Daniel 11:5-20",
+        explicacao: "Grande parte do capítulo descreve disputas, alianças e conflitos entre os reis do Norte e do Sul."
+      },
+      {
+        pergunta: "O que o rei descrito em Daniel 11:36 faria?",
+        opcoes: ["Exaltaria o Deus verdadeiro", "Faria conforme sua própria vontade e se exaltaria acima de todos", "Reconstruiria Jerusalém", "Libertaria todos os cativos", "Abandonaria seu trono"],
+        certa: "B",
+        ref: "Daniel 11:36",
+        explicacao: "O rei agiria conforme sua vontade, exaltando-se e falando coisas arrogantes contra o Deus dos deuses."
+      },
 
-  // DANIEL 12
-  {
-    pergunta: "Segundo Daniel 12, o que acontecerá com aqueles que estiverem escritos no livro?",
-    opcoes: ["Serão esquecidos", "Serão livrados", "Serão levados para a Babilônia", "Perderão seu reino", "Serão julgados pelos reis"],
-    certa: "B",
-    ref: "Daniel 12:1",
-    explicacao: "Miguel se levantará e haverá um tempo de angústia, mas o povo inscrito no livro será livrado."
-  },
-  {
-    pergunta: "O que acontecerá com muitos dos que dormem no pó da terra?",
-    opcoes: ["Nunca mais despertarão", "Despertarão, uns para a vida eterna e outros para vergonha e desprezo eterno", "Serão transformados em anjos", "Voltarão a viver na Babilônia", "Serão reis"],
-    certa: "B",
-    ref: "Daniel 12:2",
-    explicacao: "Daniel anuncia a ressurreição, com destinos diferentes para os que despertarem."
-  },
-  {
-    pergunta: "A quem os sábios serão comparados em Daniel 12:3?",
-    opcoes: ["Às estrelas do céu", "À areia do mar", "Aos cedros do Líbano", "Aos rios", "Aos montes"],
-    certa: "A",
-    ref: "Daniel 12:3",
-    explicacao: "Os sábios resplandecerão como o brilho do firmamento, e os que conduzirem muitos à justiça serão como estrelas."
-  },
-  {
-    pergunta: "O que Daniel recebeu a ordem de fazer com as palavras da profecia?",
-    opcoes: ["Apagá-las", "Escrevê-las em uma pedra", "Fechá-las e selar o livro até o tempo do fim", "Entregá-las ao rei", "Traduzir para o grego"],
-    certa: "C",
-    ref: "Daniel 12:4",
-    explicacao: "Daniel recebeu a ordem de fechar as palavras e selar o livro até o tempo do fim."
-  },
-  {
-    pergunta: "O que aconteceria com o conhecimento no tempo do fim?",
-    opcoes: ["Diminuiria", "Aumentaria", "Desapareceria", "Seria proibido", "Ficaria limitado aos reis"],
-    certa: "B",
-    ref: "Daniel 12:4",
-    explicacao: "O texto declara que muitos correrão de uma parte para outra e o conhecimento se multiplicará."
-  },
-  {
-    pergunta: "Quantos homens Daniel viu em pé, um de cada lado do rio?",
-    opcoes: ["Um", "Dois", "Três", "Quatro", "Sete"],
-    certa: "B",
-    ref: "Daniel 12:5",
-    explicacao: "Daniel viu dois outros homens em pé, um de um lado do rio e outro do outro lado."
-  },
-  {
-    pergunta: "Por quanto tempo duraria a dispersão do poder do povo santo, segundo Daniel 12:7?",
-    opcoes: ["Um tempo", "Dois tempos", "Um tempo, dois tempos e metade de um tempo", "Sete tempos", "Setenta semanas"],
-    certa: "C",
-    ref: "Daniel 12:7",
-    explicacao: "O homem vestido de linho levantou as mãos e jurou que seria por um tempo, dois tempos e metade de um tempo."
-  },
-  {
-    pergunta: "O que Daniel disse ao ouvir as palavras finais da profecia?",
-    opcoes: ["Que compreendeu tudo", "Que não compreendeu e perguntou qual seria o fim dessas coisas", "Que não queria mais ouvir", "Que deveria voltar para Jerusalém", "Que o rei deveria ser avisado"],
-    certa: "B",
-    ref: "Daniel 12:8",
-    explicacao: "Daniel ouviu, mas não compreendeu, e perguntou qual seria o fim dessas coisas."
-  },
-  {
-    pergunta: "Quem seria purificado, embranquecido e provado no tempo do fim?",
-    opcoes: ["Todos os reis", "Os sábios e os ímpios", "Os ímpios", "Somente os sacerdotes", "Os exércitos da Pérsia"],
-    certa: "B",
-    ref: "Daniel 12:10",
-    explicacao: "Muitos serão purificados, embranquecidos e provados; os ímpios continuarão agindo impiamente."
-  },
-  {
-    pergunta: "Quantos dias são mencionados em Daniel 12:12 para aquele que espera e chega até o fim?",
-    opcoes: ["1.000 dias", "1.290 dias", "1.335 dias", "1.400 dias", "1.500 dias"],
-    certa: "C",
-    ref: "Daniel 12:12",
-    explicacao: "O texto declara bem-aventurado aquele que espera e chega aos mil trezentos e trinta e cinco dias."
-  }
-];
+      // DANIEL 12
+      {
+        pergunta: "Segundo Daniel 12, o que acontecerá com aqueles que estiverem escritos no livro?",
+        opcoes: ["Serão esquecidos", "Serão livrados", "Serão levados para a Babilônia", "Perderão seu reino", "Serão julgados pelos reis"],
+        certa: "B",
+        ref: "Daniel 12:1",
+        explicacao: "Miguel se levantará e haverá um tempo de angústia, mas o povo inscrito no livro será livrado."
+      },
+      {
+        pergunta: "O que acontecerá com muitos dos que dormem no pó da terra?",
+        opcoes: ["Nunca mais despertarão", "Despertarão, uns para a vida eterna e outros para vergonha e desprezo eterno", "Serão transformados em anjos", "Voltarão a viver na Babilônia", "Serão reis"],
+        certa: "B",
+        ref: "Daniel 12:2",
+        explicacao: "Daniel anuncia a ressurreição, com destinos diferentes para os que despertarem."
+      },
+      {
+        pergunta: "A quem os sábios serão comparados em Daniel 12:3?",
+        opcoes: ["Às estrelas do céu", "À areia do mar", "Aos cedros do Líbano", "Aos rios", "Aos montes"],
+        certa: "A",
+        ref: "Daniel 12:3",
+        explicacao: "Os sábios resplandecerão como o brilho do firmamento, e os que conduzirem muitos à justiça serão como estrelas."
+      },
+      {
+        pergunta: "O que Daniel recebeu a ordem de fazer com as palavras da profecia?",
+        opcoes: ["Apagá-las", "Escrevê-las em uma pedra", "Fechá-las e selar o livro até o tempo do fim", "Entregá-las ao rei", "Traduzir para o grego"],
+        certa: "C",
+        ref: "Daniel 12:4",
+        explicacao: "Daniel recebeu a ordem de fechar as palavras e selar o livro até o tempo do fim."
+      },
+      {
+        pergunta: "O que aconteceria com o conhecimento no tempo do fim?",
+        opcoes: ["Diminuiria", "Aumentaria", "Desapareceria", "Seria proibido", "Ficaria limitado aos reis"],
+        certa: "B",
+        ref: "Daniel 12:4",
+        explicacao: "O texto declara que muitos correrão de uma parte para outra e o conhecimento se multiplicará."
+      },
+      {
+        pergunta: "Quantos homens Daniel viu em pé, um de cada lado do rio?",
+        opcoes: ["Um", "Dois", "Três", "Quatro", "Sete"],
+        certa: "B",
+        ref: "Daniel 12:5",
+        explicacao: "Daniel viu dois outros homens em pé, um de um lado do rio e outro do outro lado."
+      },
+      {
+        pergunta: "Por quanto tempo duraria a dispersão do poder do povo santo, segundo Daniel 12:7?",
+        opcoes: ["Um tempo", "Dois tempos", "Um tempo, dois tempos e metade de um tempo", "Sete tempos", "Setenta semanas"],
+        certa: "C",
+        ref: "Daniel 12:7",
+        explicacao: "O homem vestido de linho levantou as mãos e jurou que seria por um tempo, dois tempos e metade de um tempo."
+      },
+      {
+        pergunta: "O que Daniel disse ao ouvir as palavras finais da profecia?",
+        opcoes: ["Que compreendeu tudo", "Que não compreendeu e perguntou qual seria o fim dessas coisas", "Que não queria mais ouvir", "Que deveria voltar para Jerusalém", "Que o rei deveria ser avisado"],
+        certa: "B",
+        ref: "Daniel 12:8",
+        explicacao: "Daniel ouviu, mas não compreendeu, e perguntou qual seria o fim dessas coisas."
+      },
+      {
+        pergunta: "Quem seria purificado, embranquecido e provado no tempo do fim?",
+        opcoes: ["Todos os reis", "Muitos do povo de Deus", "Os ímpios", "Somente os sacerdotes", "Os exércitos da Pérsia"],
+        certa: "B",
+        ref: "Daniel 12:10",
+        explicacao: "Muitos serão purificados, embranquecidos e provados; os ímpios continuarão agindo impiamente e não entenderão, mas os sábios entenderão."
+      },
+      {
+        pergunta: "Quantos dias são mencionados em Daniel 12:12 para aquele que espera e chega até o fim?",
+        opcoes: ["1.000 dias", "1.290 dias", "1.335 dias", "1.400 dias", "1.500 dias"],
+        certa: "C",
+        ref: "Daniel 12:12",
+        explicacao: "O texto declara bem-aventurado aquele que espera e chega aos mil trezentos e trinta e cinco dias."
+      }
+    ];
 
-</script>
 
-<!-- =====================================================================
+  </script>
+
+  <!-- =====================================================================
      JOGO: não precisa mexer daqui para baixo.
      ===================================================================== -->
-<script>
-(function(){
-  const LETRAS = ['A','B','C','D','E'];
-  const $ = s => document.querySelector(s);
-  const telas = {inicio:$('#tela-inicio'), jogo:$('#tela-jogo'), fim:$('#tela-fim')};
-  const CHAVE = 'quiz-daniel-melhor';
-  const CHAVE_NOME = 'quiz-daniel-nome';
-  const CHAVE_DICAS = 'quiz-daniel-dicas';
-  const API = '/api/ranking';
+  <script>
+    (function () {
+      const LETRAS = ['A', 'B', 'C', 'D', 'E'];
+      const $ = s => document.querySelector(s);
+      const telas = {inicio: $('#tela-inicio'), jogo: $('#tela-jogo'), fim: $('#tela-fim')};
+      const CHAVE = 'quiz-daniel-melhor';
+      const CHAVE_NOME = 'quiz-daniel-nome';
+      const CHAVE_DICAS = 'quiz-daniel-dicas';
+      const API = '/api/ranking';
 
-  let validas = [], deck = [], pos = 0, pts = 0, erradas = [], travado = false, atual = null;
-  let nomeAtual = '', rodadaCompleta = true, usarDicas = false;
-  let inicioPergunta = 0, tempoMs = 0;   // tempo só conta enquanto a pergunta está na tela, sem o texto de retorno
+      let validas = [], deck = [], pos = 0, pts = 0, erradas = [], travado = false, atual = null;
+      let nomeAtual = '', rodadaCompleta = true, usarDicas = false;
+      let inicioPergunta = 0, tempoMs = 0;   // tempo só conta enquanto a pergunta está na tela, sem o texto de retorno
 
-  function mostrar(nome){
-    for(const k in telas) telas[k].hidden = (k !== nome);
-    window.scrollTo(0,0);
-  }
-
-  // confere as perguntas e separa as que têm problema
-  function validar(){
-    const problemas = [];
-    validas = [];
-    PERGUNTAS.forEach((q,i)=>{
-      const n = i+1, erros = [];
-      if(!q || typeof q.pergunta !== 'string' || !q.pergunta.trim()) erros.push('falta o texto da pergunta');
-      if(!q || !Array.isArray(q.opcoes) || q.opcoes.length !== 5) erros.push('precisa ter exatamente 5 alternativas');
-      else if(q.opcoes.some(o => typeof o !== 'string' || !o.trim())) erros.push('há alternativa vazia');
-      if(!q || LETRAS.indexOf(String(q.certa).toUpperCase()) < 0) erros.push('o campo certa precisa ser A, B, C, D ou E');
-      if(erros.length) problemas.push('Pergunta ' + n + ': ' + erros.join('; ') + '.');
-      else validas.push(q);
-    });
-    return problemas;
-  }
-
-  function embaralhar(a){
-    for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
-    return a;
-  }
-
-  // sorteia a ordem das 5 alternativas e descobre onde ficou a certa
-  function preparar(q){
-    const orig = LETRAS.indexOf(String(q.certa).toUpperCase());
-    const ordem = embaralhar([0,1,2,3,4]);
-    return {q:q, opcoes:ordem.map(i=>q.opcoes[i]), certa:ordem.indexOf(orig)};
-  }
-
-  function melhor(){
-    try{return JSON.parse(localStorage.getItem(CHAVE))}catch(e){return null}
-  }
-  function guardarMelhor(p,t){
-    try{
-      const m = melhor();
-      if(!m || p/t > m.p/m.t) localStorage.setItem(CHAVE, JSON.stringify({p:p,t:t}));
-    }catch(e){}
-  }
-
-  function preencherInicio(){
-    const problemas = validar();
-    $('#info-total').textContent = validas.length;
-    const m = melhor(), el = $('#info-melhor');
-    if(m){el.hidden = false; el.textContent = 'Seu melhor resultado: ' + m.p + ' de ' + m.t + '.'}
-    const av = $('#avisos');
-    if(problemas.length){
-      av.hidden = false;
-      av.innerHTML = '';
-      const t = document.createElement('b'); t.textContent = 'Há perguntas com problema (elas ficaram de fora):'; av.append(t);
-      const ul = document.createElement('ul');
-      problemas.forEach(p=>{const li=document.createElement('li');li.textContent=p;ul.append(li)});
-      av.append(ul);
-    }else av.hidden = true;
-    $('#btn-comecar').disabled = validas.length === 0;
-    carregarRanking();
-  }
-
-  // ---------- ranking
-  function fmtTempo(ms){
-    const t = Math.round(ms/1000), m = Math.floor(t/60), sg = t % 60;
-    return String(m).padStart(2,'0') + ':' + String(sg).padStart(2,'0');
-  }
-
-  function desenharRanking(el, lista, destaque){
-    el.innerHTML = '';
-    if(!lista.length){
-      const p = document.createElement('p'); p.className = 'rank-vazio';
-      p.textContent = 'Ninguém jogou ainda. Seja o primeiro!';
-      el.append(p); return;
-    }
-    const ol = document.createElement('ol'); ol.className = 'rank-lista';
-    lista.forEach((r,i)=>{
-      const li = document.createElement('li');
-      if(i < 3) li.classList.add('p' + (i+1));
-      if(r.id === destaque) li.classList.add('eu');
-      const a = document.createElement('span'); a.className = 'rank-pos'; a.textContent = (i+1);
-
-      const b = document.createElement('span');
-      const nome = document.createElement('span'); nome.className = 'rank-nome'; nome.textContent = r.nome;
-      const meta = document.createElement('span'); meta.className = 'rank-meta';
-      const quando = document.createElement('span'); quando.textContent = r.dia + ' às ' + r.hora;
-      meta.append(quando);
-      if(typeof r.tempo === 'number'){
-        const tp = document.createElement('span'); tp.textContent = 'tempo ' + fmtTempo(r.tempo);
-        meta.append(tp);
+      function mostrar(nome) {
+        for (const k in telas) telas[k].hidden = (k !== nome);
+        window.scrollTo(0, 0);
       }
-      if(r.dicas){
-        const d = document.createElement('span'); d.className = 'rank-dica'; d.textContent = '💡 com dica';
-        meta.append(d);
+
+      // confere as perguntas e separa as que têm problema
+      function validar() {
+        const problemas = [];
+        validas = [];
+        PERGUNTAS.forEach((q, i) => {
+          const n = i + 1, erros = [];
+          if (!q || typeof q.pergunta !== 'string' || !q.pergunta.trim()) erros.push('falta o texto da pergunta');
+          if (!q || !Array.isArray(q.opcoes) || q.opcoes.length !== 5) erros.push('precisa ter exatamente 5 alternativas');
+          else if (q.opcoes.some(o => typeof o !== 'string' || !o.trim())) erros.push('há alternativa vazia');
+          if (!q || LETRAS.indexOf(String(q.certa).toUpperCase()) < 0) erros.push('o campo certa precisa ser A, B, C, D ou E');
+          if (erros.length) problemas.push('Pergunta ' + n + ': ' + erros.join('; ') + '.');
+          else validas.push(q);
+        });
+        return problemas;
       }
-      nome.style.display = 'block';
-      b.append(nome, meta);
 
-      const c = document.createElement('span'); c.className = 'rank-pts'; c.textContent = r.acertos;
-      const t = document.createElement('small'); t.textContent = ' / ' + r.total;
-      c.append(t);
-      li.append(a,b,c); ol.append(li);
-    });
-    el.append(ol);
-  }
+      function embaralhar(a) {
+        for (let i = a.length - 1; i > 0; i--) {const j = Math.floor(Math.random() * (i + 1));[a[i], a[j]] = [a[j], a[i]]}
+        return a;
+      }
 
-  async function buscarRanking(){
-    const r = await fetch(API, {cache:'no-store'});
-    if(!r.ok) throw new Error('falhou');
-    return (await r.json()).ranking || [];
-  }
+      // sorteia a ordem das 5 alternativas e descobre onde ficou a certa
+      function preparar(q) {
+        const orig = LETRAS.indexOf(String(q.certa).toUpperCase());
+        const ordem = embaralhar([0, 1, 2, 3, 4]);
+        return {q: q, opcoes: ordem.map(i => q.opcoes[i]), certa: ordem.indexOf(orig)};
+      }
 
-  async function carregarRanking(el, destaque){
-    el = el || $('#rank-inicio');
-    el.textContent = 'Carregando…';
-    try{ desenharRanking(el, await buscarRanking(), destaque) }
-    catch(e){ el.textContent = 'Ranking indisponível no momento.' }
-  }
+      function melhor() {
+        try {return JSON.parse(localStorage.getItem(CHAVE))} catch (e) {return null}
+      }
+      function guardarMelhor(p, t) {
+        try {
+          const m = melhor();
+          if (!m || p / t > m.p / m.t) localStorage.setItem(CHAVE, JSON.stringify({p: p, t: t}));
+        } catch (e) { }
+      }
 
-  async function salvarResultado(){
-    const box = $('#rank-fim'), msg = $('#rank-msg'), tentar = $('#btn-tentar');
-    tentar.hidden = true;
-    msg.textContent = 'Salvando seu resultado…';
-    box.textContent = '';
-    try{
-      const r = await fetch(API, {
-        method:'POST', headers:{'content-type':'application/json'},
-        body: JSON.stringify({
-          nome:nomeAtual, acertos:pts, total:deck.length,
-          tempo:Math.round(tempoMs), dicas:usarDicas
-        })
+      function preencherInicio() {
+        const problemas = validar();
+        $('#info-total').textContent = validas.length;
+        const m = melhor(), el = $('#info-melhor');
+        if (m) {el.hidden = false; el.textContent = 'Seu melhor resultado: ' + m.p + ' de ' + m.t + '.'}
+        const av = $('#avisos');
+        if (problemas.length) {
+          av.hidden = false;
+          av.innerHTML = '';
+          const t = document.createElement('b'); t.textContent = 'Há perguntas com problema (elas ficaram de fora):'; av.append(t);
+          const ul = document.createElement('ul');
+          problemas.forEach(p => {const li = document.createElement('li'); li.textContent = p; ul.append(li)});
+          av.append(ul);
+        } else av.hidden = true;
+        $('#btn-comecar').disabled = validas.length === 0;
+        carregarRanking();
+      }
+
+      // ---------- ranking
+      function fmtTempo(ms) {
+        const t = Math.round(ms / 1000), m = Math.floor(t / 60), sg = t % 60;
+        return String(m).padStart(2, '0') + ':' + String(sg).padStart(2, '0');
+      }
+
+      function desenharRanking(el, lista, destaque) {
+        el.innerHTML = '';
+        if (!lista.length) {
+          const p = document.createElement('p'); p.className = 'rank-vazio';
+          p.textContent = 'Ninguém jogou ainda. Seja o primeiro!';
+          el.append(p); return;
+        }
+        const ol = document.createElement('ol'); ol.className = 'rank-lista';
+        lista.forEach((r, i) => {
+          const li = document.createElement('li');
+          if (i < 3) li.classList.add('p' + (i + 1));
+          if (r.id === destaque) li.classList.add('eu');
+          const a = document.createElement('span'); a.className = 'rank-pos'; a.textContent = (i + 1);
+
+          const b = document.createElement('span');
+          const nome = document.createElement('span'); nome.className = 'rank-nome'; nome.textContent = r.nome;
+          const meta = document.createElement('span'); meta.className = 'rank-meta';
+          const quando = document.createElement('span'); quando.textContent = r.dia + ' às ' + r.hora;
+          meta.append(quando);
+          if (typeof r.tempo === 'number') {
+            const tp = document.createElement('span'); tp.textContent = 'tempo ' + fmtTempo(r.tempo);
+            meta.append(tp);
+          }
+          if (r.dicas) {
+            const d = document.createElement('span'); d.className = 'rank-dica'; d.textContent = '💡 com dica';
+            meta.append(d);
+          }
+          nome.style.display = 'block';
+          b.append(nome, meta);
+
+          const c = document.createElement('span'); c.className = 'rank-pts'; c.textContent = r.acertos;
+          const t = document.createElement('small'); t.textContent = ' / ' + r.total;
+          c.append(t);
+          li.append(a, b, c); ol.append(li);
+        });
+        el.append(ol);
+      }
+
+      async function buscarRanking() {
+        const r = await fetch(API, {cache: 'no-store'});
+        if (!r.ok) throw new Error('falhou');
+        return (await r.json()).ranking || [];
+      }
+
+      async function carregarRanking(el, destaque) {
+        el = el || $('#rank-inicio');
+        el.textContent = 'Carregando…';
+        try {desenharRanking(el, await buscarRanking(), destaque)}
+        catch (e) {el.textContent = 'Ranking indisponível no momento.'}
+      }
+
+      async function salvarResultado() {
+        const box = $('#rank-fim'), msg = $('#rank-msg'), tentar = $('#btn-tentar');
+        tentar.hidden = true;
+        msg.textContent = 'Salvando seu resultado…';
+        box.textContent = '';
+        try {
+          const r = await fetch(API, {
+            method: 'POST', headers: {'content-type': 'application/json'},
+            body: JSON.stringify({
+              nome: nomeAtual, acertos: pts, total: deck.length,
+              tempo: Math.round(tempoMs), dicas: usarDicas
+            })
+          });
+          if (!r.ok) throw new Error('falhou');
+          const d = await r.json();
+          msg.textContent = d.entrou
+            ? 'Você entrou no ranking: ' + d.posicao + 'º lugar!'
+            : 'Seu resultado (' + pts + ' de ' + deck.length + ', ' + fmtTempo(tempoMs) + ') não entrou no top 10.';
+          desenharRanking(box, d.ranking, d.entrou ? d.entrada.id : null);
+        } catch (e) {
+          msg.textContent = 'Não consegui salvar seu resultado no ranking.';
+          tentar.hidden = false;
+        }
+      }
+
+      function iniciar(lista, ehRefazer) {
+        rodadaCompleta = !ehRefazer;
+        const base = lista.slice();
+        if (CONFIG.embaralhar) embaralhar(base);
+        deck = base.map(preparar);
+        pos = 0; pts = 0; erradas = []; tempoMs = 0;
+        mostrar('jogo');
+        render();
+      }
+
+      function render() {
+        atual = deck[pos]; travado = false;
+        inicioPergunta = performance.now();
+        $('#progresso').textContent = 'Pergunta ' + (pos + 1) + ' de ' + deck.length;
+        $('#acertos').textContent = 'Acertos: ' + pts;
+        $('#barra-i').style.width = (pos / deck.length * 100) + '%';
+        $('#pergunta').textContent = atual.q.pergunta;
+        const ul = $('#opcoes'); ul.innerHTML = '';
+        atual.opcoes.forEach((txt, i) => {
+          const li = document.createElement('li');
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'op'; b.dataset.i = i;
+          const l = document.createElement('span'); l.className = 'letra'; l.textContent = LETRAS[i];
+          const t = document.createElement('span'); t.textContent = txt;
+          b.append(l, t);
+          b.addEventListener('click', () => responder(i));
+          li.append(b); ul.append(li);
+        });
+        $('#retorno').hidden = true;
+        $('#btn-proxima').hidden = true;
+        $('#dica').hidden = !usarDicas;
+        $('#btn-dica').hidden = false;
+        $('#dica-ref').hidden = true;
+      }
+
+      function mostrarDica() {
+        if (travado) return;
+        $('#dica-ref').textContent = atual.q.ref || 'Esta pergunta não tem referência.';
+        $('#dica-ref').hidden = false;
+        $('#btn-dica').hidden = true;
+      }
+
+      function responder(i) {
+        if (travado) return;
+        travado = true;
+        tempoMs += performance.now() - inicioPergunta;
+        $('#btn-dica').hidden = true;
+        const certa = atual.certa;
+        const acertou = (i === certa);
+        if (acertou) pts++; else erradas.push(atual);
+        document.querySelectorAll('.op').forEach((b, k) => {
+          b.disabled = true;
+          if (k === certa) b.classList.add('certa');
+          else if (k === i) b.classList.add('errada');
+          else b.classList.add('apagada');
+        });
+        $('#acertos').textContent = 'Acertos: ' + pts;
+        const r = $('#retorno');
+        r.classList.toggle('erro', !acertou);
+        $('#retorno-titulo').textContent = acertou ? 'Certo!' : 'Não foi dessa vez. A resposta é a letra ' + LETRAS[certa] + '.';
+        $('#retorno-texto').textContent = atual.q.explicacao || '';
+        $('#retorno-texto').hidden = !atual.q.explicacao;
+        $('#retorno-ref').textContent = atual.q.ref || '';
+        $('#retorno-ref').hidden = !atual.q.ref;
+        r.hidden = false;
+        const bp = $('#btn-proxima');
+        bp.textContent = (pos + 1 < deck.length) ? 'Próxima pergunta' : 'Ver resultado';
+        bp.hidden = false;
+        const reduzir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        bp.scrollIntoView({block: 'end', behavior: reduzir ? 'auto' : 'smooth'});
+      }
+
+      function proxima() {
+        if (!travado) return;
+        pos++;
+        if (pos < deck.length) {render(); window.scrollTo(0, 0)} else fim();
+      }
+
+      function fim() {
+        mostrar('fim');
+        const total = deck.length, pct = pts / total;
+        $('#fim-pts').textContent = pts;
+        $('#fim-total').textContent = 'de ' + total;
+        $('#fim-tempo').textContent = fmtTempo(tempoMs);
+        $('#fim-msg').textContent =
+          pct === 1 ? 'Perfeito! Você conhece bem o livro de Daniel.' :
+            pct >= .8 ? 'Muito bem! Quase tudo certo.' :
+              pct >= .5 ? 'Bom resultado. Reveja as que errou e tente de novo.' :
+                'Vale reler o livro de Daniel e tentar outra vez.';
+        if (rodadaCompleta) {
+          guardarMelhor(pts, total);
+          salvarResultado();
+        } else {
+          $('#rank-msg').textContent = 'Rodada de revisão: não entra no ranking.';
+          $('#btn-tentar').hidden = true;
+          carregarRanking($('#rank-fim'));
+        }
+
+        const rev = $('#fim-revisao'), lista = $('#fim-lista');
+        lista.innerHTML = '';
+        rev.hidden = erradas.length === 0;
+        erradas.forEach(it => {
+          const q = it.q, c = it.certa;
+          const d = document.createElement('div'); d.className = 'erro-item';
+          const a = document.createElement('p'); a.className = 'q'; a.textContent = q.pergunta;
+          const b = document.createElement('p'); b.className = 'r'; b.textContent = 'Certa: ' + LETRAS[c] + ') ' + it.opcoes[c];
+          d.append(a, b);
+          if (q.ref) {const r = document.createElement('p'); r.className = 'ref'; r.textContent = q.ref; d.append(r)}
+          lista.append(d);
+        });
+        $('#btn-erradas').hidden = erradas.length === 0;
+      }
+
+      try {
+        $('#nome').value = localStorage.getItem(CHAVE_NOME) || '';
+        $('#usar-dicas').checked = localStorage.getItem(CHAVE_DICAS) === '1';
+      } catch (e) { }
+
+      $('#btn-comecar').addEventListener('click', () => {
+        const nome = $('#nome').value.replace(/\s+/g, ' ').trim();
+        if (!nome) {$('#nome-aviso').hidden = false; $('#nome').focus(); return }
+        $('#nome-aviso').hidden = true;
+        nomeAtual = nome;
+        usarDicas = $('#usar-dicas').checked;
+        try {localStorage.setItem(CHAVE_NOME, nome); localStorage.setItem(CHAVE_DICAS, usarDicas ? '1' : '0')} catch (e) { }
+        iniciar(validas, false);
       });
-      if(!r.ok) throw new Error('falhou');
-      const d = await r.json();
-      msg.textContent = d.entrou
-        ? 'Você entrou no ranking: ' + d.posicao + 'º lugar!'
-        : 'Seu resultado (' + pts + ' de ' + deck.length + ', ' + fmtTempo(tempoMs) + ') não entrou no top 10.';
-      desenharRanking(box, d.ranking, d.entrou ? d.entrada.id : null);
-    }catch(e){
-      msg.textContent = 'Não consegui salvar seu resultado no ranking.';
-      tentar.hidden = false;
-    }
-  }
+      $('#nome').addEventListener('input', () => {$('#nome-aviso').hidden = true});
+      $('#btn-proxima').addEventListener('click', proxima);
+      $('#btn-dica').addEventListener('click', mostrarDica);
+      $('#btn-de-novo').addEventListener('click', () => iniciar(validas, false));
+      // volta para a tela inicial (dá para trocar nome e dica, e o ranking é atualizado)
+      $('#btn-inicio').addEventListener('click', () => {preencherInicio(); mostrar('inicio')});
+      $('#btn-erradas').addEventListener('click', () => iniciar(erradas.map(it => it.q), true));
+      $('#btn-tentar').addEventListener('click', salvarResultado);
 
-  function iniciar(lista, ehRefazer){
-    rodadaCompleta = !ehRefazer;
-    const base = lista.slice();
-    if(CONFIG.embaralhar) embaralhar(base);
-    deck = base.map(preparar);
-    pos = 0; pts = 0; erradas = []; tempoMs = 0;
-    mostrar('jogo');
-    render();
-  }
+      // teclado (útil no computador): A–E responde, Enter avança
+      document.addEventListener('keydown', e => {
+        if (telas.jogo.hidden) return;
+        const k = e.key.toUpperCase(), i = LETRAS.indexOf(k);
+        if (i >= 0 && !e.ctrlKey && !e.metaKey && !e.altKey) {responder(i)}
+        else if (e.key === 'Enter' && travado) {e.preventDefault(); proxima()}
+      });
 
-  function render(){
-    atual = deck[pos]; travado = false;
-    inicioPergunta = performance.now();
-    $('#progresso').textContent = 'Pergunta ' + (pos+1) + ' de ' + deck.length;
-    $('#acertos').textContent = 'Acertos: ' + pts;
-    $('#barra-i').style.width = (pos/deck.length*100) + '%';
-    $('#pergunta').textContent = atual.q.pergunta;
-    const ul = $('#opcoes'); ul.innerHTML = '';
-    atual.opcoes.forEach((txt,i)=>{
-      const li = document.createElement('li');
-      const b = document.createElement('button');
-      b.type = 'button'; b.className = 'op'; b.dataset.i = i;
-      const l = document.createElement('span'); l.className = 'letra'; l.textContent = LETRAS[i];
-      const t = document.createElement('span'); t.textContent = txt;
-      b.append(l,t);
-      b.addEventListener('click',()=>responder(i));
-      li.append(b); ul.append(li);
-    });
-    $('#retorno').hidden = true;
-    $('#btn-proxima').hidden = true;
-    $('#dica').hidden = !usarDicas;
-    $('#btn-dica').hidden = false;
-    $('#dica-ref').hidden = true;
-  }
-
-  function mostrarDica(){
-    if(travado) return;
-    $('#dica-ref').textContent = atual.q.ref || 'Esta pergunta não tem referência.';
-    $('#dica-ref').hidden = false;
-    $('#btn-dica').hidden = true;
-  }
-
-  function responder(i){
-    if(travado) return;
-    travado = true;
-    tempoMs += performance.now() - inicioPergunta;
-    $('#btn-dica').hidden = true;
-    const certa = atual.certa;
-    const acertou = (i === certa);
-    if(acertou) pts++; else erradas.push(atual);
-    document.querySelectorAll('.op').forEach((b,k)=>{
-      b.disabled = true;
-      if(k === certa) b.classList.add('certa');
-      else if(k === i) b.classList.add('errada');
-      else b.classList.add('apagada');
-    });
-    $('#acertos').textContent = 'Acertos: ' + pts;
-    const r = $('#retorno');
-    r.classList.toggle('erro', !acertou);
-    $('#retorno-titulo').textContent = acertou ? 'Certo!' : 'Não foi dessa vez. A resposta é a letra ' + LETRAS[certa] + '.';
-    $('#retorno-texto').textContent = atual.q.explicacao || '';
-    $('#retorno-texto').hidden = !atual.q.explicacao;
-    $('#retorno-ref').textContent = atual.q.ref || '';
-    $('#retorno-ref').hidden = !atual.q.ref;
-    r.hidden = false;
-    const bp = $('#btn-proxima');
-    bp.textContent = (pos+1 < deck.length) ? 'Próxima pergunta' : 'Ver resultado';
-    bp.hidden = false;
-    const reduzir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    bp.scrollIntoView({block:'end', behavior: reduzir ? 'auto' : 'smooth'});
-  }
-
-  function proxima(){
-    if(!travado) return;
-    pos++;
-    if(pos < deck.length){render();window.scrollTo(0,0)} else fim();
-  }
-
-  function fim(){
-    mostrar('fim');
-    const total = deck.length, pct = pts/total;
-    $('#fim-pts').textContent = pts;
-    $('#fim-total').textContent = 'de ' + total;
-    $('#fim-tempo').textContent = fmtTempo(tempoMs);
-    $('#fim-msg').textContent =
-      pct === 1 ? 'Perfeito! Você conhece bem o livro de Daniel.' :
-      pct >= .8 ? 'Muito bem! Quase tudo certo.' :
-      pct >= .5 ? 'Bom resultado. Reveja as que errou e tente de novo.' :
-                  'Vale reler o livro de Daniel e tentar outra vez.';
-    if(rodadaCompleta){
-      guardarMelhor(pts,total);
-      salvarResultado();
-    }else{
-      $('#rank-msg').textContent = 'Rodada de revisão: não entra no ranking.';
-      $('#btn-tentar').hidden = true;
-      carregarRanking($('#rank-fim'));
-    }
-
-    const rev = $('#fim-revisao'), lista = $('#fim-lista');
-    lista.innerHTML = '';
-    rev.hidden = erradas.length === 0;
-    erradas.forEach(it=>{
-      const q = it.q, c = it.certa;
-      const d = document.createElement('div'); d.className = 'erro-item';
-      const a = document.createElement('p'); a.className = 'q'; a.textContent = q.pergunta;
-      const b = document.createElement('p'); b.className = 'r'; b.textContent = 'Certa: ' + LETRAS[c] + ') ' + it.opcoes[c];
-      d.append(a,b);
-      if(q.ref){const r = document.createElement('p'); r.className = 'ref'; r.textContent = q.ref; d.append(r)}
-      lista.append(d);
-    });
-    $('#btn-erradas').hidden = erradas.length === 0;
-  }
-
-  try{
-    $('#nome').value = localStorage.getItem(CHAVE_NOME) || '';
-    $('#usar-dicas').checked = localStorage.getItem(CHAVE_DICAS) === '1';
-  }catch(e){}
-
-  $('#btn-comecar').addEventListener('click',()=>{
-    const nome = $('#nome').value.replace(/\s+/g,' ').trim();
-    if(!nome){$('#nome-aviso').hidden = false; $('#nome').focus(); return}
-    $('#nome-aviso').hidden = true;
-    nomeAtual = nome;
-    usarDicas = $('#usar-dicas').checked;
-    try{ localStorage.setItem(CHAVE_NOME, nome); localStorage.setItem(CHAVE_DICAS, usarDicas ? '1' : '0') }catch(e){}
-    iniciar(validas,false);
-  });
-  $('#nome').addEventListener('input',()=>{$('#nome-aviso').hidden = true});
-  $('#btn-proxima').addEventListener('click',proxima);
-  $('#btn-dica').addEventListener('click',mostrarDica);
-  $('#btn-de-novo').addEventListener('click',()=>iniciar(validas,false));
-  // volta para a tela inicial (dá para trocar nome e dica, e o ranking é atualizado)
-  $('#btn-inicio').addEventListener('click',()=>{preencherInicio();mostrar('inicio')});
-  $('#btn-erradas').addEventListener('click',()=>iniciar(erradas.map(it=>it.q),true));
-  $('#btn-tentar').addEventListener('click',salvarResultado);
-
-  // teclado (útil no computador): A–E responde, Enter avança
-  document.addEventListener('keydown',e=>{
-    if(telas.jogo.hidden) return;
-    const k = e.key.toUpperCase(), i = LETRAS.indexOf(k);
-    if(i >= 0 && !e.ctrlKey && !e.metaKey && !e.altKey){responder(i)}
-    else if(e.key === 'Enter' && travado){e.preventDefault();proxima()}
-  });
-
-  preencherInicio();
-})();
-</script>
+      preencherInicio();
+    })();
+  </script>
 </body>
+
 </html>
