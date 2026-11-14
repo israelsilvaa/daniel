@@ -28,8 +28,8 @@
       try {
         const r = await fetch('/api/rank-reset', {method: 'POST'});
         const d = await r.json();
-        if (!r.ok || !d.ok) throw new Error(d.erro || 'falhou');
-        msg.textContent = 'Ranking resetado! (' + d.apagados + ' registro(s) apagado(s))';
+        if (!r.ok || !d.ok) throw new Error((d.erro || 'falhou') + (d.stores ? ' Stores existentes: ' + (d.stores.join(', ') || 'nenhuma') : ''));
+        msg.textContent = 'Ranking resetado! (' + d.apagados + ' registro(s) apagado(s) em: ' + Object.keys(d.detalhes).filter(k => d.detalhes[k] > 0).join(', ') + ')';
       } catch (e) {
         msg.textContent = 'Erro ao resetar: ' + e.message;
       } finally {
